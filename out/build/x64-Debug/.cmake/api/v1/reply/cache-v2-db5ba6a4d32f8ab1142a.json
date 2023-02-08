@@ -123,10 +123,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "CXX compiler"
+					"value" : "No help, variable specified on the command line."
 				}
 			],
-			"type" : "STRING",
+			"type" : "FILEPATH",
 			"value" : "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/bin/Hostx64/x64/cl.exe"
 		},
 		{
@@ -235,10 +235,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "C compiler"
+					"value" : "No help, variable specified on the command line."
 				}
 			],
-			"type" : "STRING",
+			"type" : "FILEPATH",
 			"value" : "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/bin/Hostx64/x64/cl.exe"
 		},
 		{
@@ -723,7 +723,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "Project"
+			"value" : "bibparser"
 		},
 		{
 			"name" : "CMAKE_RANLIB",
@@ -1066,7 +1066,7 @@
 			"value" : "FALSE"
 		},
 		{
-			"name" : "Project_BINARY_DIR",
+			"name" : "bibparser_BINARY_DIR",
 			"properties" : 
 			[
 				{
@@ -1078,7 +1078,7 @@
 			"value" : "E:/Users/pedro/Documents/Projetos/pkgs/bibparser/out/build/x64-Debug"
 		},
 		{
-			"name" : "Project_IS_TOP_LEVEL",
+			"name" : "bibparser_IS_TOP_LEVEL",
 			"properties" : 
 			[
 				{
@@ -1090,7 +1090,7 @@
 			"value" : "ON"
 		},
 		{
-			"name" : "Project_SOURCE_DIR",
+			"name" : "bibparser_SOURCE_DIR",
 			"properties" : 
 			[
 				{
