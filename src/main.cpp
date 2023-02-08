@@ -1,18 +1,41 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
-int main (void)
+namespace bibparser
 {
-    std::ifstream bib_file;
-    bib_file.open("./../../../data/example1.bib");
+    std::vector<std::string> &
+    read_bib_file(std::string path)
+    {
+        std::vector<std::string> bib_file;
+        bib_file.reserve(500);
 
-    std::string line;
-    while (std::getline(bib_file, line)) {
-        std::cout << line << std::endl;
+        std::ifstream file_connection;
+        file_connection.open(path);
+
+        std::string line;
+        while (std::getline(file_connection, line)) {
+            bib_file.emplace_back(line);
+        }
+
+        file_connection.close();
+
+        return bib_file;
     }
 
-    bib_file.close();
+}
+
+
+int
+main(void)
+{
+    
+    bibparser::read_bib_file("./../../../data/example1.bib");
+    
     
     return 0;
 }
+
+
+
