@@ -24,15 +24,27 @@ namespace bibparser
         return bib_file;
     }
 
+
+    void TraverseString(std::string& str)
+    {
+        for (char chr : str) {
+            std::cout << chr << std::endl;
+        }
+    }
+
+
+    
 }
 
+
+std::vector<std::string> file = bibparser::read_bib_file("./../../../data/example1.bib");
 
 int
 main(void)
 {
     
-    bibparser::read_bib_file("./../../../data/example1.bib");
-    
+    std::cout << file << std::endl;
+    //bibparser::TraverseString(bibparser::file[1]);
     
     return 0;
 }
