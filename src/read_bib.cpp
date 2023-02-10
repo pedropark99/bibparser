@@ -8,6 +8,15 @@
 #include "read_bib.h"
 
 
+std::string path_string = "data/example1.bib";
+
+std::filesystem::path bibparser::path_to_example = std::filesystem::absolute(path_string);
+
+std::vector<std::string> bibparser::bib_file = bibparser::read_bib_file(
+	bibparser::path_to_example.string()
+);
+
+
 std::vector<std::string> bibparser::read_bib_file(std::string path)
 {
 	std::vector<std::string> bib_file;
@@ -27,18 +36,10 @@ std::vector<std::string> bibparser::read_bib_file(std::string path)
 }
 
 
-// void bibparser::TraverseString(std::string& str)
-// {
-// 	for (char chr : str) {
-// 		std::cout << chr << std::endl;
-// 	}
-// }
-
-std::string path_string = "data/example1.bib";
-
-std::filesystem::path bibparser::path_to_example = std::filesystem::absolute(path_string);
-
-std::vector<std::string> bibparser::bib_file = bibparser::read_bib_file(
-	bibparser::path_to_example.string()
-);
+void bibparser::TraverseString(std::string& str)
+{
+	for (char chr : str) {
+		std::cout << chr << std::endl;
+	}
+}
 
