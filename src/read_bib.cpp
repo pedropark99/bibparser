@@ -9,9 +9,7 @@
 
 
 std::string path_string = "data/example1.bib";
-
 std::filesystem::path bibparser::path_to_example = std::filesystem::absolute(path_string);
-
 std::vector<std::string> bibparser::bib_file = bibparser::read_bib_file(
 	bibparser::path_to_example.string()
 );
@@ -24,6 +22,10 @@ std::vector<std::string> bibparser::read_bib_file(std::string path)
 
 	std::ifstream file_connection;
 	file_connection.open(path);
+
+	if (!file_connection.is_open()) {
+		throw std::runtime_error("`std::ifstream` could not open the file. Check if the given path is correct.");
+	}
 
 	std::string line;
 	while (std::getline(file_connection, line)) {
