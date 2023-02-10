@@ -1,13 +1,16 @@
 
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.12)
 project(bibparser)
 
 
 
-add_executable(bibparser src/main.cpp)
+add_executable(bibparser
+	src/main.cpp
+	src/read_bib.cpp
+)
 
+target_include_directories(bibparser PRIVATE include)
 
-
-set(CMAKE_CXX_STANDARD 14)
-message("CXX Standard: ${CMAKE_CXX_STANDARD}")
+set_property(TARGET bibparser PROPERTY CXX_STANDARD 20)
+message("CXX Standard: ${CXX_STANDARD}")
 
