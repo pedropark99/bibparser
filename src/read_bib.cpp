@@ -27,16 +27,15 @@ std::vector<std::string> bibparser::read_bib_file(std::string path)
 }
 
 
-void bibparser::TraverseString(std::string& str)
-{
-	for (char chr : str) {
-		std::cout << chr << std::endl;
-	}
-}
+// void bibparser::TraverseString(std::string& str)
+// {
+// 	for (char chr : str) {
+// 		std::cout << chr << std::endl;
+// 	}
+// }
 
-std::string path_to_example = "./../../../data/example1.bib";
+std::string path_string = "data/example1.bib";
 
+std::filesystem::path bibparser::path_to_example = std::filesystem::absolute(path_string);
 
-std::filesystem::path p = std::filesystem::absolute(path_to_example);
-
-// std::vector<std::string> bibparser::bib_file = bibparser::read_bib_file(p);
+std::vector<std::string> bibparser::bib_file = bibparser::read_bib_file(bibparser::path_to_example.generic_string());
