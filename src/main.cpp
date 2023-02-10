@@ -9,7 +9,7 @@ int main(void)
 {
 
 
-    std::cout << bibparser::path_to_example << std::endl;
+    std::cout << bibparser::bib_file[1] << std::endl;
     //bibparser::TraverseString(bibparser::bib_file[1]);
     
     return 0;

@@ -38,4 +38,7 @@ std::string path_string = "data/example1.bib";
 
 std::filesystem::path bibparser::path_to_example = std::filesystem::absolute(path_string);
 
-std::vector<std::string> bibparser::bib_file = bibparser::read_bib_file(bibparser::path_to_example.generic_string());
+std::vector<std::string> bibparser::bib_file = bibparser::read_bib_file(
+	bibparser::path_to_example.string()
+);
+
