@@ -34,21 +34,9 @@ std::string bibparser::read_bib_file(std::string path)
 	file_connection.read(&buffer[0], buffer.size());
 
 	file_connection.close();
-	// Remove new lines and white spaces from bib file
-	buffer = bibparser::remove_white_spaces(buffer);
 	return buffer;
 }
 
-
-std::string bibparser::remove_white_spaces(std::string bib_file)
-{
-	std::regex ws_regex("[:space:]*", std::regex::extended);
-	return std::regex_replace(
-		bib_file,
-		ws_regex,
-		""
-	);
-}
 
 
 void bibparser::TraverseString(std::string& str)
