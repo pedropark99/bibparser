@@ -7,8 +7,12 @@
 
 int main(void)
 {
-    
-    std::cout << bibparser::bib_file << std::endl;
+    std::string a = bibparser::bib_file;
+    std::string::iterator it = a.begin();
+
+    std::cout << *it << std::endl;
+    it++;
+    std::cout << *it << std::endl;
 
 }
 

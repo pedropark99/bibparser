@@ -1,9 +1,6 @@
 #include <string>
-#include <iostream>
 #include <fstream>
-#include <vector>
 #include <filesystem>
-#include <regex>
 
 #include "read_bib.h"
 
@@ -36,13 +33,3 @@ std::string bibparser::read_bib_file(std::string path)
 	file_connection.close();
 	return buffer;
 }
-
-
-
-void bibparser::TraverseString(std::string& str)
-{
-	for (char chr : str) {
-		std::cout << chr << std::endl;
-	}
-}
-

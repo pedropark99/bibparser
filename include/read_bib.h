@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <vector>
 #include <filesystem>
 
 namespace bibparser
@@ -10,7 +9,5 @@ namespace bibparser
     extern std::string bib_file;
 
     std::string read_bib_file(std::string path);
-    std::string remove_white_spaces(std::string bib_file);
-    void TraverseString(std::string& str);
 
 }
