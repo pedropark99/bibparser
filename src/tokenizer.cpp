@@ -1,4 +1,8 @@
+#include <string>
+#include <iostream>
 
+
+#include "read_bib.hpp"
 
 enum Tag
 {
@@ -8,15 +12,18 @@ enum Tag
 };
 
 
-void tokenizer(char chr)
+void tokenizer(void)
 {
-    switch (chr)
+    std::string::iterator it = bibparser::bib_file.begin();
+    while (it != bibparser::bib_file.end())
     {
-    case chr == '@':
-        BIB_BEGIN;
-        break;
+    std::cout << *it << std::endl;
+    it++;
+    // case chr == '@':
+    //     BIB_BEGIN;
+    //     break;
     
-    default:
-        break;
+    // default:
+    //     break;
     }
 }

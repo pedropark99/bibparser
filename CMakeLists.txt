@@ -7,6 +7,7 @@ project(bibparser)
 add_executable(bibparser
 	src/main.cpp
 	src/read_bib.cpp
+	src/tokenizer.cpp
 )
 
 target_include_directories(bibparser PRIVATE include)

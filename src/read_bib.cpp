@@ -2,7 +2,7 @@
 #include <fstream>
 #include <filesystem>
 
-#include "read_bib.h"
+#include "read_bib.hpp"
 
 
 std::string path_string = "data/example1.bib";

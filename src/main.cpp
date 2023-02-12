@@ -3,16 +3,12 @@
 #include <fstream>
 #include <vector>
 
-#include "read_bib.h"
+#include "read_bib.hpp"
+#include "tokenizer.hpp"
 
 int main(void)
 {
-    std::string a = bibparser::bib_file;
-    std::string::iterator it = a.begin();
-
-    std::cout << *it << std::endl;
-    it++;
-    std::cout << *it << std::endl;
+    tokenizer();
 
 }
 
