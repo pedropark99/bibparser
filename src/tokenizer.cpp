@@ -1,11 +1,10 @@
 
 
-enum Token
+enum Tag
 {
-    BIB_BEGIN,
-    BIB_IDENTIFIER,
-    BIB_TYPE,
-    BIB_ATTRIBUTE
+    BIB_IDENTIFIER = 5234,
+    BIB_TYPE = 5233,
+    BIB_ATTRIBUTE = 5235
 };
 
 

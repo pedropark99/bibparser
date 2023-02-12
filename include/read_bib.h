@@ -7,10 +7,10 @@ namespace bibparser
 {
 
     extern std::filesystem::path path_to_example;
-    extern std::vector<std::string> bib_file;
+    extern std::string bib_file;
 
-    std::vector<std::string> read_bib_file(std::string path);
-
+    std::string read_bib_file(std::string path);
+    std::string remove_white_spaces(std::string bib_file);
     void TraverseString(std::string& str);
 
 }
