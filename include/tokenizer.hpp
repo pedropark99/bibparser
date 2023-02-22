@@ -16,18 +16,19 @@ enum Tag
 
 
 class Token {
-    public:
+public:
     Tag tag;
     std::string value;
 
-    Token (Tag tag, std::string value)
+    Token (Tag input_tag, std::string input_value)
     {
-        tag = tag;
-        value = value;
+        tag = input_tag;
+        value = input_value;
     }
 };
 
+
 std::list<Token> tokenizer(void);
 Token buid_token(Tag type_of_token,
-                std::string::iterator beginning_of_lexeme,
-                std::string::iterator forward);
+                std::string::iterator begin_of_lexeme,
+                std::string::iterator end_of_lexeme);

@@ -32,11 +32,15 @@ const std::unordered_set<char> LINES = {
 
 
 Token buid_token(Tag type_of_token,
-                std::string::iterator beginning_of_lexeme,
-                std::string::iterator forward)
+                std::string::iterator begin_of_lexeme,
+                std::string::iterator end_of_lexeme)
 {
-    std::string lexeme = std::string(beginning_of_lexeme, forward);
-    Token token = Token(type_of_token, lexeme);
+    std::string lexeme = std::string(begin_of_lexeme, end_of_lexeme);
+    Token token(type_of_token, lexeme);
+    std::cout << token.tag
+            << "  | Lexeme is: " << token.value
+            << std::endl;
+
     return token;
 }
 
