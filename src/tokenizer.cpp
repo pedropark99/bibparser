@@ -77,39 +77,26 @@ std::list<Token> tokenizer(std::string file)
 
 bool is_white_space(char chr)
 {
-    if (chr == ' ' || chr == '\t' || chr == '\n' || chr == '\r') 
-    {
-        return true;
-    } 
-    else 
-    {
-        return false;
-    }
+    bool white_space = chr == ' ' || chr == '\t' || chr == '\n' || chr == '\r';
+    return white_space ? true : false;
 }
 
 bool is_digit(char chr)
 {
-    if (NUMBERS.find(chr) != NUMBERS.end())
-    {
-        return true;
-    } 
-    else 
-    {
-        return false;
-    }
+    return find_in_set(chr, NUMBERS);
 }
 
 bool is_letter(char chr)
 {
-    if (LETTERS.find(chr) != LETTERS.end())
-    {
-        return true;
-    }
-    else 
-    {
-        return false;
-    }
-
+    return find_in_set(chr, LETTERS);
 }
 
+bool is_line(char chr)
+{
+    return find_in_set(chr, LINES);
+}
 
+bool find_in_set(char chr, const std::unordered_set<char>& set)
+{
+    return set.find(chr) != set.end() ? true : false;
+}

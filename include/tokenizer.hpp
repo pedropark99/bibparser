@@ -1,11 +1,13 @@
 #pragma once
 #include <string>
 #include <list>
+#include <unordered_set>
 
 
 bool is_white_space(char chr);
 bool is_digit(char chr);
 bool is_letter(char chr);
+bool find_in_set(char chr, const std::unordered_set<char>& set);
 
 enum Tag
 {
