@@ -45,6 +45,7 @@ std::list<Token> tokenizer(std::string file)
 {
     std::list<Token> tokens;
     size_t line_in_file = 1;
+    size_t scope_level = 0;
     std::string::iterator forward = file.begin();
     std::string::iterator beginning_of_lexeme = forward;
 
@@ -74,13 +75,21 @@ std::list<Token> tokenizer(std::string file)
             tokens.emplace_back(buid_token(BIB_TYPE, beginning_of_lexeme, forward));
             break;
 
+        case '{':
+            scope_level++;
+            forward++;
+            break;
+
+        case '}':
+            scope_level--;
+            forward++;
+            break;
         
         
         default:
+            forward++;
             break;
         }
-
-        forward++;
     }
 
     return tokens;
