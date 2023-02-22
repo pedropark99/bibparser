@@ -68,23 +68,12 @@ std::list<Token> tokenizer(std::string file)
             }
             tokens.emplace_back(buid_token(BIB_TYPE, beginning_of_lexeme, forward));
             break;
+
+        
         
         default:
             break;
         }
-
-        /*
-        if (*forward == '@') 
-        {
-            forward++;
-            beginning_of_lexeme = forward;
-            while (is_digit(*forward) | is_letter(*forward)) 
-            {
-                forward++;
-            }
-            tokens.emplace_back(buid_token(BIB_TYPE, beginning_of_lexeme, forward));
-        }
-        */
 
         forward++;
     }
