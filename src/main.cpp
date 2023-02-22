@@ -21,8 +21,8 @@ void print_tokens (std::list<Token> tokens) {
 
 int main(void)
 {
-    std::list<Token> tokens = tokenizer();
-    // print_tokens(tokens);
+    std::list<Token> tokens = tokenizer(bibparser::bib_file);
+    print_tokens(tokens);
 }
 
 

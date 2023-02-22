@@ -37,22 +37,18 @@ Token buid_token(Tag type_of_token,
 {
     std::string lexeme = std::string(begin_of_lexeme, end_of_lexeme);
     Token token(type_of_token, lexeme);
-    std::cout << token.tag
-            << "  | Lexeme is: " << token.value
-            << std::endl;
-
     return token;
 }
 
 
-std::list<Token> tokenizer(void)
+std::list<Token> tokenizer(std::string file)
 {
     std::list<Token> tokens;
 
-    std::string::iterator forward = bibparser::bib_file.begin();
+    std::string::iterator forward = file.begin();
     std::string::iterator beginning_of_lexeme = forward;
 
-    while (forward != bibparser::bib_file.end())
+    while (forward != file.end())
     {
         // Ignore white spaces and go to the next character;
         if (is_white_space(*forward))
