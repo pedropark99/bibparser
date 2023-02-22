@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <ctype.h>
 
 
 #include "read_bib.hpp"
@@ -12,33 +13,30 @@ enum TAG
     BIB_ATTRIBUTE = 5235
 };
 
-enum STATE
-{
-    LOOK_AHEAD
-};
-
 
 
 void tokenizer(void)
 {
-    std::string::iterator it = bibparser::bib_file.begin();
-    std::string buffer;
-    STATE state;
-    buffer.reserve(5400);
-    TAG tag;
+    std::string::iterator forward = bibparser::bib_file.begin();
+    std::string::iterator beginning_of_lexeme = forward;
 
-    while (it != bibparser::bib_file.end())
+    while (forward != bibparser::bib_file.end())
     {
-        // std::cout << *it << std::endl;
         // Ignore white spaces and go to the next character;
-        if (is_white_space(*it))
+        if (is_white_space(*forward))
         {
-            std::cout << "Ignoring white space..." << std::endl;
-            it++;
+            forward++;
             continue;
         }
 
-        it++;
+        if (*forward == '@') {
+            beginning_of_lexeme = forward++;
+            while (is_digit(*forward) | is_letter(*forward)) {
+                forward++;
+            }
+        }
+
+        forward++;
     }
 }
 
@@ -48,7 +46,26 @@ bool is_white_space(char chr)
     if (chr == ' ' || chr == '\t' || chr == '\n' || chr == '\r') {
         return true;
     } 
-    else {
+    else 
+    {
         return false;
     }
+}
+
+bool is_digit(char chr)
+{
+    if (isdigit(chr))
+    {
+        return true;
+    } 
+    else 
+    {
+        return false;
+    }
+}
+
+bool is_letter(char chr)
+{
+    
+
 }
