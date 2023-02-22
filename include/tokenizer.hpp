@@ -34,3 +34,7 @@ std::list<Token> tokenizer(std::string file);
 Token buid_token(Tag type_of_token,
                 std::string::iterator begin_of_lexeme,
                 std::string::iterator end_of_lexeme);
+
+
+void get_bib_identifier(std::string::iterator& begin_of_lexeme,
+                        std::string::iterator& forward);

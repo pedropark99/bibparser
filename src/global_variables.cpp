@@ -1,5 +1,7 @@
 #include <unordered_set>
 
+#include "global_variables.hpp"
+
 const std::unordered_set<char> LETTERS = {
     u8'a', u8'b', u8'c', u8'd', u8'e', u8'f',
     u8'g', u8'h', u8'i', u8'j', u8'k', u8'l',
