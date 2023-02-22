@@ -8,6 +8,7 @@ add_executable(bibparser
 	src/main.cpp
 	src/read_bib.cpp
 	src/tokenizer.cpp
+	src/global_variables.cpp
 )
 
 target_include_directories(bibparser PRIVATE include)

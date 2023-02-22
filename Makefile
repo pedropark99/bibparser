@@ -129,6 +129,30 @@ bibparser/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/build
 .PHONY : bibparser/fast
 
+src/global_variables.o: src/global_variables.cpp.o
+.PHONY : src/global_variables.o
+
+# target to build an object file
+src/global_variables.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/global_variables.cpp.o
+.PHONY : src/global_variables.cpp.o
+
+src/global_variables.i: src/global_variables.cpp.i
+.PHONY : src/global_variables.i
+
+# target to preprocess a source file
+src/global_variables.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/global_variables.cpp.i
+.PHONY : src/global_variables.cpp.i
+
+src/global_variables.s: src/global_variables.cpp.s
+.PHONY : src/global_variables.s
+
+# target to generate assembly for a file
+src/global_variables.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/global_variables.cpp.s
+.PHONY : src/global_variables.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -210,6 +234,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... bibparser"
+	@echo "... src/global_variables.o"
+	@echo "... src/global_variables.i"
+	@echo "... src/global_variables.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
