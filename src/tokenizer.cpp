@@ -44,12 +44,17 @@ Token buid_token(Tag type_of_token,
 std::list<Token> tokenizer(std::string file)
 {
     std::list<Token> tokens;
-
+    size_t line_in_file = 1;
     std::string::iterator forward = file.begin();
     std::string::iterator beginning_of_lexeme = forward;
 
     while (forward != file.end())
     {
+        if (*forward == '\n') {
+            line_in_file++;
+            forward++;
+            continue;
+        }
         // Ignore white spaces and go to the next character;
         if (is_white_space(*forward))
         {
@@ -84,7 +89,7 @@ std::list<Token> tokenizer(std::string file)
 
 bool is_white_space(char chr)
 {
-    bool white_space = chr == ' ' || chr == '\t' || chr == '\n' || chr == '\r';
+    bool white_space = chr == ' ' || chr == '\t' || chr == '\r';
     return white_space ? true : false;
 }
 
