@@ -25,41 +25,41 @@ std::list<Token> tokenizer(std::string file)
     std::list<Token> tokens;
     size_t line_in_file = 1;
     size_t scope_level = 0;
-    std::string::iterator forward = file.begin();
-    std::string::iterator beginning_of_lexeme = forward;
+    std::string::iterator current_char = file.begin();
+    std::string::iterator beginning_of_lexeme = current_char;
 
-    while (forward != file.end())
+    while (current_char != file.end())
     {
-        if (*forward == '\n') {
+        if (*current_char == '\n') {
             line_in_file++;
-            forward++;
+            current_char++;
             continue;
         }
         // Ignore white spaces and go to the next character;
-        if (is_white_space(*forward))
+        if (is_white_space(*current_char))
         {
-            forward++;
+            current_char++;
             continue;
         }
 
-        switch (*forward)
+        switch (*current_char)
         {
         case '@':
-            forward++;
-            beginning_of_lexeme = forward;
-            while (is_digit(*forward) | is_letter(*forward)) 
+            current_char++;
+            beginning_of_lexeme = current_char;
+            while (is_digit(*current_char) | is_letter(*current_char)) 
             {
-                forward++;
+                current_char++;
             }
-            tokens.emplace_back(buid_token(BIB_TYPE, beginning_of_lexeme, forward));
+            tokens.emplace_back(buid_token(BIB_TYPE, beginning_of_lexeme, current_char));
             break;
 
         case '{':
             scope_level++;
-            forward++;
+            current_char++;
             if (scope_level == 1)
             {
-                get_bib_identifier(beginning_of_lexeme, forward);
+                get_bib_identifier(beginning_of_lexeme, current_char);
             }
             // If scope_level > 1, is probably a attribute value of the reference
             // We should handle these later...
@@ -67,12 +67,12 @@ std::list<Token> tokenizer(std::string file)
 
         case '}':
             scope_level--;
-            forward++;
+            current_char++;
             break;
         
         
         default:
-            forward++;
+            current_char++;
             break;
         }
     }
@@ -110,7 +110,7 @@ bool find_in_set(char chr, const std::unordered_set<char>& set)
 
 
 
-void get_bib_identifier(std::string::iterator& begin_of_lexeme, std::string::iterator& forward)
+void get_bib_identifier(std::string::iterator& begin_of_lexeme, std::string::iterator& current_char)
 {
     // Do stuff
 }
