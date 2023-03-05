@@ -1,1 +1,2 @@
 - Remember to run Purify and Valgrind over the project to check for memory leaks;
+- Test if there is a way to pass the iterators as references to each function call, to avoid too much duplication of the data;
