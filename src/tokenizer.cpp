@@ -2,6 +2,7 @@
 #include <iostream>
 #include <list>
 #include <unordered_set>
+#include <unordered_map>
 #include <ctype.h>
 
 
@@ -19,66 +20,74 @@ Token buid_token(Tag type_of_token,
     return token;
 }
 
+struct TokenizerState
+{
+    int line_in_file;
+    int scope_level;
+    std::string file;
+    std::string::iterator current_char;
+    std::string::iterator beginning_of_lexeme;
+};
+
+
+void match(TokenizerState &ts, char chr)
+{
+    ts.beginning_of_lexeme = ts.current_char;
+    while (*ts.current_char != chr)
+    {
+        ts.current_char++;
+    }
+}
+
+
 
 std::list<Token> tokenizer(std::string file)
 {
     std::list<Token> tokens;
-    size_t line_in_file = 1;
-    size_t scope_level = 0;
-    std::string::iterator current_char = file.begin();
-    std::string::iterator beginning_of_lexeme = current_char;
+    TokenizerState ts;
+    ts.line_in_file = 1;
+    ts.scope_level = 0;
+    ts.current_char = file.begin();
+    ts.beginning_of_lexeme = ts.current_char;
 
-    while (current_char != file.end())
+    while (ts.current_char != file.end())
     {
-        if (*current_char == '\n') {
-            line_in_file++;
-            current_char++;
+        if (*ts.current_char == '\n')
+        {
+            ts.line_in_file++;
+            ts.current_char++;
             continue;
         }
         // Ignore white spaces and go to the next character;
-        if (is_white_space(*current_char))
+        if (is_white_space(*ts.current_char))
         {
-            current_char++;
+            ts.current_char++;
             continue;
         }
 
-        switch (*current_char)
+        if (*ts.current_char == '@')
         {
-        case '@':
-            current_char++;
-            beginning_of_lexeme = current_char;
-            while (is_digit(*current_char) | is_letter(*current_char)) 
-            {
-                current_char++;
-            }
-            tokens.emplace_back(buid_token(BIB_TYPE, beginning_of_lexeme, current_char));
-            break;
-
-        case '{':
-            scope_level++;
-            current_char++;
-            if (scope_level == 1)
-            {
-                get_bib_identifier(beginning_of_lexeme, current_char);
-            }
-            // If scope_level > 1, is probably a attribute value of the reference
-            // We should handle these later...
-            break;
-
-        case '}':
-            scope_level--;
-            current_char++;
-            break;
-        
-        
-        default:
-            current_char++;
-            break;
+            ts.current_char++;
+            match(ts, '{');
+            tokens.emplace_back(
+                buid_token(BIB_TYPE, ts.beginning_of_lexeme, ts.current_char)
+            );
+            continue;
         }
+
+        if (*ts.current_char == '{')
+        {
+            
+        }
+
+        ts.current_char++;
     }
 
     return tokens;
 }
+
+
+
 
 
 bool is_white_space(char chr)
@@ -107,10 +116,3 @@ bool find_in_set(char chr, const std::unordered_set<char>& set)
     return set.find(chr) != set.end() ? true : false;
 }
 
-
-
-
-void get_bib_identifier(std::string::iterator& begin_of_lexeme, std::string::iterator& current_char)
-{
-    // Do stuff
-}

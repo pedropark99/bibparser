@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/e/Users/pedro/Documents/Projetos/pkgs/bibparser
+# Install script for directory: /home/pedro/Documentos/Projetos/Packages/bibparser
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/mnt/e/Users/pedro/Documents/Projetos/pkgs/bibparser/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/pedro/Documentos/Projetos/Packages/bibparser/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
