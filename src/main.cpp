@@ -6,6 +6,7 @@
 
 #include "read_bib.hpp"
 #include "tokenizer.hpp"
+#include "global_variables.hpp"
 
 void print_tokens (std::list<Token> tokens) {
     int token_number = 0;
@@ -21,8 +22,9 @@ void print_tokens (std::list<Token> tokens) {
 
 int main(void)
 {
-    std::list<Token> tokens = tokenizer(bibparser::bib_file);
-    print_tokens(tokens);
+    collect_bib_entries(bibparser::bib_file);
+    // std::list<Token> tokens = tokenizer(bibparser::bib_file);
+    // print_tokens(tokens);
 }
 
 

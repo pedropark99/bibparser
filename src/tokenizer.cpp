@@ -20,68 +20,74 @@ Token buid_token(Tag type_of_token,
     return token;
 }
 
-struct TokenizerState
+struct LexerState
 {
     int line_in_file;
     int scope_level;
-    std::string file;
     std::string::iterator current_char;
-    std::string::iterator beginning_of_lexeme;
+};
+
+struct LexerState lexer_st = {
+    .line_in_file = 1,
+    .scope_level = 0,
+    .current_char = bibparser::bib_file.begin()
 };
 
 
-void match(TokenizerState &ts, char chr)
+
+std::array<std::string::iterator, 2> look_ahead(char chr)
 {
-    ts.beginning_of_lexeme = ts.current_char;
-    while (*ts.current_char != chr)
+    std::array<std::string::iterator, 2> iterators;
+    std::string::iterator begin = lexer_st.current_char;
+    std::string::iterator end = lexer_st.current_char;
+
+    while (*end != chr | end != bibparser::bib_file.end())
     {
-        ts.current_char++;
+        end++;
     }
+
+    iterators[0] = begin;
+    iterators[1] = end;
+
+    return iterators;
 }
 
+
+char next(int n = 1)
+{
+    for (int i = 0; i < n; i++)
+    {
+        lexer_st.current_char++;
+    }
+    return *lexer_st.current_char;
+}
+
+
+std::list<std::string> collect_bib_entries(std::string file)
+{
+    std::list<std::string> bib_entries;
+    
+    while (lexer_st.current_char != file.end())
+    {
+        if (*lexer_st.current_char == '@') {
+            std::array<std::string::iterator, 2> portion = look_ahead('@');
+            std::string entry = std::string(portion[0], portion[1]);
+            std::cout << "Entry: " << entry << std::endl << std::endl;
+            bib_entries.emplace_back(entry);
+        }
+
+        lexer_st.current_char++;
+    }
+
+    return bib_entries;
+}
 
 
 std::list<Token> tokenizer(std::string file)
 {
     std::list<Token> tokens;
-    TokenizerState ts;
-    ts.line_in_file = 1;
-    ts.scope_level = 0;
-    ts.current_char = file.begin();
-    ts.beginning_of_lexeme = ts.current_char;
+    
 
-    while (ts.current_char != file.end())
-    {
-        if (*ts.current_char == '\n')
-        {
-            ts.line_in_file++;
-            ts.current_char++;
-            continue;
-        }
-        // Ignore white spaces and go to the next character;
-        if (is_white_space(*ts.current_char))
-        {
-            ts.current_char++;
-            continue;
-        }
-
-        if (*ts.current_char == '@')
-        {
-            ts.current_char++;
-            match(ts, '{');
-            tokens.emplace_back(
-                buid_token(BIB_TYPE, ts.beginning_of_lexeme, ts.current_char)
-            );
-            continue;
-        }
-
-        if (*ts.current_char == '{')
-        {
-            
-        }
-
-        ts.current_char++;
-    }
 
     return tokens;
 }
