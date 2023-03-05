@@ -98,7 +98,7 @@ std::vector<std::string> collect_bib_entries(std::string file)
 
     while (current_char != end)
     {
-        if (*current_char == '@' & entries_allocated < n_of_entries - 2)
+        if (*current_char == '@' & entries_allocated < n_of_entries - 1)
         {
             std::string entry = std::string(begin, current_char);
             bib_entries.emplace_back(entry);
@@ -125,6 +125,22 @@ std::vector<std::string> collect_bib_entries(std::string file)
     return bib_entries;
 }
 
+void parse_entry_attributes(std::string attrs)
+{
+    std::string::iterator current_char = attrs.begin();
+    std::string::iterator begin = attrs.begin();
+    std::string::iterator end = attrs.end();
+
+    std::string identifier;
+    while (*current_char != ',')
+    {
+        current_char++;
+    }
+    identifier = std::string(begin, current_char);
+
+    std::cout << identifier << std::endl;
+}
+
 
 void parse_entry(std::string entry)
 {
@@ -133,21 +149,13 @@ void parse_entry(std::string entry)
     std::string::iterator end = entry.end();
 
     std::string entry_type;
-
-    while (*current_char != '{')
+    while (current_char != end)
     {
-        // Ignore white spaces and go to the next character;
-        if (is_white_space(*current_char))
-        {
-            current_char++;
-            continue;
-        }
-
         if (*(current_char + 1) == '{')
         {
             entry_type = std::string(begin, current_char + 1);
-            std::cout << "Entry type: " << entry_type << std::endl;
             current_char++;
+            break;
         }
 
         current_char++;
@@ -159,15 +167,11 @@ void parse_entry(std::string entry)
     }
 
     std::string entry_attrs = std::string(current_char + 1, end - 1);
+    // std::cout << entry_attrs << std::endl;
     parse_entry_attributes(entry_attrs);
 
 }
 
-
-void parse_entry_attributes(std::string attrs)
-{
-
-}
 
 
 std::list<Token> tokenizer(std::string file)
