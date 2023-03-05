@@ -2,3 +2,5 @@
 .vscode
 CMakeFiles
 out
+CMakeCache.txt
+*.cmake

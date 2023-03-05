@@ -125,20 +125,18 @@ std::vector<std::string> collect_bib_entries(std::string file)
     return bib_entries;
 }
 
-void parse_entry_attributes(std::string attrs)
+std::string parse_entry_identifier(std::string attrs)
 {
     std::string::iterator current_char = attrs.begin();
     std::string::iterator begin = attrs.begin();
     std::string::iterator end = attrs.end();
 
-    std::string identifier;
     while (*current_char != ',')
     {
         current_char++;
     }
-    identifier = std::string(begin, current_char);
 
-    std::cout << identifier << std::endl;
+    return std::string(begin, current_char);
 }
 
 
@@ -167,8 +165,7 @@ void parse_entry(std::string entry)
     }
 
     std::string entry_attrs = std::string(current_char + 1, end - 1);
-    // std::cout << entry_attrs << std::endl;
-    parse_entry_attributes(entry_attrs);
+    parse_entry_identifier(entry_attrs);
 
 }
 
