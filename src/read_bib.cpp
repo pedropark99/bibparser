@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include "read_bib.hpp"
+#include "global_variables.hpp"
 
 
 std::string path_string = "data/example1.bib";

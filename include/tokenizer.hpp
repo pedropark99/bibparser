@@ -29,6 +29,8 @@ public:
     }
 };
 
+std::vector<std::string> collect_bib_entries(std::string file);
+
 
 std::list<Token> tokenizer(std::string file);
 Token buid_token(Tag type_of_token,

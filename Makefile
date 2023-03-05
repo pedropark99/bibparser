@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/e/Users/pedro/Documents/Projetos/pkgs/bibparser
+CMAKE_SOURCE_DIR = /home/pedro/Documentos/Projetos/Packages/bibparser
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/e/Users/pedro/Documents/Projetos/pkgs/bibparser
+CMAKE_BINARY_DIR = /home/pedro/Documentos/Projetos/Packages/bibparser
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/e/Users/pedro/Documents/Projetos/pkgs/bibparser/CMakeFiles /mnt/e/Users/pedro/Documents/Projetos/pkgs/bibparser//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pedro/Documentos/Projetos/Packages/bibparser/CMakeFiles /home/pedro/Documentos/Projetos/Packages/bibparser//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/e/Users/pedro/Documents/Projetos/pkgs/bibparser/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pedro/Documentos/Projetos/Packages/bibparser/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
