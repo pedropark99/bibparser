@@ -80,25 +80,62 @@ int count_char(char chr)
     return n_of_occurrences;
 }
 
+void find_first_position(std::string::iterator &it, char chr)
+{
+    while (it != bibparser::bib_file.end())
+    {
+        if (*it == chr) {
+            break;
+        }
+
+        it++;
+    }
+}
+
 
 std::vector<std::string> collect_bib_entries(std::string file)
 {
-    int n_entries = count_char('@');
+    int n_of_entries = count_char('@');
     std::vector<std::string> bib_entries;
-    bib_entries.reserve(n_entries);
+    bib_entries.reserve(n_of_entries);
+    int entries_allocated = 0;
     
-    std::string::iterator current_char = file.begin();
     std::string::iterator begin = file.begin();
-    while (current_char != file.end())
+    std::string::iterator end = file.end();
+    std::string::iterator current_char = begin;
+    // Move iterator to first bib entry
+    while (current_char != end)
     {
         if (*current_char == '@')
         {
+            current_char++;
+            begin = current_char;
+            break;
+        }
+        current_char++;
+    }
+
+    while (current_char != end)
+    {
+        if (*current_char == '@' & entries_allocated < n_of_entries - 2)
+        {
             std::string entry = std::string(begin, current_char);
             bib_entries.emplace_back(entry);
-            std::cout << "Entry: " << entry << std::endl << std::endl;
+            entries_allocated++;
             current_char++;
             begin = current_char;
             continue;
+        }
+
+        // Get last bib entry in the file
+        if ((current_char + 1) == end)
+        {
+            std::string entry = std::string(begin, current_char);
+            bib_entries.emplace_back(entry);
+            entries_allocated++;
+            current_char++;
+            begin = current_char;
+            break;
         }
 
         current_char++;
