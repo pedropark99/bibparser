@@ -34,25 +34,6 @@ struct LexerState lexer_st = {
 };
 
 
-
-std::array<std::string::iterator, 2> look_ahead(char chr)
-{
-    std::array<std::string::iterator, 2> iterators;
-    std::string::iterator begin = lexer_st.current_char;
-    std::string::iterator end = lexer_st.current_char;
-
-    while (*end != chr | end != bibparser::bib_file.end())
-    {
-        end++;
-    }
-
-    iterators[0] = begin;
-    iterators[1] = end;
-
-    return iterators;
-}
-
-
 char next(int n = 1)
 {
     for (int i = 0; i < n; i++)
@@ -145,10 +126,59 @@ std::vector<std::string> collect_bib_entries(std::string file)
 }
 
 
+void parse_entry(std::string entry)
+{
+    std::string::iterator current_char = entry.begin();
+    std::string::iterator begin = entry.begin();
+    std::string::iterator end = entry.end();
+
+    std::string entry_type;
+
+    while (*current_char != '{')
+    {
+        // Ignore white spaces and go to the next character;
+        if (is_white_space(*current_char))
+        {
+            current_char++;
+            continue;
+        }
+
+        if (*(current_char + 1) == '{')
+        {
+            entry_type = std::string(begin, current_char + 1);
+            std::cout << "Entry type: " << entry_type << std::endl;
+            current_char++;
+        }
+
+        current_char++;
+    }
+
+    while (*end != '}')
+    {
+        end--;
+    }
+
+    std::string entry_attrs = std::string(current_char + 1, end - 1);
+    parse_entry_attributes(entry_attrs);
+
+}
+
+
+void parse_entry_attributes(std::string attrs)
+{
+
+}
+
+
 std::list<Token> tokenizer(std::string file)
 {
     std::list<Token> tokens;
-    
+    std::vector<std::string> bib_entries = collect_bib_entries(file);
+
+    for (std::string entry : bib_entries)
+    {
+        parse_entry(entry);
+    }
 
 
     return tokens;

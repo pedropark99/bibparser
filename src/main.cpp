@@ -22,7 +22,7 @@ void print_tokens (std::list<Token> tokens) {
 
 int main(void)
 {
-    collect_bib_entries(bibparser::bib_file);
+    tokenizer(bibparser::bib_file);
     // std::list<Token> tokens = tokenizer(bibparser::bib_file);
     // print_tokens(tokens);
 }
