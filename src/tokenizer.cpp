@@ -3,7 +3,7 @@
 #include <list>
 #include <unordered_set>
 #include <unordered_map>
-#include <ctype.h>
+#include <regex>
 
 
 #include "global_variables.hpp"
@@ -63,20 +63,45 @@ char next(int n = 1)
 }
 
 
-std::list<std::string> collect_bib_entries(std::string file)
+int count_char(char chr)
 {
-    std::list<std::string> bib_entries;
-    
-    while (lexer_st.current_char != file.end())
+    std::string::iterator current_char = bibparser::bib_file.begin();
+    int n_of_occurrences = 0;
+    while (current_char != bibparser::bib_file.end())
     {
-        if (*lexer_st.current_char == '@') {
-            std::array<std::string::iterator, 2> portion = look_ahead('@');
-            std::string entry = std::string(portion[0], portion[1]);
-            std::cout << "Entry: " << entry << std::endl << std::endl;
-            bib_entries.emplace_back(entry);
+        if (*current_char == chr)
+        {
+            n_of_occurrences++;
         }
 
-        lexer_st.current_char++;
+        current_char++;
+    }
+
+    return n_of_occurrences;
+}
+
+
+std::vector<std::string> collect_bib_entries(std::string file)
+{
+    int n_entries = count_char('@');
+    std::vector<std::string> bib_entries;
+    bib_entries.reserve(n_entries);
+    
+    std::string::iterator current_char = file.begin();
+    std::string::iterator begin = file.begin();
+    while (current_char != file.end())
+    {
+        if (*current_char == '@')
+        {
+            std::string entry = std::string(begin, current_char);
+            bib_entries.emplace_back(entry);
+            std::cout << "Entry: " << entry << std::endl << std::endl;
+            current_char++;
+            begin = current_char;
+            continue;
+        }
+
+        current_char++;
     }
 
     return bib_entries;

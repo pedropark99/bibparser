@@ -29,7 +29,7 @@ public:
     }
 };
 
-std::list<std::string> collect_bib_entries(std::string file);
+std::vector<std::string> collect_bib_entries(std::string file);
 
 
 std::list<Token> tokenizer(std::string file);
