@@ -20,28 +20,8 @@ Token buid_token(Tag type_of_token,
     return token;
 }
 
-struct LexerState
-{
-    int line_in_file;
-    int scope_level;
-    std::string::iterator current_char;
-};
-
-struct LexerState lexer_st = {
-    .line_in_file = 1,
-    .scope_level = 0,
-    .current_char = bibparser::bib_file.begin()
-};
 
 
-char next(int n = 1)
-{
-    for (int i = 0; i < n; i++)
-    {
-        lexer_st.current_char++;
-    }
-    return *lexer_st.current_char;
-}
 
 
 int count_char(char chr)
@@ -74,11 +54,9 @@ void find_first_position(std::string::iterator &it, char chr)
 }
 
 
-std::vector<std::string> collect_bib_entries(std::string file)
+std::vector<SubStringAdress> collect_bib_entries(std::string file)
 {
     int n_of_entries = count_char('@');
-    std::vector<std::string> bib_entries;
-    bib_entries.reserve(n_of_entries);
     int entries_allocated = 0;
     
     std::string::iterator begin = file.begin();
@@ -96,12 +74,17 @@ std::vector<std::string> collect_bib_entries(std::string file)
         current_char++;
     }
 
+
+
+    std::vector<SubStringAdress> bib_entries;
+    bib_entries.reserve(n_of_entries);
+
     while (current_char != end)
     {
         if (*current_char == '@' & entries_allocated < n_of_entries - 1)
         {
-            std::string entry = std::string(begin, current_char);
-            bib_entries.emplace_back(entry);
+            SubStringAdress entry_adress = {begin, current_char};
+            bib_entries.emplace_back(entry_adress);
             entries_allocated++;
             current_char++;
             begin = current_char;
@@ -111,8 +94,8 @@ std::vector<std::string> collect_bib_entries(std::string file)
         // Get last bib entry in the file
         if ((current_char + 1) == end)
         {
-            std::string entry = std::string(begin, current_char);
-            bib_entries.emplace_back(entry);
+            SubStringAdress entry_adress = {begin, current_char};
+            bib_entries.emplace_back(entry_adress);
             entries_allocated++;
             current_char++;
             begin = current_char;
@@ -125,47 +108,65 @@ std::vector<std::string> collect_bib_entries(std::string file)
     return bib_entries;
 }
 
-std::string parse_entry_identifier(std::string attrs)
+SubStringAdress find_entry_identifier(SubStringAdress attrs)
 {
-    std::string::iterator current_char = attrs.begin();
-    std::string::iterator begin = attrs.begin();
-    std::string::iterator end = attrs.end();
+    std::string::iterator current_char = attrs.begin;
+    std::string::iterator begin = attrs.begin;
 
     while (*current_char != ',')
     {
         current_char++;
     }
 
-    return std::string(begin, current_char);
+    return {begin, current_char};
 }
 
-
-void parse_entry(std::string entry)
+SubStringAdress find_entry_type(SubStringAdress entry)
 {
-    std::string::iterator current_char = entry.begin();
-    std::string::iterator begin = entry.begin();
-    std::string::iterator end = entry.end();
+    std::string::iterator current_char = entry.begin;
+    std::string::iterator begin = entry.begin;
+    std::string::iterator end = entry.end;
 
-    std::string entry_type;
+    SubStringAdress entry_type;
     while (current_char != end)
     {
         if (*(current_char + 1) == '{')
         {
-            entry_type = std::string(begin, current_char + 1);
-            current_char++;
+            entry_type = {begin, current_char + 1};
             break;
         }
 
         current_char++;
     }
 
+    return entry_type;
+}
+
+
+void parse_entry(SubStringAdress entry)
+{
+    std::string::iterator current_char = entry.begin;
+    std::string::iterator begin = entry.begin;
+    std::string::iterator end = entry.end;
     while (*end != '}')
     {
         end--;
     }
 
-    std::string entry_attrs = std::string(current_char + 1, end - 1);
-    parse_entry_identifier(entry_attrs);
+    SubStringAdress entry_type = find_entry_type(entry);
+
+    current_char = entry_type.end;
+    begin = entry_type.end;
+
+    SubStringAdress entry_attrs = {current_char + 1, end - 1};
+    SubStringAdress entry_identifier = find_entry_identifier(entry_attrs);
+
+    current_char = entry_identifier.end;
+    begin = entry_identifier.end;
+
+    entry_attrs = {current_char + 1, end - 1};
+
+    std::cout << std::string(entry_attrs.begin, entry_attrs.end) << std::endl;
 
 }
 
@@ -174,9 +175,9 @@ void parse_entry(std::string entry)
 std::list<Token> tokenizer(std::string file)
 {
     std::list<Token> tokens;
-    std::vector<std::string> bib_entries = collect_bib_entries(file);
+    std::vector<SubStringAdress> bib_entries = collect_bib_entries(file);
 
-    for (std::string entry : bib_entries)
+    for (SubStringAdress entry : bib_entries)
     {
         parse_entry(entry);
     }

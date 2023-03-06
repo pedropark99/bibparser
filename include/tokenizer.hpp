@@ -29,7 +29,15 @@ public:
     }
 };
 
-std::vector<std::string> collect_bib_entries(std::string file);
+struct SubStringAdress {
+    std::string::iterator begin;
+    std::string::iterator end;
+};
+
+
+
+
+std::vector<SubStringAdress> collect_bib_entries(std::string file);
 
 
 std::list<Token> tokenizer(std::string file);
