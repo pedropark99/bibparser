@@ -148,6 +148,12 @@ void parse_entry(SubStringAdress entry)
     std::string::iterator current_char = entry.begin;
     std::string::iterator begin = entry.begin;
     std::string::iterator end = entry.end;
+
+    std::string t = std::string(begin, end);
+    t.resize(t.size() + 1);
+    t[t.size() + 1] = '\0';
+    std::cout << t << std::endl;
+
     while (*end != '}')
     {
         end--;
@@ -158,15 +164,19 @@ void parse_entry(SubStringAdress entry)
     current_char = entry_type.end;
     begin = entry_type.end;
 
+    //std::cout << std::string(begin, end) << std::endl;
+
     SubStringAdress entry_attrs = {current_char + 1, end - 1};
     SubStringAdress entry_identifier = find_entry_identifier(entry_attrs);
 
     current_char = entry_identifier.end;
     begin = entry_identifier.end;
 
+    //std::cout << std::string(begin, end) << std::endl;
+
     entry_attrs = {current_char + 1, end - 1};
 
-    std::cout << std::string(entry_attrs.begin, entry_attrs.end) << std::endl;
+    //std::cout << std::endl << std::endl << std::endl << std::endl;
 
 }
 
