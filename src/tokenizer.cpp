@@ -54,7 +54,7 @@ void find_first_position(std::string::iterator &it, char chr)
 }
 
 
-std::vector<SubStringAdress> collect_bib_entries(std::string file)
+std::vector<SubStringAdress> collect_bib_entries(std::string& file)
 {
     int n_of_entries = count_char('@');
     int entries_allocated = 0;
@@ -182,10 +182,10 @@ void parse_entry(SubStringAdress entry)
 
 
 
-std::list<Token> tokenizer(std::string file)
+std::list<Token> tokenizer()
 {
     std::list<Token> tokens;
-    std::vector<SubStringAdress> bib_entries = collect_bib_entries(file);
+    std::vector<SubStringAdress> bib_entries = collect_bib_entries(bibparser::bib_file);
 
     for (SubStringAdress entry : bib_entries)
     {
