@@ -36,7 +36,7 @@ struct SubString {
 };
 std::vector<SubString> collect_bib_entries(std::string &file);
 void parse_entry(SubString entry);
-SubString find_entry_type(SubString entry);
+SubString get_entry_type(SubString entry);
 
 
 struct EntryBody {

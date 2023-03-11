@@ -95,7 +95,7 @@ void parse_entry(SubString entry)
 {
     std::string::iterator end = entry.end;
 
-    SubString entry_type = find_entry_type(entry);
+    SubString entry_type = get_entry_type(entry);
 
     SubString substring_body = {entry_type.end, end};
     EntryBody entry_body = parse_entry_body(substring_body);
@@ -105,7 +105,7 @@ void parse_entry(SubString entry)
 
 }
 
-SubString find_entry_type(SubString entry)
+SubString get_entry_type(SubString entry)
 {
     std::string::iterator current_char = entry.begin;
     std::string::iterator begin = entry.begin;
