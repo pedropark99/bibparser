@@ -14,12 +14,11 @@ Token::Token (Tag input_tag, std::string input_value)
     value = input_value;
 }
 
-Token buid_token(Tag type_of_token,
-                std::string::iterator begin_of_lexeme,
-                std::string::iterator end_of_lexeme)
+
+Token build_token(Tag type_of_token, SubString lexeme)
 {
-    std::string lexeme = std::string(begin_of_lexeme, end_of_lexeme);
-    Token token(type_of_token, lexeme);
+    std::string str = std::string(lexeme.begin, lexeme.end);
+    Token token(type_of_token, str);
     return token;
 }
 
@@ -96,13 +95,22 @@ void parse_entry(SubString entry)
     std::string::iterator end = entry.end;
 
     SubString entry_type = get_entry_type(entry);
+    Token entry_type_token = build_token(BIB_TYPE, entry_type);
 
     SubString substring_body = {entry_type.end, end};
     EntryBody entry_body = parse_entry_body(substring_body);
+    Token entry_identifier_token = build_token(BIB_IDENTIFIER, entry_body.identifier);
+
     std::vector<EntryAttribute> entry_attributes = parse_entry_attributes(entry_body.attributes);
+    std::vector<Token> entry_attribute_tokens;
+    entry_attribute_tokens.reserve(entry_attributes.size());
 
-    //std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
-
+    for (EntryAttribute attr: entry_attributes)
+    {
+        entry_attribute_tokens.emplace_back(
+            build_token(BIB_ATTRIBUTE, attr.key)
+        );
+    }
 }
 
 SubString get_entry_type(SubString entry)
@@ -164,8 +172,6 @@ std::vector<EntryAttribute> parse_entry_attributes(std::vector<SubString> &attrs
         attribute.value = substrings[1];
         attributes.emplace_back(attribute);
     }
-
-    print_entry_attributes(attributes);
 
     return attributes;    
 }

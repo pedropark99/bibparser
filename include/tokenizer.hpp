@@ -22,9 +22,7 @@ public:
 };
 
 std::list<Token> tokenizer();
-Token buid_token(Tag type_of_token,
-                std::string::iterator begin_of_lexeme,
-                std::string::iterator end_of_lexeme);
+Token build_token(Tag type_of_token, SubString lexeme);
 
 
 
