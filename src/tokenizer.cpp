@@ -59,51 +59,44 @@ std::vector<SubString> collect_bib_entries(std::string &file)
 {
     int n_of_entries = count_char(file, '@');
     int entries_allocated = 0;
+    std::vector<SubString> bib_entries;
+    bib_entries.reserve(n_of_entries);
+    
+    int scope_level = 0;
+    bool state_inside_bib_entry = false;
     
     std::string::iterator begin = file.begin();
     std::string::iterator end = file.end();
     std::string::iterator current_char = begin;
-    // Move iterator to first bib entry
-    while (current_char != end)
-    {
-        if (*current_char == '@')
-        {
-            current_char++;
-            begin = current_char;
-            break;
-        }
-        current_char++;
-    }
-
-
-
-    std::vector<SubString> bib_entries;
-    bib_entries.reserve(n_of_entries);
 
     while (current_char != end)
     {
-        if (*current_char == '@' & entries_allocated < n_of_entries - 1)
+        switch (*current_char)
         {
-            SubString entry_adress = {begin, current_char};
-            bib_entries.emplace_back(entry_adress);
-            entries_allocated++;
-            current_char++;
-            begin = current_char;
-            continue;
-        }
-
-        // Get last bib entry in the file
-        if ((current_char + 1) == end)
-        {
-            SubString entry_adress = {begin, current_char};
-            bib_entries.emplace_back(entry_adress);
-            entries_allocated++;
+        case '@':
+            state_inside_bib_entry = true;
             current_char++;
             begin = current_char;
             break;
-        }
+        case '{':
+            scope_level++;
+            current_char++;
+            break;
+        case '}':
+            scope_level--;
+            current_char++;
+            if (state_inside_bib_entry & scope_level == 0)
+            {
+                SubString substring = {begin, current_char};
+                bib_entries.emplace_back(substring);
+                state_inside_bib_entry = false;
+            }
+            break;
 
-        current_char++;
+        default:
+            current_char++;
+            break;
+        }
     }
 
     return bib_entries;
@@ -151,29 +144,29 @@ void parse_entry(SubString entry)
     std::string::iterator end = entry.end;
 
     std::string t = std::string(begin, end);
-    //std::cout << t << std::endl;
+    std::cout << t << std::endl;
 
-    while (*end != '}')
-    {
-        end--;
-    }
+    // while (*end != '}')
+    // {
+    //     end--;
+    // }
 
-    SubString entry_type = find_entry_type(entry);
+    // SubString entry_type = find_entry_type(entry);
 
-    current_char = entry_type.end;
-    begin = entry_type.end;
+    // current_char = entry_type.end;
+    // begin = entry_type.end;
 
-    //std::cout << std::string(end) << std::endl;
+    // //std::cout << std::string(end) << std::endl;
 
-    SubString entry_attrs = {current_char + 1, end - 1};
-    SubString entry_identifier = find_entry_identifier(entry_attrs);
+    // SubString entry_attrs = {current_char + 1, end - 1};
+    // SubString entry_identifier = find_entry_identifier(entry_attrs);
 
-    current_char = entry_identifier.end;
-    begin = entry_identifier.end;
+    // current_char = entry_identifier.end;
+    // begin = entry_identifier.end;
 
-    std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
+    // std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
 
-    entry_attrs = {current_char + 1, end - 1};
+    // entry_attrs = {current_char + 1, end - 1};
 
     //std::cout << std::endl << std::endl << std::endl << std::endl;
 
