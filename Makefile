@@ -201,6 +201,30 @@ src/read_bib.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/read_bib.cpp.s
 .PHONY : src/read_bib.cpp.s
 
+src/string_utils.o: src/string_utils.cpp.o
+.PHONY : src/string_utils.o
+
+# target to build an object file
+src/string_utils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/string_utils.cpp.o
+.PHONY : src/string_utils.cpp.o
+
+src/string_utils.i: src/string_utils.cpp.i
+.PHONY : src/string_utils.i
+
+# target to preprocess a source file
+src/string_utils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/string_utils.cpp.i
+.PHONY : src/string_utils.cpp.i
+
+src/string_utils.s: src/string_utils.cpp.s
+.PHONY : src/string_utils.s
+
+# target to generate assembly for a file
+src/string_utils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/string_utils.cpp.s
+.PHONY : src/string_utils.cpp.s
+
 src/tokenizer.o: src/tokenizer.cpp.o
 .PHONY : src/tokenizer.o
 
@@ -243,6 +267,9 @@ help:
 	@echo "... src/read_bib.o"
 	@echo "... src/read_bib.i"
 	@echo "... src/read_bib.s"
+	@echo "... src/string_utils.o"
+	@echo "... src/string_utils.i"
+	@echo "... src/string_utils.s"
 	@echo "... src/tokenizer.o"
 	@echo "... src/tokenizer.i"
 	@echo "... src/tokenizer.s"
