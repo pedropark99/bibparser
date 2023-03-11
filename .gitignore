@@ -4,3 +4,4 @@ CMakeFiles
 out
 CMakeCache.txt
 *.cmake
+*.stackdump

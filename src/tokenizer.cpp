@@ -22,8 +22,6 @@ Token buid_token(Tag type_of_token,
 
 
 
-
-
 int count_char(std::string &string, char chr)
 {
     std::string::iterator current_char = string.begin();
@@ -58,35 +56,29 @@ void find_first_position(std::string &string, char chr)
 std::vector<SubString> collect_bib_entries(std::string &file)
 {
     int n_of_entries = count_char(file, '@');
-    int entries_allocated = 0;
+    std::vector<SubString> bib_entries;
+    bib_entries.reserve(n_of_entries);
     
     std::string::iterator begin = file.begin();
     std::string::iterator end = file.end();
     std::string::iterator current_char = begin;
-    // Move iterator to first bib entry
+    int entry_number = 0;
+
     while (current_char != end)
     {
-        if (*current_char == '@')
+        if (*current_char == '@' & entry_number == 0)
         {
             current_char++;
             begin = current_char;
-            break;
+            entry_number++;
+            continue;
         }
-        current_char++;
-    }
 
-
-
-    std::vector<SubString> bib_entries;
-    bib_entries.reserve(n_of_entries);
-
-    while (current_char != end)
-    {
-        if (*current_char == '@' & entries_allocated < n_of_entries - 1)
+        if (*current_char == '@' & entry_number < n_of_entries)
         {
             SubString entry_adress = {begin, current_char};
             bib_entries.emplace_back(entry_adress);
-            entries_allocated++;
+            entry_number++;
             current_char++;
             begin = current_char;
             continue;
@@ -97,7 +89,7 @@ std::vector<SubString> collect_bib_entries(std::string &file)
         {
             SubString entry_adress = {begin, current_char};
             bib_entries.emplace_back(entry_adress);
-            entries_allocated++;
+            entry_number++;
             current_char++;
             begin = current_char;
             break;
@@ -108,6 +100,30 @@ std::vector<SubString> collect_bib_entries(std::string &file)
 
     return bib_entries;
 }
+
+SubString trim_entry(SubString entry)
+{
+    std::string::iterator begin = entry.begin;
+    std::string::iterator end = entry.end;
+    std::string::iterator current_char = begin;
+
+    while (is_white_space(*(current_char + 1)))
+    {
+        current_char++;
+    }
+
+    begin = current_char;
+    current_char = end;
+
+    while (is_white_space(*(current_char - 1)))
+    {
+        current_char--;
+    }
+
+    end = current_char;
+    return {begin, end};
+}
+
 
 SubString find_entry_identifier(SubString attrs)
 {
@@ -144,6 +160,13 @@ SubString find_entry_type(SubString entry)
 }
 
 
+void print_entry(SubString entry)
+{
+    std::string t = std::string(entry.begin, entry.end);
+    std::cout << t << std::endl;
+}
+
+
 void parse_entry(SubString entry)
 {
     std::string::iterator current_char = entry.begin;
@@ -151,7 +174,7 @@ void parse_entry(SubString entry)
     std::string::iterator end = entry.end;
 
     std::string t = std::string(begin, end);
-    //std::cout << t << std::endl;
+    std::cout << t << std::endl;
 
     while (*end != '}')
     {
@@ -185,12 +208,14 @@ std::list<Token> tokenizer()
 {
     std::list<Token> tokens;
     std::vector<SubString> bib_entries = collect_bib_entries(bibparser::bib_file);
+    //std::for_each(bib_entries.begin(), bib_entries.end(), &trim_entry);
 
-    for (SubString entry : bib_entries)
-    {
-        parse_entry(entry);
-    }
+    // for (SubString entry : bib_entries)
+    // {
+    //     print_entry(entry);
+    // }
 
+    print_entry(trim_entry(bib_entries[4]));
 
     return tokens;
 }
@@ -201,7 +226,7 @@ std::list<Token> tokenizer()
 
 bool is_white_space(char chr)
 {
-    bool white_space = chr == ' ' || chr == '\t' || chr == '\r';
+    bool white_space = chr == ' ' || chr == '\t' || chr == '\r' || chr == '\n';
     return white_space ? true : false;
 }
 
