@@ -132,7 +132,13 @@ SubString find_entry_identifier(SubString attrs)
     std::string::iterator current_char = attrs.begin;
     std::string::iterator begin = attrs.begin;
 
-    while (*current_char != ',')
+    if (*current_char == '{')
+    {
+        current_char++;
+        begin = current_char;
+    }
+
+    while (*current_char != ',' | current_char == attrs.end)
     {
         current_char++;
     }
@@ -146,19 +152,17 @@ SubString find_entry_type(SubString entry)
     std::string::iterator begin = entry.begin;
     std::string::iterator end = entry.end;
 
-    SubString entry_type;
     while (current_char != end)
     {
         if (*(current_char + 1) == '{')
         {
-            entry_type = {begin, current_char + 1};
             break;
         }
 
         current_char++;
     }
 
-    return entry_type;
+    return {begin, current_char + 1};
 }
 
 
@@ -171,28 +175,15 @@ void print_substring(SubString substring)
 
 void parse_entry(SubString entry)
 {
-    std::string::iterator current_char = entry.begin;
-    std::string::iterator begin = entry.begin;
     std::string::iterator end = entry.end;
 
     SubString entry_type = find_entry_type(entry);
-
-    current_char = entry_type.end;
-    begin = entry_type.end;
-
-    //std::cout << std::string(end) << std::endl;
-
-    SubString entry_attrs = {current_char + 1, end - 1};
+    SubString entry_attrs = {entry_type.end, end};
     SubString entry_identifier = find_entry_identifier(entry_attrs);
+    print_substring(entry_attrs);
 
-    current_char = entry_identifier.end;
-    begin = entry_identifier.end;
 
-    std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
-
-    entry_attrs = {current_char + 1, end - 1};
-
-    //std::cout << std::endl << std::endl << std::endl << std::endl;
+    //std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
 
 }
 
