@@ -120,9 +120,9 @@ void parse_entry(SubString entry)
 
     SubString entry_type = find_entry_type(entry);
 
-    SubString substring_attrs = {entry_type.end, end};
-    std::vector<SubString> entry_attrs = collect_entry_attrs(substring_attrs);
-    parse_entry_attrs(entry_attrs);
+    SubString substring_body = {entry_type.end, end};
+    EntryBody entry_body = collect_entry_body(substring_body);
+    //parse_entry_attrs(entry_attrs);
 
     //std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
 
@@ -168,8 +168,9 @@ SubString find_entry_identifier(SubString attrs)
 
 
 
-std::vector<SubString> collect_entry_attrs(SubString attrs)
+EntryBody collect_entry_body(SubString attrs)
 {
+    EntryBody entry_body;
     std::string::iterator begin = attrs.begin;
     std::string::iterator end = attrs.end;
     std::string::iterator current_char = attrs.begin;
@@ -179,8 +180,9 @@ std::vector<SubString> collect_entry_attrs(SubString attrs)
     std::vector<SubString> substrings;
     if (n_of_attrs == 0)
     {
-        substrings.emplace_back(attrs);
-        return substrings;
+        entry_body.identifier = attrs;
+        entry_body.attributes = substrings;
+        return entry_body;
     }
     substrings.reserve(n_of_attrs);
 
@@ -200,10 +202,21 @@ std::vector<SubString> collect_entry_attrs(SubString attrs)
     SubString last_attr = {begin, current_char};
     substrings.emplace_back(last_attr);
 
-    return substrings;
+    entry_body.identifier = substrings[0];
+    substrings.erase(substrings.begin());
+    entry_body.attributes = substrings;
+    return entry_body;
 }
 
 void parse_entry_attrs(std::vector<SubString> &attrs)
 {
+    for (SubString attr: attrs)
+    {
+        key_value_pair(attr);
+    }
+}
 
+void key_value_pair(SubString kv)
+{
+    const char delimiter = '=';
 }
