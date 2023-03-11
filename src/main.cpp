@@ -11,7 +11,8 @@
 
 int main(void)
 {
-    tokenizer();
+    std::list<Token> tokens;
+    tokenizer(tokens);
 }
 
 
