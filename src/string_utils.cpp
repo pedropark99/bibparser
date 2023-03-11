@@ -35,6 +35,19 @@ bool find_in_set(char chr, const std::unordered_set<char>& set)
 }
 
 
+bool starts_with(const std::string &string, const std::string start)
+{
+    return string.rfind(start, 0) == 0;
+}
+
+bool ends_with (const std::string &string, const std::string end) {
+    if (string.length() >= end.length()) {
+        return ( 0 == string.compare(string.length() - end.length(), end.length(), end) );
+    } else {
+        return false;
+    }
+}
+
 
 
 
@@ -44,6 +57,23 @@ int count_char(std::string &string, char chr)
     std::string::iterator current_char = string.begin();
     int n_of_occurrences = 0;
     while (current_char != string.end())
+    {
+        if (*current_char == chr)
+        {
+            n_of_occurrences++;
+        }
+
+        current_char++;
+    }
+
+    return n_of_occurrences;
+}
+
+int count_char(SubString sub, char chr)
+{
+    std::string::iterator current_char = sub.begin;
+    int n_of_occurrences = 0;
+    while (current_char != sub.end)
     {
         if (*current_char == chr)
         {

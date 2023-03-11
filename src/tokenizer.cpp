@@ -121,32 +121,10 @@ void parse_entry(SubString entry)
     SubString entry_type = find_entry_type(entry);
     SubString entry_attrs = {entry_type.end, end};
     SubString entry_identifier = find_entry_identifier(entry_attrs);
-    print_substring(entry_attrs);
-
+    collect_entry_attrs(entry_attrs);
 
     //std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
 
-}
-
-
-
-SubString find_entry_identifier(SubString attrs)
-{
-    std::string::iterator current_char = attrs.begin;
-    std::string::iterator begin = attrs.begin;
-
-    if (*current_char == '{')
-    {
-        current_char++;
-        begin = current_char;
-    }
-
-    while (*current_char != ',' | current_char == attrs.end)
-    {
-        current_char++;
-    }
-
-    return {begin, current_char};
 }
 
 SubString find_entry_type(SubString entry)
@@ -168,3 +146,63 @@ SubString find_entry_type(SubString entry)
     return {begin, current_char + 1};
 }
 
+SubString find_entry_identifier(SubString attrs)
+{
+    std::string::iterator current_char = attrs.begin;
+    std::string::iterator begin = attrs.begin;
+
+    if (*current_char == '{')
+    {
+        current_char++;
+        begin = current_char;
+    }
+
+    while (*current_char != ',' | current_char == attrs.end)
+    {
+        current_char++;
+    }
+
+    return {begin, current_char};
+}
+
+
+
+std::vector<SubString> collect_entry_attrs(SubString attrs)
+{
+    std::string::iterator begin = attrs.begin;
+    std::string::iterator end = attrs.end;
+    std::string::iterator current_char = attrs.begin;
+
+    const char delimiter = ',';
+    int n_of_attrs = count_char(attrs, delimiter);
+    std::vector<SubString> substrings;
+    if (n_of_attrs == 0)
+    {
+        substrings.emplace_back(attrs);
+        return substrings;
+    }
+    substrings.reserve(n_of_attrs);
+
+    while (current_char != end)
+    {
+        if (*current_char == delimiter)
+        {
+            SubString sub = {begin, current_char};
+            substrings.emplace_back(sub);
+            current_char++;
+            begin = current_char;
+            continue;
+        }
+        current_char++;
+    }
+
+    SubString last_attr = {begin, current_char};
+    substrings.emplace_back(last_attr);
+
+    for(SubString sub: substrings)
+    {
+        print_substring(sub);
+    }
+
+    return substrings;
+}

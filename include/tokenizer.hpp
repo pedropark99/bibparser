@@ -39,3 +39,4 @@ void trim_entry(SubString &entry);
 void parse_entry(SubString entry);
 SubString find_entry_identifier(SubString attrs);
 SubString find_entry_type(SubString entry);
+std::vector<SubString> collect_entry_attrs(SubString attrs);
