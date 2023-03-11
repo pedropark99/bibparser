@@ -105,21 +105,19 @@ void trim_entry(SubString &entry)
 {
     std::string::iterator begin = entry.begin;
     std::string::iterator end = entry.end;
-    std::string::iterator current_char = begin;
 
+    std::string::iterator current_char = begin;
     while (is_white_space(*(current_char + 1)))
     {
         current_char++;
     }
-
     begin = current_char;
-    current_char = end;
 
+    current_char = end;
     while (is_white_space(*(current_char - 1)))
     {
         current_char--;
     }
-
     end = current_char;
 
     entry.begin = begin;
