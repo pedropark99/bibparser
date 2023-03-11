@@ -35,9 +35,7 @@ struct SubString {
     std::string::iterator end;
 };
 std::vector<SubString> collect_bib_entries(std::string &file);
-void trim_entry(SubString &entry);
 void parse_entry(SubString entry);
-SubString find_entry_identifier(SubString attrs);
 SubString find_entry_type(SubString entry);
 
 
@@ -47,3 +45,4 @@ struct EntryBody {
 };
 EntryBody parse_entry_body(SubString attrs);
 void parse_entry_attrs(std::vector<SubString> &attrs);
+void key_value_pair(SubString kv);

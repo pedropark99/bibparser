@@ -99,6 +99,32 @@ void find_first_position(std::string &string, char chr)
     }
 }
 
+
+void trim_substring(SubString &sub)
+{
+    std::string::iterator begin = sub.begin;
+    std::string::iterator end = sub.end;
+
+    std::string::iterator current_char = begin;
+    while (is_white_space(*(current_char + 1)))
+    {
+        current_char++;
+    }
+    begin = current_char;
+
+    current_char = end;
+    while (is_white_space(*(current_char - 1)))
+    {
+        current_char--;
+    }
+    end = current_char;
+
+    sub.begin = begin;
+    sub.end = end;
+}
+
+
+
 void print_substring(SubString substring)
 {
     std::string s = std::string(substring.begin, substring.end);

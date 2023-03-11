@@ -27,7 +27,7 @@ std::list<Token> tokenizer()
 {
     std::list<Token> tokens;
     std::vector<SubString> bib_entries = collect_bib_entries(bibparser::bib_file);
-    std::for_each(bib_entries.begin(), bib_entries.end(), &trim_entry);
+    std::for_each(bib_entries.begin(), bib_entries.end(), &trim_substring);
 
     for (SubString entry : bib_entries)
     {
@@ -89,29 +89,6 @@ std::vector<SubString> collect_bib_entries(std::string &file)
     return bib_entries;
 }
 
-void trim_entry(SubString &entry)
-{
-    std::string::iterator begin = entry.begin;
-    std::string::iterator end = entry.end;
-
-    std::string::iterator current_char = begin;
-    while (is_white_space(*(current_char + 1)))
-    {
-        current_char++;
-    }
-    begin = current_char;
-
-    current_char = end;
-    while (is_white_space(*(current_char - 1)))
-    {
-        current_char--;
-    }
-    end = current_char;
-
-    entry.begin = begin;
-    entry.end = end;
-}
-
 
 
 void parse_entry(SubString entry)
@@ -122,7 +99,7 @@ void parse_entry(SubString entry)
 
     SubString substring_body = {entry_type.end, end};
     EntryBody entry_body = parse_entry_body(substring_body);
-    //parse_entry_attrs(entry_attrs);
+    parse_entry_attrs(entry_body.attributes);
 
     //std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
 
@@ -145,25 +122,6 @@ SubString find_entry_type(SubString entry)
     }
 
     return {begin, current_char + 1};
-}
-
-SubString find_entry_identifier(SubString attrs)
-{
-    std::string::iterator current_char = attrs.begin;
-    std::string::iterator begin = attrs.begin;
-
-    if (*current_char == '{')
-    {
-        current_char++;
-        begin = current_char;
-    }
-
-    while (*current_char != ',' | current_char == attrs.end)
-    {
-        current_char++;
-    }
-
-    return {begin, current_char};
 }
 
 
@@ -190,13 +148,14 @@ EntryBody parse_entry_body(SubString body)
 
 void parse_entry_attrs(std::vector<SubString> &attrs)
 {
-    // for (SubString attr: attrs)
-    // {
-    //     key_value_pair(attr);
-    // }
+    for (SubString attr: attrs)
+    {
+        print_substring(attr);
+    }
 }
 
-// void key_value_pair(SubString kv)
-// {
-//     const char delimiter = '=';
-// }
+void key_value_pair(SubString kv)
+{
+    const char delimiter = '=';
+    
+}
