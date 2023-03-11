@@ -20,11 +20,12 @@ void print_tokens (std::list<Token> tokens) {
     }
 }
 
+
+
 int main(void)
 {
-    tokenizer(bibparser::bib_file);
-    // std::list<Token> tokens = tokenizer(bibparser::bib_file);
-    // print_tokens(tokens);
+    tokenizer();
+
 }
 
 

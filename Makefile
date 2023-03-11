@@ -48,27 +48,27 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/bin/cmake
+CMAKE_COMMAND = /usr/bin/cmake.exe
 
 # The command to remove a file.
-RM = /usr/bin/cmake -E rm -f
+RM = /usr/bin/cmake.exe -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pedro/Documentos/Projetos/Packages/bibparser
+CMAKE_SOURCE_DIR = /c/Users/pedro.duarte/Documents/projects/bibparser
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pedro/Documentos/Projetos/Packages/bibparser
+CMAKE_BINARY_DIR = /c/Users/pedro.duarte/Documents/projects/bibparser
 
 #=============================================================================
 # Targets provided globally by CMake.
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/usr/bin/ccmake.exe -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -78,7 +78,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/cmake.exe --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pedro/Documentos/Projetos/Packages/bibparser/CMakeFiles /home/pedro/Documentos/Projetos/Packages/bibparser//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /c/Users/pedro.duarte/Documents/projects/bibparser/CMakeFiles /c/Users/pedro.duarte/Documents/projects/bibparser//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pedro/Documentos/Projetos/Packages/bibparser/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /c/Users/pedro.duarte/Documents/projects/bibparser/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -201,6 +201,30 @@ src/read_bib.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/read_bib.cpp.s
 .PHONY : src/read_bib.cpp.s
 
+src/string_utils.o: src/string_utils.cpp.o
+.PHONY : src/string_utils.o
+
+# target to build an object file
+src/string_utils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/string_utils.cpp.o
+.PHONY : src/string_utils.cpp.o
+
+src/string_utils.i: src/string_utils.cpp.i
+.PHONY : src/string_utils.i
+
+# target to preprocess a source file
+src/string_utils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/string_utils.cpp.i
+.PHONY : src/string_utils.cpp.i
+
+src/string_utils.s: src/string_utils.cpp.s
+.PHONY : src/string_utils.s
+
+# target to generate assembly for a file
+src/string_utils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/string_utils.cpp.s
+.PHONY : src/string_utils.cpp.s
+
 src/tokenizer.o: src/tokenizer.cpp.o
 .PHONY : src/tokenizer.o
 
@@ -243,6 +267,9 @@ help:
 	@echo "... src/read_bib.o"
 	@echo "... src/read_bib.i"
 	@echo "... src/read_bib.s"
+	@echo "... src/string_utils.o"
+	@echo "... src/string_utils.i"
+	@echo "... src/string_utils.s"
 	@echo "... src/tokenizer.o"
 	@echo "... src/tokenizer.i"
 	@echo "... src/tokenizer.s"

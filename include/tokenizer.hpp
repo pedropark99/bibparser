@@ -2,12 +2,9 @@
 #include <string>
 #include <list>
 #include <unordered_set>
+#include <vector>
 
 
-bool is_white_space(char chr);
-bool is_digit(char chr);
-bool is_letter(char chr);
-bool find_in_set(char chr, const std::unordered_set<char>& set);
 
 enum Tag
 {
@@ -16,27 +13,43 @@ enum Tag
     BIB_ATTRIBUTE = 5235
 };
 
-
 class Token {
 public:
     Tag tag;
     std::string value;
 
-    Token (Tag input_tag, std::string input_value)
-    {
-        tag = input_tag;
-        value = input_value;
-    }
+    Token (Tag input_tag, std::string input_value);
 };
 
-std::vector<std::string> collect_bib_entries(std::string file);
-
-
-std::list<Token> tokenizer(std::string file);
+std::list<Token> tokenizer();
 Token buid_token(Tag type_of_token,
                 std::string::iterator begin_of_lexeme,
                 std::string::iterator end_of_lexeme);
 
 
-void get_bib_identifier(std::string::iterator& begin_of_lexeme,
-                        std::string::iterator& forward);
+
+
+
+struct SubString {
+    std::string::iterator begin;
+    std::string::iterator end;
+};
+std::vector<SubString> collect_bib_entries(std::string &file);
+void parse_entry(SubString entry);
+SubString get_entry_type(SubString entry);
+
+
+struct EntryBody {
+    SubString identifier;
+    std::vector<SubString> attributes;
+};
+EntryBody parse_entry_body(SubString attrs);
+void print_entry_body (EntryBody body);
+
+
+struct EntryAttribute {
+    SubString key;
+    SubString value;
+};
+std::vector<EntryAttribute> parse_entry_attributes(std::vector<SubString> &attrs);
+void print_entry_attributes (std::vector<EntryAttribute> attrs);

@@ -1,15 +1,18 @@
 #include <string>
 #include <iostream>
-#include <list>
-#include <unordered_set>
-#include <unordered_map>
-#include <regex>
 
 
 #include "global_variables.hpp"
 #include "read_bib.hpp"
 #include "tokenizer.hpp"
+#include "string_utils.hpp"
 
+
+Token::Token (Tag input_tag, std::string input_value)
+{
+    tag = input_tag;
+    value = input_value;
+}
 
 Token buid_token(Tag type_of_token,
                 std::string::iterator begin_of_lexeme,
@@ -20,89 +23,50 @@ Token buid_token(Tag type_of_token,
     return token;
 }
 
-struct LexerState
+std::list<Token> tokenizer()
 {
-    int line_in_file;
-    int scope_level;
-    std::string::iterator current_char;
-};
+    std::list<Token> tokens;
+    std::vector<SubString> bib_entries = collect_bib_entries(bibparser::bib_file);
+    std::for_each(bib_entries.begin(), bib_entries.end(), &trim_substring);
 
-struct LexerState lexer_st = {
-    .line_in_file = 1,
-    .scope_level = 0,
-    .current_char = bibparser::bib_file.begin()
-};
-
-
-char next(int n = 1)
-{
-    for (int i = 0; i < n; i++)
+    for (SubString entry : bib_entries)
     {
-        lexer_st.current_char++;
+        parse_entry(entry);
     }
-    return *lexer_st.current_char;
+
+    return tokens;
 }
 
 
-int count_char(char chr)
+
+
+
+std::vector<SubString> collect_bib_entries(std::string &file)
 {
-    std::string::iterator current_char = bibparser::bib_file.begin();
-    int n_of_occurrences = 0;
-    while (current_char != bibparser::bib_file.end())
-    {
-        if (*current_char == chr)
-        {
-            n_of_occurrences++;
-        }
-
-        current_char++;
-    }
-
-    return n_of_occurrences;
-}
-
-void find_first_position(std::string::iterator &it, char chr)
-{
-    while (it != bibparser::bib_file.end())
-    {
-        if (*it == chr) {
-            break;
-        }
-
-        it++;
-    }
-}
-
-
-std::vector<std::string> collect_bib_entries(std::string file)
-{
-    int n_of_entries = count_char('@');
-    std::vector<std::string> bib_entries;
+    int n_of_entries = count_char(file, '@');
+    std::vector<SubString> bib_entries;
     bib_entries.reserve(n_of_entries);
-    int entries_allocated = 0;
     
     std::string::iterator begin = file.begin();
     std::string::iterator end = file.end();
     std::string::iterator current_char = begin;
-    // Move iterator to first bib entry
-    while (current_char != end)
-    {
-        if (*current_char == '@')
-        {
-            current_char++;
-            begin = current_char;
-            break;
-        }
-        current_char++;
-    }
+    int entry_number = 0;
 
     while (current_char != end)
     {
-        if (*current_char == '@' & entries_allocated < n_of_entries - 1)
+        if (*current_char == '@' & entry_number == 0)
         {
-            std::string entry = std::string(begin, current_char);
-            bib_entries.emplace_back(entry);
-            entries_allocated++;
+            current_char++;
+            begin = current_char;
+            entry_number++;
+            continue;
+        }
+
+        if (*current_char == '@' & entry_number < n_of_entries)
+        {
+            SubString entry_adress = {begin, current_char};
+            bib_entries.emplace_back(entry_adress);
+            entry_number++;
             current_char++;
             begin = current_char;
             continue;
@@ -111,9 +75,9 @@ std::vector<std::string> collect_bib_entries(std::string file)
         // Get last bib entry in the file
         if ((current_char + 1) == end)
         {
-            std::string entry = std::string(begin, current_char);
-            bib_entries.emplace_back(entry);
-            entries_allocated++;
+            SubString entry_adress = {begin, current_char};
+            bib_entries.emplace_back(entry_adress);
+            entry_number++;
             current_char++;
             begin = current_char;
             break;
@@ -125,93 +89,114 @@ std::vector<std::string> collect_bib_entries(std::string file)
     return bib_entries;
 }
 
-std::string parse_entry_identifier(std::string attrs)
+
+
+void parse_entry(SubString entry)
 {
-    std::string::iterator current_char = attrs.begin();
-    std::string::iterator begin = attrs.begin();
-    std::string::iterator end = attrs.end();
+    std::string::iterator end = entry.end;
 
-    while (*current_char != ',')
-    {
-        current_char++;
-    }
+    SubString entry_type = get_entry_type(entry);
 
-    return std::string(begin, current_char);
+    SubString substring_body = {entry_type.end, end};
+    EntryBody entry_body = parse_entry_body(substring_body);
+    std::vector<EntryAttribute> entry_attributes = parse_entry_attributes(entry_body.attributes);
+
+    //std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
+
 }
 
-
-void parse_entry(std::string entry)
+SubString get_entry_type(SubString entry)
 {
-    std::string::iterator current_char = entry.begin();
-    std::string::iterator begin = entry.begin();
-    std::string::iterator end = entry.end();
+    std::string::iterator current_char = entry.begin;
+    std::string::iterator begin = entry.begin;
+    std::string::iterator end = entry.end;
 
-    std::string entry_type;
     while (current_char != end)
     {
         if (*(current_char + 1) == '{')
         {
-            entry_type = std::string(begin, current_char + 1);
-            current_char++;
             break;
         }
 
         current_char++;
     }
 
-    while (*end != '}')
+    return {begin, current_char + 1};
+}
+
+
+
+EntryBody parse_entry_body(SubString body)
+{
+    EntryBody entry_body;
+    std::vector<SubString> substrings = split_substring(body, ',');
+    
+    if (substrings.size() == 1)
     {
-        end--;
+        entry_body.identifier = substrings[0];
+        std::vector<SubString> empty_vector;
+        entry_body.attributes = empty_vector;
+        return entry_body;
     }
 
-    std::string entry_attrs = std::string(current_char + 1, end - 1);
-    parse_entry_identifier(entry_attrs);
+    entry_body.identifier = substrings[0];
+    substrings.erase(substrings.begin());
+    entry_body.attributes = substrings;
 
+    return entry_body;
 }
 
-
-
-std::list<Token> tokenizer(std::string file)
+std::vector<EntryAttribute> parse_entry_attributes(std::vector<SubString> &attrs)
 {
-    std::list<Token> tokens;
-    std::vector<std::string> bib_entries = collect_bib_entries(file);
+    std::vector<EntryAttribute> attributes;
+    int n_attrs = attrs.size();
+    attributes.reserve(n_attrs);
 
-    for (std::string entry : bib_entries)
+    const char delimiter = '=';
+    std::vector<SubString> substrings;
+    EntryAttribute attribute;
+
+    for (SubString attr: attrs)
     {
-        parse_entry(entry);
+        substrings = split_substring(attr, delimiter);
+        std::for_each(substrings.begin(), substrings.end(), &trim_substring);
+        attribute.key = substrings[0];
+        attribute.value = substrings[1];
+        attributes.emplace_back(attribute);
     }
 
+    print_entry_attributes(attributes);
 
-    return tokens;
+    return attributes;    
 }
 
 
 
 
 
-bool is_white_space(char chr)
+void print_entry_body (EntryBody body)
 {
-    bool white_space = chr == ' ' || chr == '\t' || chr == '\r';
-    return white_space ? true : false;
+    std::cout << "[Entry Identifier]: ";
+    print_substring(body.identifier);
+
+    std::cout
+        << std::endl
+        << "[Entry Attributes]: "
+        << std::endl;
+
+    for (SubString attr: body.attributes)
+    {
+        print_substring(attr);
+    }
 }
 
-bool is_digit(char chr)
+void print_entry_attributes (std::vector<EntryAttribute> attrs)
 {
-    return find_in_set(chr, NUMBERS);
+    for (EntryAttribute attr: attrs)
+    {
+        std::cout << "[Attribute key]: ";
+        std::cout << std::string(attr.key.begin, attr.key.end) << "   |   ";
+        std::cout << "[Attribute value]: ";
+        std::cout << std::string(attr.value.begin, attr.value.end) << std::endl;
+    } 
 }
-
-bool is_letter(char chr)
-{
-    return find_in_set(chr, LETTERS);
-}
-
-bool is_line(char chr)
-{
-    return find_in_set(chr, LINES);
-}
-
-bool find_in_set(char chr, const std::unordered_set<char>& set)
-{
-    return set.find(chr) != set.end() ? true : false;
-}
-
