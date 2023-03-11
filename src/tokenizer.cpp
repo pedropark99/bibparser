@@ -119,9 +119,10 @@ void parse_entry(SubString entry)
     std::string::iterator end = entry.end;
 
     SubString entry_type = find_entry_type(entry);
-    SubString entry_attrs = {entry_type.end, end};
-    SubString entry_identifier = find_entry_identifier(entry_attrs);
-    collect_entry_attrs(entry_attrs);
+
+    SubString substring_attrs = {entry_type.end, end};
+    std::vector<SubString> entry_attrs = collect_entry_attrs(substring_attrs);
+    parse_entry_attrs(entry_attrs);
 
     //std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
 
@@ -199,10 +200,10 @@ std::vector<SubString> collect_entry_attrs(SubString attrs)
     SubString last_attr = {begin, current_char};
     substrings.emplace_back(last_attr);
 
-    for(SubString sub: substrings)
-    {
-        print_substring(sub);
-    }
-
     return substrings;
+}
+
+void parse_entry_attrs(std::vector<SubString> &attrs)
+{
+
 }

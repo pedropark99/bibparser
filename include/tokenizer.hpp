@@ -40,3 +40,4 @@ void parse_entry(SubString entry);
 SubString find_entry_identifier(SubString attrs);
 SubString find_entry_type(SubString entry);
 std::vector<SubString> collect_entry_attrs(SubString attrs);
+void parse_entry_attrs(std::vector<SubString> &attrs);
