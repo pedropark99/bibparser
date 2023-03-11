@@ -44,5 +44,12 @@ struct EntryBody {
     std::vector<SubString> attributes;
 };
 EntryBody parse_entry_body(SubString attrs);
-void parse_entry_attrs(std::vector<SubString> &attrs);
-void key_value_pair(SubString kv);
+void print_entry_body (EntryBody body);
+
+
+struct EntryAttribute {
+    SubString key;
+    SubString value;
+};
+std::vector<EntryAttribute> parse_entry_attributes(std::vector<SubString> &attrs);
+void print_entry_attributes (std::vector<EntryAttribute> attrs);

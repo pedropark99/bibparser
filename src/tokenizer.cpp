@@ -99,7 +99,7 @@ void parse_entry(SubString entry)
 
     SubString substring_body = {entry_type.end, end};
     EntryBody entry_body = parse_entry_body(substring_body);
-    parse_entry_attrs(entry_body.attributes);
+    std::vector<EntryAttribute> entry_attributes = parse_entry_attributes(entry_body.attributes);
 
     //std::cout << std::string(entry_identifier.begin, entry_identifier.end) << std::endl;
 
@@ -146,16 +146,57 @@ EntryBody parse_entry_body(SubString body)
     return entry_body;
 }
 
-void parse_entry_attrs(std::vector<SubString> &attrs)
+std::vector<EntryAttribute> parse_entry_attributes(std::vector<SubString> &attrs)
 {
+    std::vector<EntryAttribute> attributes;
+    int n_attrs = attrs.size();
+    attributes.reserve(n_attrs);
+
+    const char delimiter = '=';
+    std::vector<SubString> substrings;
+    EntryAttribute attribute;
+
     for (SubString attr: attrs)
+    {
+        substrings = split_substring(attr, delimiter);
+        std::for_each(substrings.begin(), substrings.end(), &trim_substring);
+        attribute.key = substrings[0];
+        attribute.value = substrings[1];
+        attributes.emplace_back(attribute);
+    }
+
+    print_entry_attributes(attributes);
+
+    return attributes;    
+}
+
+
+
+
+
+void print_entry_body (EntryBody body)
+{
+    std::cout << "[Entry Identifier]: ";
+    print_substring(body.identifier);
+
+    std::cout
+        << std::endl
+        << "[Entry Attributes]: "
+        << std::endl;
+
+    for (SubString attr: body.attributes)
     {
         print_substring(attr);
     }
 }
 
-void key_value_pair(SubString kv)
+void print_entry_attributes (std::vector<EntryAttribute> attrs)
 {
-    const char delimiter = '=';
-    
+    for (EntryAttribute attr: attrs)
+    {
+        std::cout << "[Attribute key]: ";
+        std::cout << std::string(attr.key.begin, attr.key.end) << "   |   ";
+        std::cout << "[Attribute value]: ";
+        std::cout << std::string(attr.value.begin, attr.value.end) << std::endl;
+    } 
 }
