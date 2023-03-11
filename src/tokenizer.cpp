@@ -101,7 +101,7 @@ std::vector<SubString> collect_bib_entries(std::string &file)
     return bib_entries;
 }
 
-SubString trim_entry(SubString entry)
+void trim_entry(SubString &entry)
 {
     std::string::iterator begin = entry.begin;
     std::string::iterator end = entry.end;
@@ -121,7 +121,9 @@ SubString trim_entry(SubString entry)
     }
 
     end = current_char;
-    return {begin, end};
+
+    entry.begin = begin;
+    entry.end = end;
 }
 
 
@@ -160,10 +162,10 @@ SubString find_entry_type(SubString entry)
 }
 
 
-void print_entry(SubString entry)
+void print_substring(SubString substring)
 {
-    std::string t = std::string(entry.begin, entry.end);
-    std::cout << t << std::endl;
+    std::string s = std::string(substring.begin, substring.end);
+    std::cout << s << std::endl;
 }
 
 
@@ -172,14 +174,6 @@ void parse_entry(SubString entry)
     std::string::iterator current_char = entry.begin;
     std::string::iterator begin = entry.begin;
     std::string::iterator end = entry.end;
-
-    std::string t = std::string(begin, end);
-    std::cout << t << std::endl;
-
-    while (*end != '}')
-    {
-        end--;
-    }
 
     SubString entry_type = find_entry_type(entry);
 
@@ -208,14 +202,12 @@ std::list<Token> tokenizer()
 {
     std::list<Token> tokens;
     std::vector<SubString> bib_entries = collect_bib_entries(bibparser::bib_file);
-    //std::for_each(bib_entries.begin(), bib_entries.end(), &trim_entry);
+    std::for_each(bib_entries.begin(), bib_entries.end(), &trim_entry);
 
-    // for (SubString entry : bib_entries)
-    // {
-    //     print_entry(entry);
-    // }
-
-    print_entry(trim_entry(bib_entries[4]));
+    for (SubString entry : bib_entries)
+    {
+        parse_entry(entry);
+    }
 
     return tokens;
 }
