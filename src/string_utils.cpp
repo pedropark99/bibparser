@@ -104,3 +104,39 @@ void print_substring(SubString substring)
     std::string s = std::string(substring.begin, substring.end);
     std::cout << s << std::endl;
 }
+
+
+
+std::vector<SubString> split_substring(SubString sub, const char delimiter)
+{
+    std::string::iterator begin = sub.begin;
+    std::string::iterator end = sub.end;
+    std::string::iterator current_char = sub.begin;
+
+    int n = count_char(sub, delimiter);
+    std::vector<SubString> substrings;
+    if (n == 0)
+    {
+        substrings.emplace_back(sub);
+        return substrings;
+    }
+    substrings.reserve(n);
+
+    while (current_char != end)
+    {
+        if (*current_char == delimiter)
+        {
+            SubString sub = {begin, current_char};
+            substrings.emplace_back(sub);
+            current_char++;
+            begin = current_char;
+            continue;
+        }
+        current_char++;
+    }
+
+    SubString last_substring = {begin, current_char};
+    substrings.emplace_back(last_substring);
+
+    return substrings;
+}

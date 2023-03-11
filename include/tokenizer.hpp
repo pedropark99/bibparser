@@ -45,5 +45,5 @@ struct EntryBody {
     SubString identifier;
     std::vector<SubString> attributes;
 };
-EntryBody collect_entry_body(SubString attrs);
+EntryBody parse_entry_body(SubString attrs);
 void parse_entry_attrs(std::vector<SubString> &attrs);
