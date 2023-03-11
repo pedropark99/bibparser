@@ -46,7 +46,6 @@ Token build_attribute_token(EntryAttribute attr)
 
 void tokenizer(std::list<Token> &tokens)
 {
-    
     std::vector<SubString> bib_entries = collect_bib_entries(bibparser::bib_file);
     std::for_each(bib_entries.begin(), bib_entries.end(), &trim_substring);
 
