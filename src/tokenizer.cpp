@@ -1,6 +1,5 @@
 #include <string>
 #include <iostream>
-#include <unordered_map>
 
 #include "global_variables.hpp"
 #include "read_bib.hpp"
