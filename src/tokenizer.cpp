@@ -1,6 +1,6 @@
 #include <string>
 #include <iostream>
-
+#include <unordered_map>
 
 #include "global_variables.hpp"
 #include "read_bib.hpp"
@@ -8,19 +8,41 @@
 #include "string_utils.hpp"
 
 
-Token::Token (Tag input_tag, std::string input_value)
+Token::Token (Tag input_tag, std::string input_key, std::string input_value)
 {
     tag = input_tag;
-    value = input_value;
+    attributes.emplace(input_key, input_value);
 }
 
 
 Token build_token(Tag type_of_token, SubString lexeme)
 {
-    std::string str = std::string(lexeme.begin, lexeme.end);
-    Token token(type_of_token, str);
+    std::string key;
+    switch (type_of_token)
+    {
+    case BIB_TYPE:
+        key = "type";
+        break;
+    case BIB_IDENTIFIER:
+        key = "identifier";
+        break;
+    default:
+        break;
+    }
+
+    std::string value = std::string(lexeme.begin, lexeme.end);
+    Token token(type_of_token, key, value);
     return token;
 }
+
+Token build_attribute_token(EntryAttribute attr)
+{
+    std::string key = std::string(attr.key.begin, attr.key.end);
+    std::string value = std::string(attr.value.begin, attr.value.end);
+    Token token(BIB_ATTRIBUTE, key, value);
+    return token;
+}
+
 
 std::list<Token> tokenizer()
 {
@@ -30,7 +52,7 @@ std::list<Token> tokenizer()
 
     for (SubString entry : bib_entries)
     {
-        parse_entry(entry);
+        parse_entry(entry, tokens);
     }
 
     return tokens;
@@ -90,26 +112,21 @@ std::vector<SubString> collect_bib_entries(std::string &file)
 
 
 
-void parse_entry(SubString entry)
+void parse_entry(SubString entry, std::list<Token> &tokens)
 {
-    std::string::iterator end = entry.end;
-
     SubString entry_type = get_entry_type(entry);
-    Token entry_type_token = build_token(BIB_TYPE, entry_type);
+    tokens.emplace_back(build_token(BIB_TYPE, entry_type));
 
+    std::string::iterator end = entry.end;
     SubString substring_body = {entry_type.end, end};
     EntryBody entry_body = parse_entry_body(substring_body);
-    Token entry_identifier_token = build_token(BIB_IDENTIFIER, entry_body.identifier);
+
+    tokens.emplace_back(build_token(BIB_IDENTIFIER, entry_body.identifier));
 
     std::vector<EntryAttribute> entry_attributes = parse_entry_attributes(entry_body.attributes);
-    std::vector<Token> entry_attribute_tokens;
-    entry_attribute_tokens.reserve(entry_attributes.size());
-
     for (EntryAttribute attr: entry_attributes)
     {
-        entry_attribute_tokens.emplace_back(
-            build_token(BIB_ATTRIBUTE, attr.key)
-        );
+        tokens.emplace_back(build_attribute_token(attr));
     }
 }
 
