@@ -129,6 +129,19 @@ bibparser/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/build
 .PHONY : bibparser/fast
 
+#=============================================================================
+# Target rules for targets named tests
+
+# Build rule for target.
+tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests
+.PHONY : tests
+
+# fast build rule for target.
+tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
+.PHONY : tests/fast
+
 src/global_variables.o: src/global_variables.cpp.o
 .PHONY : src/global_variables.o
 
@@ -249,6 +262,30 @@ src/tokenizer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/tokenizer.cpp.s
 .PHONY : src/tokenizer.cpp.s
 
+tests/tests.o: tests/tests.cpp.o
+.PHONY : tests/tests.o
+
+# target to build an object file
+tests/tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/tests/tests.cpp.o
+.PHONY : tests/tests.cpp.o
+
+tests/tests.i: tests/tests.cpp.i
+.PHONY : tests/tests.i
+
+# target to preprocess a source file
+tests/tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/tests/tests.cpp.i
+.PHONY : tests/tests.cpp.i
+
+tests/tests.s: tests/tests.cpp.s
+.PHONY : tests/tests.s
+
+# target to generate assembly for a file
+tests/tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/tests/tests.cpp.s
+.PHONY : tests/tests.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -258,6 +295,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... bibparser"
+	@echo "... tests"
 	@echo "... src/global_variables.o"
 	@echo "... src/global_variables.i"
 	@echo "... src/global_variables.s"
@@ -273,6 +311,9 @@ help:
 	@echo "... src/tokenizer.o"
 	@echo "... src/tokenizer.i"
 	@echo "... src/tokenizer.s"
+	@echo "... tests/tests.o"
+	@echo "... tests/tests.i"
+	@echo "... tests/tests.s"
 .PHONY : help
 
 
