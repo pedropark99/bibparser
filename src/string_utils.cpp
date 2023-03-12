@@ -123,12 +123,24 @@ void trim_substring(SubString &sub)
     sub.end = end;
 }
 
+std::string substring_to_string(SubString substring)
+{
+    std::string str;
+    if (substring.begin == substring.end)
+    {
+        str = std::string(1, *substring.end);
+    } 
+    else
+    {
+        str = std::string(substring.begin, substring.end);
+    }
+    return str;
+}
 
 
 void print_substring(SubString substring)
 {
-    std::string s = std::string(substring.begin, substring.end);
-    std::cout << s << std::endl;
+    std::cout << substring_to_string(substring) << std::endl;
 }
 
 

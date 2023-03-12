@@ -17,5 +17,6 @@ int count_char(SubString string, char chr);
 void find_first_position(std::string &string, char chr);
 void trim_substring(SubString &sub);
 
+std::string substring_to_string(SubString substring);
 void print_substring(SubString substring);
 std::vector<SubString> split_substring(SubString sub, const char delimiter);
