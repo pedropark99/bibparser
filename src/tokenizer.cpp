@@ -97,7 +97,7 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
             return;
         }
 
-        if (*buf.current_char == ',')
+        if (*(buf.current_char + 1) == ',')
         {
             parse_bib_identifier(buf, tokens);
             parse_comma(buf, tokens);
@@ -138,7 +138,7 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
 
 void parse_bib_identifier(ParserBuffer &buf, std::list<Token> &tokens)
 {
-    SubString substring = {buf.anchor, buf.current_char};
+    SubString substring = {buf.anchor, buf.current_char + 1};
     tokens.emplace_back(Token(BIB_IDENTIFIER, substring));
     if (buf.current_char != buf.end)
     {
