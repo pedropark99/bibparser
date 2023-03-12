@@ -39,7 +39,7 @@ struct EntryAttribute {
 
 
 
-void tokenizer(std::list<Token> &tokens);
+void tokenizer(std::string &file, std::list<Token> &tokens);
 Token build_token(Tag type_of_token, SubString lexeme);
 Token build_attribute_token(EntryAttribute attr);
 

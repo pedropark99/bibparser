@@ -43,9 +43,9 @@ Token build_attribute_token(EntryAttribute attr)
 }
 
 
-void tokenizer(std::list<Token> &tokens)
+void tokenizer(std::string &file, std::list<Token> &tokens)
 {
-    std::vector<SubString> bib_entries = collect_bib_entries(bibparser::bib_file);
+    std::vector<SubString> bib_entries = collect_bib_entries(file);
     std::for_each(bib_entries.begin(), bib_entries.end(), &trim_substring);
 
     for (SubString entry : bib_entries)
@@ -149,6 +149,7 @@ SubString get_entry_type(SubString entry)
 
 EntryBody parse_entry_body(SubString body)
 {
+    print_substring(body);
     EntryBody entry_body;
     std::vector<SubString> substrings = split_substring(body, ',');
     

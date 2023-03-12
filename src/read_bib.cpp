@@ -6,11 +6,20 @@
 #include "global_variables.hpp"
 
 
-std::string path_string = "data/example1.bib";
-std::filesystem::path bibparser::path_to_example = std::filesystem::absolute(path_string);
-std::string bibparser::bib_file = bibparser::read_bib_file(
-	bibparser::path_to_example.string()
-);
+std::filesystem::path
+bibparser::path_to_example = std::filesystem::absolute("data/example1.bib");
+
+
+std::string get_path_to_file(int argc, char *argv[])
+{
+    if (argc < 2)
+    {
+        throw std::runtime_error("You have to give the path to a bib file to `bibparser`!");
+    }
+    std::string path_string = std::string(argv[1]);
+    std::filesystem::path path_to_file = std::filesystem::absolute(path_string);
+    return path_to_file.string();
+}
 
 
 std::string bibparser::read_bib_file(std::string path)

@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <unordered_map>
+#include <filesystem>
 
 #include "read_bib.hpp"
 #include "tokenizer.hpp"
@@ -27,14 +28,19 @@ void print_token(Token token)
 }
 
 
-int main(void)
+
+
+int main(int argc, char *argv[])
 {
+    std::string path_to_file = get_path_to_file(argc, argv);
+    std::string bib_file = bibparser::read_bib_file(path_to_file);
+
     std::list<Token> tokens;
-    tokenizer(tokens);
-    for (Token token: tokens)
-    {
-        print_token(token);
-    }
+    tokenizer(bib_file, tokens);
+    // for (Token token: tokens)
+    // {
+    //     print_token(token);
+    // }
     
 }
 
