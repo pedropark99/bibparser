@@ -30,11 +30,16 @@ void Token::print_token()
 
 void tokenizer(ParserBuffer &buf, std::list<Token> &tokens)
 {
-    while (buf.current_char != buf.end)
+    while (true)
     {
         if (*buf.current_char == '@')
         {
             parse_entry(buf, tokens);
+        }
+        if (buf.current_char == buf.end)
+        {
+            std::cout << "Reached end of file!" << std::endl;
+            break;
         }
         buf.current_char++;
     }
@@ -51,7 +56,7 @@ void parse_entry(ParserBuffer &buf, std::list<Token> &tokens)
 void parse_entry_type(ParserBuffer &buf, std::list<Token> &tokens)
 {
     buf.anchor = buf.current_char;
-    while (*buf.current_char != '{' | buf.current_char == buf.end)
+    while (*buf.current_char != '{' | buf.current_char != buf.end)
     {
         buf.current_char++;
     }
@@ -63,8 +68,8 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
 {
     SubString substring;
     buf.anchor = buf.current_char;
-
-    while (*(buf.current_char + 1) != '@' | buf.current_char == buf.end)
+    
+    while (*(buf.current_char + 1) != '@' | buf.current_char != buf.end)
     {
         if (*buf.current_char == '{')
         {
@@ -74,7 +79,7 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
         buf.current_char++;
     }
 
-    while (*(buf.current_char + 1) != '@' | buf.current_char == buf.end)
+    while (*(buf.current_char + 1) != '@' | buf.current_char != buf.end)
     {
         if (*(buf.current_char + 1) == ',')
         {
@@ -85,7 +90,7 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
         buf.current_char++;
     }
 
-    // while (*(buf.current_char + 1) != '@' | buf.current_char == buf.end)
+    // while (*(buf.current_char + 1) != '@' | buf.current_char != buf.end)
     // {
     //     if (*buf.current_char == '{')
     //     {

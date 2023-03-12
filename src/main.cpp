@@ -20,10 +20,10 @@ int main(int argc, char *argv[])
 
     std::list<Token> tokens;
     tokenizer(parser_buffer, tokens);
-    for (Token token: tokens)
-    {
-        token.print_token();
-    }
+    // for (Token token: tokens)
+    // {
+    //     token.print_token();
+    // }
     
 }
 
