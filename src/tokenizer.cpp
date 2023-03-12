@@ -72,12 +72,11 @@ void parse_entry_type(ParserBuffer &buf, std::list<Token> &tokens)
 
 void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
 {
-    SubString substring;
     buf.anchor = buf.current_char;
-    
+
     while (buf.current_char != buf.end)
     {
-        if (*(buf.current_char + 1) != '@')
+        if (*(buf.current_char + 1) == '@')
         {
             return;
         }
@@ -90,14 +89,15 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
         buf.current_char++;
     }
 
+
     while (buf.current_char != buf.end)
     {
-        if (*(buf.current_char + 1) != '@')
+        if (*(buf.current_char + 1) == '@')
         {
             return;
         }
 
-        if (*(buf.current_char + 1) == ',')
+        if (*buf.current_char == ',')
         {
             parse_bib_identifier(buf, tokens);
             parse_comma(buf, tokens);
@@ -108,7 +108,7 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
 
     while (buf.current_char != buf.end)
     {
-        if (*(buf.current_char + 1) != '@')
+        if (*(buf.current_char + 1) == '@')
         {
             return;
         }
@@ -140,7 +140,11 @@ void parse_bib_identifier(ParserBuffer &buf, std::list<Token> &tokens)
 {
     SubString substring = {buf.anchor, buf.current_char};
     tokens.emplace_back(Token(BIB_IDENTIFIER, substring));
-    buf.current_char++;
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
+    buf.anchor = buf.current_char;
 }
 
 void parse_comma(ParserBuffer &buf, std::list<Token> &tokens)
@@ -148,7 +152,10 @@ void parse_comma(ParserBuffer &buf, std::list<Token> &tokens)
     buf.anchor = buf.current_char;
     SubString substring = {buf.anchor, buf.current_char};
     tokens.emplace_back(Token(COMMA, substring));
-    buf.current_char++;
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
     buf.anchor = buf.current_char;
 }
 
@@ -157,7 +164,10 @@ void parse_open_bracket(ParserBuffer &buf, std::list<Token> &tokens)
     buf.anchor = buf.current_char;
     SubString substring = {buf.anchor, buf.current_char};
     tokens.emplace_back(Token(OPEN_BRACKET, substring));
-    buf.current_char++;
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
     buf.anchor = buf.current_char;
 }
 
@@ -166,7 +176,10 @@ void parse_close_bracket(ParserBuffer &buf, std::list<Token> &tokens)
     buf.anchor = buf.current_char;
     SubString substring = {buf.anchor, buf.current_char};
     tokens.emplace_back(Token(CLOSE_BRACKET, substring));
-    buf.current_char++;
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
     buf.anchor = buf.current_char;
 }
 
