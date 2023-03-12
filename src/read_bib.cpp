@@ -6,8 +6,10 @@
 #include "global_variables.hpp"
 
 
-std::filesystem::path
-bibparser::path_to_example = std::filesystem::absolute("data/example1.bib");
+namespace bibparser
+{
+    std::filesystem::path path_to_example = std::filesystem::absolute("data/example1.bib");
+}
 
 
 std::string get_path_to_file(int argc, char *argv[])
@@ -22,7 +24,7 @@ std::string get_path_to_file(int argc, char *argv[])
 }
 
 
-std::string bibparser::read_bib_file(std::string path)
+std::string read_bib_file(std::string path)
 {
 	std::string buffer;
 	std::ifstream file_connection;
