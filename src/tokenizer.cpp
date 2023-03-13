@@ -34,7 +34,7 @@ void tokenizer(ParserBuffer &buf, std::list<Token> &tokens)
     {
         if (*buf.current_char == '@')
         {
-            parse_entry(buf, tokens);
+            tokenize_entry(buf, tokens);
         }
         if (buf.current_char == buf.end)
         {
@@ -47,13 +47,13 @@ void tokenizer(ParserBuffer &buf, std::list<Token> &tokens)
 }
 
 
-void parse_entry(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_entry(ParserBuffer &buf, std::list<Token> &tokens)
 {
-    parse_entry_type(buf, tokens);
-    parse_entry_body(buf, tokens);
+    tokenize_entry_type(buf, tokens);
+    tokenize_entry_body(buf, tokens);
 }
 
-void parse_entry_type(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_entry_type(ParserBuffer &buf, std::list<Token> &tokens)
 {
     buf.anchor = buf.current_char;
     while (buf.current_char != buf.end)
@@ -70,7 +70,7 @@ void parse_entry_type(ParserBuffer &buf, std::list<Token> &tokens)
 }
 
 
-void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
 {
     buf.anchor = buf.current_char;
 
@@ -83,7 +83,7 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
 
         if (*buf.current_char == '{')
         {
-            parse_open_bracket(buf, tokens);
+            tokenize_open_bracket(buf, tokens);
             break;
         }
         buf.current_char++;
@@ -99,8 +99,8 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
 
         if (*(buf.current_char + 1) == ',')
         {
-            parse_bib_identifier(buf, tokens);
-            parse_comma(buf, tokens);
+            tokenize_bib_identifier(buf, tokens);
+            tokenize_comma(buf, tokens);
             break;
         }
         buf.current_char++;
@@ -115,7 +115,7 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
 
         if (*buf.current_char == '=')
         {
-            parse_entry_attribute(buf, tokens);
+            tokenize_entry_attribute(buf, tokens);
             continue;
         }
 
@@ -124,7 +124,7 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
 }
 
 
-void parse_bib_identifier(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_bib_identifier(ParserBuffer &buf, std::list<Token> &tokens)
 {
     SubString substring = {buf.anchor, buf.current_char + 1};
     tokens.emplace_back(Token(BIB_IDENTIFIER, substring));
@@ -135,7 +135,7 @@ void parse_bib_identifier(ParserBuffer &buf, std::list<Token> &tokens)
     buf.anchor = buf.current_char;
 }
 
-void parse_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
 {
     buf.anchor = buf.current_char;
     while (buf.current_char != buf.begin)
@@ -150,7 +150,7 @@ void parse_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
     tokens.emplace_back(Token(BIB_ATTRIBUTE_KEY, attribute_key));
 
     buf.current_char = buf.anchor;
-    parse_equal_sign(buf, tokens);
+    tokenize_equal_sign(buf, tokens);
     char value_delimiter_open;
     char value_delimiter_end;
     // while (buf.current_char != buf.end)
@@ -169,7 +169,7 @@ void parse_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
     // }
 }
 
-void parse_comma(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_comma(ParserBuffer &buf, std::list<Token> &tokens)
 {
     buf.anchor = buf.current_char;
     SubString substring = {buf.anchor, buf.current_char};
@@ -181,7 +181,7 @@ void parse_comma(ParserBuffer &buf, std::list<Token> &tokens)
     buf.anchor = buf.current_char;
 }
 
-void parse_open_bracket(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_open_bracket(ParserBuffer &buf, std::list<Token> &tokens)
 {
     buf.anchor = buf.current_char;
     SubString substring = {buf.anchor, buf.current_char};
@@ -193,7 +193,7 @@ void parse_open_bracket(ParserBuffer &buf, std::list<Token> &tokens)
     buf.anchor = buf.current_char;
 }
 
-void parse_close_bracket(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_close_bracket(ParserBuffer &buf, std::list<Token> &tokens)
 {
     buf.anchor = buf.current_char;
     SubString substring = {buf.anchor, buf.current_char};
@@ -205,7 +205,7 @@ void parse_close_bracket(ParserBuffer &buf, std::list<Token> &tokens)
     buf.anchor = buf.current_char;
 }
 
-void parse_equal_sign(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_equal_sign(ParserBuffer &buf, std::list<Token> &tokens)
 {
     buf.anchor = buf.current_char;
     SubString substring = {buf.anchor, buf.current_char};

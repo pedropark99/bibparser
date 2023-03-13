@@ -49,14 +49,14 @@ public:
 void tokenizer(ParserBuffer &parser_buffer, std::list<Token> &tokens);
 
 
-void parse_entry(ParserBuffer &buf, std::list<Token> &tokens);
-void parse_entry_type(ParserBuffer &buf, std::list<Token> &tokens);
-void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens);
-void parse_bib_identifier(ParserBuffer &buf, std::list<Token> &tokens);
-void parse_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens);
-void parse_comma(ParserBuffer &buf, std::list<Token> &tokens);
-void parse_open_bracket(ParserBuffer &buf, std::list<Token> &tokens);
-void parse_close_bracket(ParserBuffer &buf, std::list<Token> &tokens);
-void parse_equal_sign(ParserBuffer &buf, std::list<Token> &tokens);
+void tokenize_entry(ParserBuffer &buf, std::list<Token> &tokens);
+void tokenize_entry_type(ParserBuffer &buf, std::list<Token> &tokens);
+void tokenize_entry_body(ParserBuffer &buf, std::list<Token> &tokens);
+void tokenize_bib_identifier(ParserBuffer &buf, std::list<Token> &tokens);
+void tokenize_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens);
+void tokenize_comma(ParserBuffer &buf, std::list<Token> &tokens);
+void tokenize_open_bracket(ParserBuffer &buf, std::list<Token> &tokens);
+void tokenize_close_bracket(ParserBuffer &buf, std::list<Token> &tokens);
+void tokenize_equal_sign(ParserBuffer &buf, std::list<Token> &tokens);
 
 
