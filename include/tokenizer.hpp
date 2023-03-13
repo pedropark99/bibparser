@@ -16,7 +16,8 @@ enum Tag
     COMMA = 5237,
     OPEN_BRACKET = 5238,
     CLOSE_BRACKET = 5239,
-    EQUAL_SIGN = 5340
+    EQUAL_SIGN = 5340,
+    QUOTATION_MARK = 5341
 };
 
 std::string tag_to_string(Tag tag);
@@ -58,5 +59,5 @@ void tokenize_comma(ParserBuffer &buf, std::list<Token> &tokens);
 void tokenize_open_bracket(ParserBuffer &buf, std::list<Token> &tokens);
 void tokenize_close_bracket(ParserBuffer &buf, std::list<Token> &tokens);
 void tokenize_equal_sign(ParserBuffer &buf, std::list<Token> &tokens);
-
+void tokenize_quotation_mark(ParserBuffer &buf, std::list<Token> &tokens);
 

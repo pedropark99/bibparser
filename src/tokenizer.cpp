@@ -151,22 +151,50 @@ void tokenize_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
 
     buf.current_char = buf.anchor;
     tokenize_equal_sign(buf, tokens);
+
     char value_delimiter_open;
-    char value_delimiter_end;
-    // while (buf.current_char != buf.end)
-    // {
-    //     if (*buf.current_char == '"')
-    //     {
-    //         value_delimiter_open = '"';
-    //         value_delimiter_end = '"';
-    //     }
-    //     if (*buf.current_char == '{')
-    //     {
-    //         value_delimiter_open = '{';
-    //         value_delimiter_end = '}';
-    //     }
-    //     buf.current_char++;       
-    // }
+    char value_delimiter_close;
+    while (buf.current_char != buf.end)
+    {
+        if (*buf.current_char == '"')
+        {
+            value_delimiter_open = '"';
+            value_delimiter_close = '"';
+            tokenize_quotation_mark(buf, tokens);
+            break;
+        }
+        if (*buf.current_char == '{')
+        {
+            value_delimiter_open = '{';
+            value_delimiter_close = '}';
+            tokenize_open_bracket(buf, tokens);
+            break;
+        }
+        buf.current_char++;       
+    }
+
+    while (buf.current_char != buf.end)
+    {
+        if (*(buf.current_char + 1) == value_delimiter_close)
+        {
+            break;
+        }
+        buf.current_char++;   
+    }
+
+    SubString attribute_value = {buf.anchor, buf.current_char + 1};
+    tokens.emplace_back(Token(BIB_ATTRIBUTE_VALUE, attribute_value));
+    buf.current_char++;
+    buf.anchor = buf.current_char;
+
+    if (value_delimiter_close == '"')
+    {
+        tokenize_quotation_mark(buf, tokens);
+    }
+    else
+    {
+        tokenize_close_bracket(buf, tokens);
+    }
 }
 
 void tokenize_comma(ParserBuffer &buf, std::list<Token> &tokens)
@@ -214,7 +242,19 @@ void tokenize_equal_sign(ParserBuffer &buf, std::list<Token> &tokens)
     {
         buf.current_char++;
     }
-    buf.anchor = buf.current_char; 
+    buf.anchor = buf.current_char;
+}
+
+void tokenize_quotation_mark(ParserBuffer &buf, std::list<Token> &tokens)
+{
+    buf.anchor = buf.current_char;
+    SubString substring = {buf.anchor, buf.current_char};
+    tokens.emplace_back(Token(QUOTATION_MARK, substring));
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
+    buf.anchor = buf.current_char;
 }
 
 
@@ -246,6 +286,9 @@ std::string tag_to_string(Tag tag)
         break;
     case EQUAL_SIGN:
         s_tag = "EQUAL_SIGN";
+        break;
+    case QUOTATION_MARK:
+        s_tag = "QUOTATION_MARK";
         break;
     default:
         break;
