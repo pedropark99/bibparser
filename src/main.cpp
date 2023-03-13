@@ -5,25 +5,7 @@
 #include "read_bib.hpp"
 #include "tokenizer.hpp"
 #include "global_variables.hpp"
-
-
-void print_token(Token token)
-{
-    std::cout << "Token: "
-        << token.tag
-        << "   |   ";
-    
-    for (auto& it: token.attributes) {
-    // Do stuff
-        std::cout << it.first
-            << "   |   "
-            << it.second
-            << std::endl;
-    }
-
-}
-
-
+#include "string_utils.hpp"
 
 
 int main(int argc, char *argv[])
@@ -31,12 +13,20 @@ int main(int argc, char *argv[])
     std::string path_to_file = get_path_to_file(argc, argv);
     std::string bib_file = read_bib_file(path_to_file);
 
+    ParserBuffer parser_buffer;
+    parser_buffer.begin = bib_file.begin();
+    parser_buffer.end = bib_file.end();
+    parser_buffer.anchor = bib_file.begin();
+    parser_buffer.current_char = bib_file.begin();
+
     std::list<Token> tokens;
-    tokenizer(bib_file, tokens);
-    // for (Token token: tokens)
-    // {
-    //     print_token(token);
-    // }
+    tokenizer(parser_buffer, tokens);
+    
+    for (Token token: tokens)
+    {
+        trim_substring(token);
+        token.print_token();
+    }
     
 }
 
