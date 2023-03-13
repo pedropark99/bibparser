@@ -17,7 +17,7 @@ std::string Token::as_string()
 {
     std::string s_tag = tag_to_string(tag);
     std::string s_value = substring_to_string(value);
-    std::string text = s_tag + "=" + s_value;
+    std::string text = s_tag + ": " + s_value;
     return text;
 }
 

@@ -105,6 +105,11 @@ void trim_substring(SubString &sub)
     std::string::iterator begin = sub.begin;
     std::string::iterator end = sub.end;
 
+    if (begin == end)
+    {
+        return;
+    }
+
     std::string::iterator current_char = begin;
     while (is_white_space(*(current_char + 1)))
     {
@@ -122,6 +127,36 @@ void trim_substring(SubString &sub)
     sub.begin = begin;
     sub.end = end;
 }
+
+void trim_substring(Token &token)
+{
+    std::string::iterator begin = token.value.begin;
+    std::string::iterator end = token.value.end;
+
+    if (begin == end)
+    {
+        return;
+    }
+
+    std::string::iterator current_char = begin;
+    while (is_white_space(*(current_char + 1)))
+    {
+        current_char++;
+    }
+    begin = current_char;
+
+    current_char = end;
+    while (is_white_space(*(current_char - 1)))
+    {
+        current_char--;
+    }
+    end = current_char;
+
+    token.value.begin = begin;
+    token.value.end = end;
+}
+
+
 
 std::string substring_to_string(SubString substring)
 {

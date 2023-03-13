@@ -5,6 +5,7 @@
 #include "read_bib.hpp"
 #include "tokenizer.hpp"
 #include "global_variables.hpp"
+#include "string_utils.hpp"
 
 
 int main(int argc, char *argv[])
@@ -20,8 +21,10 @@ int main(int argc, char *argv[])
 
     std::list<Token> tokens;
     tokenizer(parser_buffer, tokens);
+    
     for (Token token: tokens)
     {
+        trim_substring(token);
         token.print_token();
     }
     

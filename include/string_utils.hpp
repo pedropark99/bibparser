@@ -16,6 +16,7 @@ int count_char(std::string &string, char chr);
 int count_char(SubString string, char chr);
 void find_first_position(std::string &string, char chr);
 void trim_substring(SubString &sub);
+void trim_substring(Token &token);
 
 std::string substring_to_string(SubString substring);
 void print_substring(SubString substring);
