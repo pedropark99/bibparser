@@ -113,21 +113,9 @@ void parse_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
             return;
         }
 
-        if (*buf.current_char == '{')
+        if (*buf.current_char == '=')
         {
-            parse_open_bracket(buf, tokens);
-            continue;
-        }
-
-        if (*buf.current_char == '}')
-        {
-            parse_close_bracket(buf, tokens);
-            continue;
-        }
-
-        if (*buf.current_char == ',')
-        {
-            parse_comma(buf, tokens);
+            parse_entry_attribute(buf, tokens);
             continue;
         }
 
@@ -145,6 +133,40 @@ void parse_bib_identifier(ParserBuffer &buf, std::list<Token> &tokens)
         buf.current_char++;
     }
     buf.anchor = buf.current_char;
+}
+
+void parse_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
+{
+    buf.anchor = buf.current_char;
+    while (buf.current_char != buf.begin)
+    {
+        if (*(buf.current_char - 1) == ',')
+        {
+            break;
+        }
+        buf.current_char--;
+    }
+    SubString attribute_key = {buf.current_char, buf.anchor};
+    tokens.emplace_back(Token(BIB_ATTRIBUTE_KEY, attribute_key));
+
+    buf.current_char = buf.anchor;
+    buf.current_char++;
+    // char value_delimiter_open;
+    // char value_delimiter_end;
+    // while (buf.current_char != buf.end)
+    // {
+    //     if (*buf.current_char == '"')
+    //     {
+    //         value_delimiter_open = '"';
+    //         value_delimiter_end = '"';
+    //     }
+    //     if (*buf.current_char == '{')
+    //     {
+    //         value_delimiter_open = '{';
+    //         value_delimiter_end = '}';
+    //     }
+    //     buf.current_char++;       
+    // }
 }
 
 void parse_comma(ParserBuffer &buf, std::list<Token> &tokens)
