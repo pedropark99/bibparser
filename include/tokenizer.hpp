@@ -15,7 +15,8 @@ enum Tag
     BIB_ATTRIBUTE_KEY = 5236,
     COMMA = 5237,
     OPEN_BRACKET = 5238,
-    CLOSE_BRACKET = 5239
+    CLOSE_BRACKET = 5239,
+    EQUAL_SIGN = 5340
 };
 
 std::string tag_to_string(Tag tag);
@@ -56,6 +57,6 @@ void parse_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens);
 void parse_comma(ParserBuffer &buf, std::list<Token> &tokens);
 void parse_open_bracket(ParserBuffer &buf, std::list<Token> &tokens);
 void parse_close_bracket(ParserBuffer &buf, std::list<Token> &tokens);
-
+void parse_equal_sign(ParserBuffer &buf, std::list<Token> &tokens);
 
 

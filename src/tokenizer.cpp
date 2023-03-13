@@ -150,9 +150,9 @@ void parse_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
     tokens.emplace_back(Token(BIB_ATTRIBUTE_KEY, attribute_key));
 
     buf.current_char = buf.anchor;
-    buf.current_char++;
-    // char value_delimiter_open;
-    // char value_delimiter_end;
+    parse_equal_sign(buf, tokens);
+    char value_delimiter_open;
+    char value_delimiter_end;
     // while (buf.current_char != buf.end)
     // {
     //     if (*buf.current_char == '"')
@@ -205,6 +205,18 @@ void parse_close_bracket(ParserBuffer &buf, std::list<Token> &tokens)
     buf.anchor = buf.current_char;
 }
 
+void parse_equal_sign(ParserBuffer &buf, std::list<Token> &tokens)
+{
+    buf.anchor = buf.current_char;
+    SubString substring = {buf.anchor, buf.current_char};
+    tokens.emplace_back(Token(EQUAL_SIGN, substring));
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
+    buf.anchor = buf.current_char; 
+}
+
 
 std::string tag_to_string(Tag tag)
 {
@@ -231,6 +243,9 @@ std::string tag_to_string(Tag tag)
         break;
     case CLOSE_BRACKET:
         s_tag = "CLOSE_BRACKET";
+        break;
+    case EQUAL_SIGN:
+        s_tag = "EQUAL_SIGN";
         break;
     default:
         break;
