@@ -61,3 +61,6 @@ void tokenize_close_bracket(ParserBuffer &buf, std::list<Token> &tokens);
 void tokenize_equal_sign(ParserBuffer &buf, std::list<Token> &tokens);
 void tokenize_quotation_mark(ParserBuffer &buf, std::list<Token> &tokens);
 
+
+
+void add_identifiers(std::list<Token> &tokens, std::unordered_map<std::string, Tag> &symbol_table);

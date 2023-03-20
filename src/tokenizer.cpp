@@ -44,6 +44,12 @@ void tokenizer(ParserBuffer &buf, std::list<Token> &tokens)
         buf.current_char++;
     }
 
+    for (Token token: tokens)
+    {
+        trim_substring(token);
+        //token.print_token();
+    }
+
 }
 
 
@@ -299,4 +305,20 @@ std::string tag_to_string(Tag tag)
         break;
     }
     return s_tag;
+}
+
+
+
+void add_identifiers(std::list<Token> &tokens, std::unordered_map<std::string, Tag> &symbol_table)
+{
+    for (Token token: tokens)
+    {
+        if (token.tag == BIB_IDENTIFIER)
+        {
+            symbol_table.emplace(
+                std::string(token.value.begin, token.value.end),
+                BIB_IDENTIFIER
+            );
+        }
+    }
 }
