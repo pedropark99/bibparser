@@ -113,6 +113,11 @@ void tokenize_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
             return;
         }
 
+        if (*buf.current_char == ',')
+        {
+            tokenize_comma(buf, tokens);
+        }
+
         if (*buf.current_char == '=')
         {
             tokenize_entry_attribute(buf, tokens);
