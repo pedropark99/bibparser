@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
 
     std::unordered_map<std::string, Tag> symbol_table;
     add_identifiers(tokens, symbol_table);
+
+    
     
 }
 
