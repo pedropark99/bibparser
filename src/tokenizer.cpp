@@ -1,7 +1,6 @@
 #include <string>
 #include <iostream>
 
-#include "global_variables.hpp"
 #include "read_bib.hpp"
 #include "tokenizer.hpp"
 #include "string_utils.hpp"
@@ -28,29 +27,41 @@ void Token::print_token()
 
 
 
-void tokenizer(TokenizerBuffer &buf, std::list<Token> &tokens)
+
+
+
+
+
+
+void tokenizer(TokenizerBuffer &buf)
 {
+    std::list<Token> first_stage_tokens;
+    std::list<Token> second_stage_tokens;
+    
     while (true)
     {
         if (*buf.current_char == '@')
         {
-            tokenize_entry(buf, tokens);
+            tokenize_entry(buf, first_stage_tokens);
         }
         if (buf.current_char == buf.end)
         {
-            std::cout << "Tokenizer reached end of file!" << std::endl;
+            std::cout << "[INFO:] Tokenizer reached end of file." << std::endl;
+            std::cout << "[INFO:] First stage of token generation is complete." << std::endl;
             break;
         }
         buf.current_char++;
     }
 
-    for (Token token: tokens)
+    for (Token token: first_stage_tokens)
     {
         trim_substring(token);
-        //token.print_token();
+        token.print_token();
     }
 
 }
+
+
 
 
 void tokenize_entry(TokenizerBuffer &buf, std::list<Token> &tokens)
@@ -76,197 +87,63 @@ void tokenize_entry_type(TokenizerBuffer &buf, std::list<Token> &tokens)
 }
 
 
+
 void tokenize_entry_body(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
     buf.lexeme_begin = buf.current_char;
-
     while (buf.current_char != buf.end)
     {
         if (*(buf.current_char + 1) == '@')
         {
-            return;
-        }
-
-        if (*buf.current_char == '{')
-        {
-            tokenize_open_bracket(buf, tokens);
             break;
         }
         buf.current_char++;
     }
 
-
-    while (buf.current_char != buf.end)
-    {
-        if (*(buf.current_char + 1) == '@')
-        {
-            return;
-        }
-
-        if (*(buf.current_char + 1) == ',')
-        {
-            tokenize_bib_identifier(buf, tokens);
-            tokenize_comma(buf, tokens);
-            break;
-        }
-        buf.current_char++;
-    }
-
-    while (buf.current_char != buf.end)
-    {
-        if (*(buf.current_char + 1) == '@')
-        {
-            return;
-        }
-
-        if (*buf.current_char == ',')
-        {
-            tokenize_comma(buf, tokens);
-        }
-
-        if (*buf.current_char == '=')
-        {
-            tokenize_entry_attribute(buf, tokens);
-            continue;
-        }
-
-        buf.current_char++;
-    }
+    SubString bib_body = {buf.lexeme_begin, buf.current_char};
+    tokens.emplace_back(Token(BIB_BODY, bib_body));
 }
 
 
-void tokenize_bib_identifier(TokenizerBuffer &buf, std::list<Token> &tokens)
-{
-    SubString substring = {buf.lexeme_begin, buf.current_char + 1};
-    tokens.emplace_back(Token(BIB_IDENTIFIER, substring));
-    if (buf.current_char != buf.end)
-    {
-        buf.current_char++;
-    }
-    buf.lexeme_begin = buf.current_char;
-}
 
-void tokenize_entry_attribute(TokenizerBuffer &buf, std::list<Token> &tokens)
-{
-    buf.lexeme_begin = buf.current_char;
-    while (buf.current_char != buf.begin)
-    {
-        if (*(buf.current_char - 1) == ',')
-        {
-            break;
-        }
-        buf.current_char--;
-    }
-    SubString attribute_key = {buf.current_char, buf.lexeme_begin};
-    tokens.emplace_back(Token(BIB_ATTRIBUTE_KEY, attribute_key));
 
-    buf.current_char = buf.lexeme_begin;
-    tokenize_equal_sign(buf, tokens);
 
-    char value_delimiter_open;
-    char value_delimiter_close;
-    while (buf.current_char != buf.end)
-    {
-        if (*buf.current_char == '"')
-        {
-            value_delimiter_open = '"';
-            value_delimiter_close = '"';
-            tokenize_quotation_mark(buf, tokens);
-            break;
-        }
-        if (*buf.current_char == '{')
-        {
-            value_delimiter_open = '{';
-            value_delimiter_close = '}';
-            tokenize_open_bracket(buf, tokens);
-            break;
-        }
-        buf.current_char++;       
-    }
 
-    while (buf.current_char != buf.end)
-    {
-        if (*(buf.current_char + 1) == value_delimiter_close)
-        {
-            break;
-        }
-        buf.current_char++;   
-    }
 
-    SubString attribute_value = {buf.lexeme_begin, buf.current_char + 1};
-    tokens.emplace_back(Token(BIB_ATTRIBUTE_VALUE, attribute_value));
-    buf.current_char++;
-    buf.lexeme_begin = buf.current_char;
 
-    if (value_delimiter_close == '"')
-    {
-        tokenize_quotation_mark(buf, tokens);
-    }
-    else
-    {
-        tokenize_close_bracket(buf, tokens);
-    }
-}
 
-void tokenize_comma(TokenizerBuffer &buf, std::list<Token> &tokens)
-{
-    buf.lexeme_begin = buf.current_char;
-    SubString substring = {buf.lexeme_begin, buf.current_char};
-    tokens.emplace_back(Token(COMMA, substring));
-    if (buf.current_char != buf.end)
-    {
-        buf.current_char++;
-    }
-    buf.lexeme_begin = buf.current_char;
-}
 
-void tokenize_open_bracket(TokenizerBuffer &buf, std::list<Token> &tokens)
-{
-    buf.lexeme_begin = buf.current_char;
-    SubString substring = {buf.lexeme_begin, buf.current_char};
-    tokens.emplace_back(Token(OPEN_BRACKET, substring));
-    if (buf.current_char != buf.end)
-    {
-        buf.current_char++;
-    }
-    buf.lexeme_begin = buf.current_char;
-}
 
-void tokenize_close_bracket(TokenizerBuffer &buf, std::list<Token> &tokens)
-{
-    buf.lexeme_begin = buf.current_char;
-    SubString substring = {buf.lexeme_begin, buf.current_char};
-    tokens.emplace_back(Token(CLOSE_BRACKET, substring));
-    if (buf.current_char != buf.end)
-    {
-        buf.current_char++;
-    }
-    buf.lexeme_begin = buf.current_char;
-}
 
-void tokenize_equal_sign(TokenizerBuffer &buf, std::list<Token> &tokens)
-{
-    buf.lexeme_begin = buf.current_char;
-    SubString substring = {buf.lexeme_begin, buf.current_char};
-    tokens.emplace_back(Token(EQUAL_SIGN, substring));
-    if (buf.current_char != buf.end)
-    {
-        buf.current_char++;
-    }
-    buf.lexeme_begin = buf.current_char;
-}
 
-void tokenize_quotation_mark(TokenizerBuffer &buf, std::list<Token> &tokens)
-{
-    buf.lexeme_begin = buf.current_char;
-    SubString substring = {buf.lexeme_begin, buf.current_char};
-    tokens.emplace_back(Token(QUOTATION_MARK, substring));
-    if (buf.current_char != buf.end)
-    {
-        buf.current_char++;
-    }
-    buf.lexeme_begin = buf.current_char;
-}
+
+// void reprocess_tokens ()
+// {
+//     std::cout << "[INFO:] Starting second stage of token generation." << std::endl;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 std::string token_type_to_string(TokenType type)
@@ -274,6 +151,9 @@ std::string token_type_to_string(TokenType type)
     std::string s_type;
     switch (type)
     {
+    case BIB_BODY:
+        s_type = "BIB_BODY";
+        break;
     case BIB_ATTRIBUTE_VALUE:
         s_type = "BIB_ATTRIBUTE_VALUE";
         break;
@@ -308,17 +188,3 @@ std::string token_type_to_string(TokenType type)
 }
 
 
-
-void add_identifiers(std::list<Token> &tokens, std::unordered_map<std::string, TokenType> &symbol_table)
-{
-    for (Token token: tokens)
-    {
-        if (token.type == BIB_IDENTIFIER)
-        {
-            symbol_table.emplace(
-                std::string(token.value.begin, token.value.end),
-                BIB_IDENTIFIER
-            );
-        }
-    }
-}

@@ -9,6 +9,7 @@
 
 enum TokenType
 {
+    BIB_BODY = 5231,
     BIB_IDENTIFIER = 5234,
     BIB_TYPE = 5233,
     BIB_ATTRIBUTE_VALUE = 5235,
@@ -47,7 +48,7 @@ public:
 };
 
 
-void tokenizer(TokenizerBuffer &parser_buffer, std::list<Token> &tokens);
+void tokenizer(TokenizerBuffer &parser_buffer);
 
 
 void tokenize_entry(TokenizerBuffer &buf, std::list<Token> &tokens);
