@@ -14,17 +14,21 @@ int main(int argc, char *argv[])
     std::string path_to_file = get_path_to_file(argc, argv);
     std::string bib_file = read_bib_file(path_to_file);
 
-    ParserBuffer parser_buffer;
-    parser_buffer.begin = bib_file.begin();
-    parser_buffer.end = bib_file.end();
-    parser_buffer.anchor = bib_file.begin();
-    parser_buffer.current_char = bib_file.begin();
+    TokenizerBuffer tokenizer_buffer;
+    tokenizer_buffer.begin = bib_file.begin();
+    tokenizer_buffer.end = bib_file.end();
+    tokenizer_buffer.lexeme_begin = bib_file.begin();
+    tokenizer_buffer.current_char = bib_file.begin();
 
     std::list<Token> tokens;
-    tokenizer(parser_buffer, tokens);
+    tokenizer(tokenizer_buffer, tokens);
 
+    for (Token token : tokens)
+    {
+        token.print_token();
+    }
 
-    std::unordered_map<std::string, Tag> symbol_table;
+    std::unordered_map<std::string, TokenType> symbol_table;
     add_identifiers(tokens, symbol_table);
 
     
