@@ -7,17 +7,17 @@
 #include "string_utils.hpp"
 
 
-Token::Token (Tag input_tag, SubString input_value)
+Token::Token (TokenType input_type, SubString input_value)
 {
-    tag = input_tag;
+    type = input_type;
     value = input_value;
 }
 
 std::string Token::as_string()
 {
-    std::string s_tag = tag_to_string(tag);
+    std::string s_type = token_type_to_string(type);
     std::string s_value = substring_to_string(value);
-    std::string text = s_tag + ": " + s_value;
+    std::string text = s_type + ": " + s_value;
     return text;
 }
 
@@ -28,7 +28,7 @@ void Token::print_token()
 
 
 
-void tokenizer(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenizer(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
     while (true)
     {
@@ -53,15 +53,15 @@ void tokenizer(ParserBuffer &buf, std::list<Token> &tokens)
 }
 
 
-void tokenize_entry(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_entry(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
     tokenize_entry_type(buf, tokens);
     tokenize_entry_body(buf, tokens);
 }
 
-void tokenize_entry_type(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_entry_type(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
-    buf.anchor = buf.current_char;
+    buf.lexeme_begin = buf.current_char;
     while (buf.current_char != buf.end)
     {
         if (*buf.current_char == '{')
@@ -71,14 +71,14 @@ void tokenize_entry_type(ParserBuffer &buf, std::list<Token> &tokens)
         buf.current_char++;
     }
 
-    SubString entry_type = {buf.anchor, buf.current_char};
+    SubString entry_type = {buf.lexeme_begin, buf.current_char};
     tokens.emplace_back(Token(BIB_TYPE, entry_type));
 }
 
 
-void tokenize_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_entry_body(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
-    buf.anchor = buf.current_char;
+    buf.lexeme_begin = buf.current_char;
 
     while (buf.current_char != buf.end)
     {
@@ -135,20 +135,20 @@ void tokenize_entry_body(ParserBuffer &buf, std::list<Token> &tokens)
 }
 
 
-void tokenize_bib_identifier(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_bib_identifier(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
-    SubString substring = {buf.anchor, buf.current_char + 1};
+    SubString substring = {buf.lexeme_begin, buf.current_char + 1};
     tokens.emplace_back(Token(BIB_IDENTIFIER, substring));
     if (buf.current_char != buf.end)
     {
         buf.current_char++;
     }
-    buf.anchor = buf.current_char;
+    buf.lexeme_begin = buf.current_char;
 }
 
-void tokenize_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_entry_attribute(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
-    buf.anchor = buf.current_char;
+    buf.lexeme_begin = buf.current_char;
     while (buf.current_char != buf.begin)
     {
         if (*(buf.current_char - 1) == ',')
@@ -157,10 +157,10 @@ void tokenize_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
         }
         buf.current_char--;
     }
-    SubString attribute_key = {buf.current_char, buf.anchor};
+    SubString attribute_key = {buf.current_char, buf.lexeme_begin};
     tokens.emplace_back(Token(BIB_ATTRIBUTE_KEY, attribute_key));
 
-    buf.current_char = buf.anchor;
+    buf.current_char = buf.lexeme_begin;
     tokenize_equal_sign(buf, tokens);
 
     char value_delimiter_open;
@@ -193,10 +193,10 @@ void tokenize_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
         buf.current_char++;   
     }
 
-    SubString attribute_value = {buf.anchor, buf.current_char + 1};
+    SubString attribute_value = {buf.lexeme_begin, buf.current_char + 1};
     tokens.emplace_back(Token(BIB_ATTRIBUTE_VALUE, attribute_value));
     buf.current_char++;
-    buf.anchor = buf.current_char;
+    buf.lexeme_begin = buf.current_char;
 
     if (value_delimiter_close == '"')
     {
@@ -208,112 +208,112 @@ void tokenize_entry_attribute(ParserBuffer &buf, std::list<Token> &tokens)
     }
 }
 
-void tokenize_comma(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_comma(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
-    buf.anchor = buf.current_char;
-    SubString substring = {buf.anchor, buf.current_char};
+    buf.lexeme_begin = buf.current_char;
+    SubString substring = {buf.lexeme_begin, buf.current_char};
     tokens.emplace_back(Token(COMMA, substring));
     if (buf.current_char != buf.end)
     {
         buf.current_char++;
     }
-    buf.anchor = buf.current_char;
+    buf.lexeme_begin = buf.current_char;
 }
 
-void tokenize_open_bracket(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_open_bracket(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
-    buf.anchor = buf.current_char;
-    SubString substring = {buf.anchor, buf.current_char};
+    buf.lexeme_begin = buf.current_char;
+    SubString substring = {buf.lexeme_begin, buf.current_char};
     tokens.emplace_back(Token(OPEN_BRACKET, substring));
     if (buf.current_char != buf.end)
     {
         buf.current_char++;
     }
-    buf.anchor = buf.current_char;
+    buf.lexeme_begin = buf.current_char;
 }
 
-void tokenize_close_bracket(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_close_bracket(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
-    buf.anchor = buf.current_char;
-    SubString substring = {buf.anchor, buf.current_char};
+    buf.lexeme_begin = buf.current_char;
+    SubString substring = {buf.lexeme_begin, buf.current_char};
     tokens.emplace_back(Token(CLOSE_BRACKET, substring));
     if (buf.current_char != buf.end)
     {
         buf.current_char++;
     }
-    buf.anchor = buf.current_char;
+    buf.lexeme_begin = buf.current_char;
 }
 
-void tokenize_equal_sign(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_equal_sign(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
-    buf.anchor = buf.current_char;
-    SubString substring = {buf.anchor, buf.current_char};
+    buf.lexeme_begin = buf.current_char;
+    SubString substring = {buf.lexeme_begin, buf.current_char};
     tokens.emplace_back(Token(EQUAL_SIGN, substring));
     if (buf.current_char != buf.end)
     {
         buf.current_char++;
     }
-    buf.anchor = buf.current_char;
+    buf.lexeme_begin = buf.current_char;
 }
 
-void tokenize_quotation_mark(ParserBuffer &buf, std::list<Token> &tokens)
+void tokenize_quotation_mark(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
-    buf.anchor = buf.current_char;
-    SubString substring = {buf.anchor, buf.current_char};
+    buf.lexeme_begin = buf.current_char;
+    SubString substring = {buf.lexeme_begin, buf.current_char};
     tokens.emplace_back(Token(QUOTATION_MARK, substring));
     if (buf.current_char != buf.end)
     {
         buf.current_char++;
     }
-    buf.anchor = buf.current_char;
+    buf.lexeme_begin = buf.current_char;
 }
 
 
-std::string tag_to_string(Tag tag)
+std::string token_type_to_string(TokenType type)
 {
-    std::string s_tag;
-    switch (tag)
+    std::string s_type;
+    switch (type)
     {
     case BIB_ATTRIBUTE_VALUE:
-        s_tag = "BIB_ATTRIBUTE_VALUE";
+        s_type = "BIB_ATTRIBUTE_VALUE";
         break;
     case BIB_ATTRIBUTE_KEY:
-        s_tag = "BIB_ATTRIBUTE_KEY";
+        s_type = "BIB_ATTRIBUTE_KEY";
         break;
     case BIB_IDENTIFIER:
-        s_tag = "BIB_IDENTIFIER";
+        s_type = "BIB_IDENTIFIER";
         break;
     case BIB_TYPE:
-        s_tag = "BIB_TYPE";
+        s_type = "BIB_TYPE";
         break;
     case COMMA:
-        s_tag = "COMMA";
+        s_type = "COMMA";
         break;
     case OPEN_BRACKET:
-        s_tag = "OPEN_BRACKET";
+        s_type = "OPEN_BRACKET";
         break;
     case CLOSE_BRACKET:
-        s_tag = "CLOSE_BRACKET";
+        s_type = "CLOSE_BRACKET";
         break;
     case EQUAL_SIGN:
-        s_tag = "EQUAL_SIGN";
+        s_type = "EQUAL_SIGN";
         break;
     case QUOTATION_MARK:
-        s_tag = "QUOTATION_MARK";
+        s_type = "QUOTATION_MARK";
         break;
     default:
         break;
     }
-    return s_tag;
+    return s_type;
 }
 
 
 
-void add_identifiers(std::list<Token> &tokens, std::unordered_map<std::string, Tag> &symbol_table)
+void add_identifiers(std::list<Token> &tokens, std::unordered_map<std::string, TokenType> &symbol_table)
 {
     for (Token token: tokens)
     {
-        if (token.tag == BIB_IDENTIFIER)
+        if (token.type == BIB_IDENTIFIER)
         {
             symbol_table.emplace(
                 std::string(token.value.begin, token.value.end),
