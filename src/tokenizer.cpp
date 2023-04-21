@@ -35,31 +35,97 @@ void Token::print_token()
 
 void tokenizer(TokenizerBuffer &buf)
 {
-    std::list<Token> first_stage_tokens;
-    std::list<Token> second_stage_tokens;
-    
+    std::list<Token> tokens;
+    std::cout << "[INFO:] ...Starting the tokenizer." << std::endl;
     while (true)
     {
         if (*buf.current_char == '@')
         {
-            tokenize_entry(buf, first_stage_tokens);
+            tokenize_entry(buf, tokens);
         }
         if (buf.current_char == buf.end)
         {
             std::cout << "[INFO:] Tokenizer reached end of file." << std::endl;
-            std::cout << "[INFO:] First stage of token generation is complete." << std::endl;
             break;
         }
         buf.current_char++;
     }
 
-    for (Token token: first_stage_tokens)
+
+    std::cout
+        << "[INFO:] First stage of token generation is complete." << std::endl
+        << "[INFO:] ...Starting to reprocess the generated tokens." << std::endl;
+    for (Token token: tokens)
     {
-        trim_substring(token);
         token.print_token();
     }
-
 }
+
+
+
+SubString collect_entry_body(TokenizerBuffer &buf)
+{
+    buf.lexeme_begin = buf.current_char;
+    while (buf.current_char != buf.end)
+    {
+        if (*(buf.current_char + 1) == '@')
+        {
+            break;
+        }
+        buf.current_char++;
+    }
+
+    SubString entry_body = trim_substring({buf.lexeme_begin, buf.current_char});
+    return entry_body;
+}
+
+void process_entry_body(SubString entry_body)
+{
+    std::list<Token> body_tokens;
+    std::list<SubString> unprocessed_body_components;
+    std::string::iterator look_ahead;
+    TokenizerBuffer buf = {
+        entry_body.begin,
+        entry_body.end,
+        entry_body.begin,
+        entry_body.begin
+    };
+
+    if (*buf.current_char == '{')
+    {
+        unprocessed_body_components.emplace_back(collect_current_substring(buf));
+    }
+
+    while (buf.current_char != buf.end)
+    {
+        if ((buf.current_char + 1) != buf.end)
+        {
+            look_ahead = buf.current_char + 1;
+        }
+
+        if (*look_ahead == '=' |
+            *look_ahead == '{' |
+            *look_ahead == '}' |
+            *look_ahead == '"' |
+            *look_ahead == ',')
+        {
+            unprocessed_body_components.emplace_back(collect_current_substring(buf));
+            unprocessed_body_components.emplace_back(collect_current_substring(buf));
+        }
+
+        buf.current_char++;
+    }
+
+
+    for (SubString body_component: unprocessed_body_components)
+    {
+        print_substring(body_component);
+    }
+}
+
+
+
+
 
 
 
@@ -67,7 +133,9 @@ void tokenizer(TokenizerBuffer &buf)
 void tokenize_entry(TokenizerBuffer &buf, std::list<Token> &tokens)
 {
     tokenize_entry_type(buf, tokens);
-    tokenize_entry_body(buf, tokens);
+
+    SubString entry_body = collect_entry_body(buf);
+    process_entry_body(entry_body);
 }
 
 void tokenize_entry_type(TokenizerBuffer &buf, std::list<Token> &tokens)
@@ -82,57 +150,82 @@ void tokenize_entry_type(TokenizerBuffer &buf, std::list<Token> &tokens)
         buf.current_char++;
     }
 
-    SubString entry_type = {buf.lexeme_begin, buf.current_char};
+    SubString entry_type = trim_substring({buf.lexeme_begin, buf.current_char});
     tokens.emplace_back(Token(BIB_TYPE, entry_type));
 }
 
 
 
-void tokenize_entry_body(TokenizerBuffer &buf, std::list<Token> &tokens)
+Token tokenize_bib_identifier(TokenizerBuffer &buf)
 {
     buf.lexeme_begin = buf.current_char;
     while (buf.current_char != buf.end)
     {
-        if (*(buf.current_char + 1) == '@')
+        if (*(buf.current_char + 1) == ',')
         {
             break;
         }
         buf.current_char++;
     }
-
-    SubString bib_body = {buf.lexeme_begin, buf.current_char};
-    tokens.emplace_back(Token(BIB_BODY, bib_body));
+    SubString substring = {buf.lexeme_begin, buf.current_char};
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
+    buf.lexeme_begin = buf.current_char;
+    return Token(BIB_IDENTIFIER, substring);
 }
 
 
+Token tokenize_open_bracket(TokenizerBuffer &buf)
+{
+    buf.lexeme_begin = buf.current_char;
+    SubString substring = {buf.lexeme_begin, buf.current_char};
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
+    buf.lexeme_begin = buf.current_char;
+    return Token(OPEN_BRACKET, substring);
+}
 
+Token tokenize_comma(TokenizerBuffer &buf)
+{
+    buf.lexeme_begin = buf.current_char;
+    SubString substring = {buf.lexeme_begin, buf.current_char};
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
+    buf.lexeme_begin = buf.current_char;
+    return Token(COMMA, substring);
+}
 
+Token tokenize_text(TokenizerBuffer &buf)
+{
+    SubString substring = {buf.lexeme_begin, buf.current_char};
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
+    buf.lexeme_begin = buf.current_char;
+    return Token(BIB_ATTRIBUTE_VALUE, substring);
+}
 
+SubString collect_current_substring(TokenizerBuffer &buf)
+{
+    SubString substring = {
+        buf.lexeme_begin,
+        buf.current_char
+    };
 
-
-
-
-
-
-
-
-
-// void reprocess_tokens ()
-// {
-//     std::cout << "[INFO:] Starting second stage of token generation." << std::endl;
-// }
-
-
-
-
-
-
-
-
-
-
-
-
+    if (buf.current_char != buf.end)
+    {
+        buf.current_char++;
+    }
+    buf.lexeme_begin = buf.current_char;
+    return substring;
+}
 
 
 
@@ -159,6 +252,9 @@ std::string token_type_to_string(TokenType type)
         break;
     case BIB_ATTRIBUTE_KEY:
         s_type = "BIB_ATTRIBUTE_KEY";
+        break;
+    case BIB_ATTRIBUTE:
+        s_type = "BIB_ATTRIBUTE";
         break;
     case BIB_IDENTIFIER:
         s_type = "BIB_IDENTIFIER";

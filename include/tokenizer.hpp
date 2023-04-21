@@ -10,10 +10,11 @@
 enum TokenType
 {
     BIB_BODY = 5231,
-    BIB_IDENTIFIER = 5234,
+    BIB_IDENTIFIER = 5232,
     BIB_TYPE = 5233,
-    BIB_ATTRIBUTE_VALUE = 5235,
-    BIB_ATTRIBUTE_KEY = 5236,
+    BIB_ATTRIBUTE_VALUE = 5234,
+    BIB_ATTRIBUTE_KEY = 5235,
+    BIB_ATTRIBUTE = 5236,
     COMMA = 5237,
     OPEN_BRACKET = 5238,
     CLOSE_BRACKET = 5239,
@@ -22,6 +23,7 @@ enum TokenType
 };
 
 std::string token_type_to_string(TokenType type);
+
 
 struct SubString {
     std::string::iterator begin;
@@ -41,26 +43,40 @@ public:
     TokenType type;
     SubString value;
 
-    Token (TokenType input_type, SubString input_value);
+    Token(TokenType input_type, SubString input_value);
     std::string as_string();
     SubString as_substring();
     void print_token();
 };
 
 
-void tokenizer(TokenizerBuffer &parser_buffer);
+class Tokenizer {
+public:
+    TokenizerBuffer buf;
+    Token current_token;
 
+    Tokenizer(std::string path_to_bib_file);
+};
+
+
+void tokenizer(TokenizerBuffer &parser_buffer);
 
 void tokenize_entry(TokenizerBuffer &buf, std::list<Token> &tokens);
 void tokenize_entry_type(TokenizerBuffer &buf, std::list<Token> &tokens);
-void tokenize_entry_body(TokenizerBuffer &buf, std::list<Token> &tokens);
-void tokenize_bib_identifier(TokenizerBuffer &buf, std::list<Token> &tokens);
-void tokenize_entry_attribute(TokenizerBuffer &buf, std::list<Token> &tokens);
-void tokenize_comma(TokenizerBuffer &buf, std::list<Token> &tokens);
-void tokenize_open_bracket(TokenizerBuffer &buf, std::list<Token> &tokens);
-void tokenize_close_bracket(TokenizerBuffer &buf, std::list<Token> &tokens);
-void tokenize_equal_sign(TokenizerBuffer &buf, std::list<Token> &tokens);
-void tokenize_quotation_mark(TokenizerBuffer &buf, std::list<Token> &tokens);
+
+SubString collect_entry_body(TokenizerBuffer &buf);
+void process_entry_body(SubString entry_body);
+
+SubString collect_current_substring(TokenizerBuffer &buf);
+
+
+Token tokenize_bib_identifier(TokenizerBuffer &buf);
+Token tokenize_entry_attribute(TokenizerBuffer &buf);
+Token tokenize_comma(TokenizerBuffer &buf);
+Token tokenize_open_bracket(TokenizerBuffer &buf);
+Token tokenize_close_bracket(TokenizerBuffer &buf);
+Token tokenize_equal_sign(TokenizerBuffer &buf);
+Token tokenize_quotation_mark(TokenizerBuffer &buf);
 
 
 

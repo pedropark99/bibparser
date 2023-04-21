@@ -15,7 +15,7 @@ bool ends_with (const std::string &string, const std::string end);
 int count_char(std::string &string, char chr);
 int count_char(SubString string, char chr);
 void find_first_position(std::string &string, char chr);
-void trim_substring(SubString &sub);
+SubString trim_substring(SubString substring);
 void trim_substring(Token &token);
 
 std::string substring_to_string(SubString substring);

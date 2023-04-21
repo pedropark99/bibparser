@@ -121,17 +121,17 @@ void find_first_position(std::string &string, char chr)
 }
 
 
-void trim_substring(SubString &sub)
+SubString trim_substring(SubString substring)
 {
-    std::string::iterator begin = sub.begin;
-    std::string::iterator end = sub.end;
+    std::string::iterator current_char = substring.begin;
+    std::string::iterator begin = substring.begin;
+    std::string::iterator end = substring.end;
 
     if (begin == end)
     {
-        return;
+        return substring;
     }
 
-    std::string::iterator current_char = begin;
     while (is_white_space(*(current_char + 1)))
     {
         current_char++;
@@ -145,36 +145,10 @@ void trim_substring(SubString &sub)
     }
     end = current_char;
 
-    sub.begin = begin;
-    sub.end = end;
-}
+    substring.begin = begin;
+    substring.end = end;
 
-void trim_substring(Token &token)
-{
-    std::string::iterator begin = token.value.begin;
-    std::string::iterator end = token.value.end;
-
-    if (begin == end)
-    {
-        return;
-    }
-
-    std::string::iterator current_char = begin;
-    while (is_white_space(*(current_char + 1)))
-    {
-        current_char++;
-    }
-    begin = current_char;
-
-    current_char = end;
-    while (is_white_space(*(current_char - 1)))
-    {
-        current_char--;
-    }
-    end = current_char;
-
-    token.value.begin = begin;
-    token.value.end = end;
+    return substring;
 }
 
 
@@ -214,8 +188,8 @@ std::vector<SubString> split_substring(SubString sub, const char delimiter)
         substrings.emplace_back(sub);
         return substrings;
     }
-    substrings.reserve(n);
 
+    substrings.reserve(n);
     while (current_char != end)
     {
         if (*current_char == delimiter)
@@ -234,3 +208,5 @@ std::vector<SubString> split_substring(SubString sub, const char delimiter)
 
     return substrings;
 }
+
+
