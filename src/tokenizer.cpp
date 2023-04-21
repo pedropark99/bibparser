@@ -162,6 +162,9 @@ TokenType find_token_type(SubString token_value)
         case ' ':
             type = EMPTY;
             break;
+        case '\n':
+            type = NEW_LINE;
+            break;
         
         default:
             break;
@@ -185,6 +188,9 @@ std::string token_type_to_string(TokenType type)
     std::string s_type;
     switch (type)
     {
+    case NEW_LINE:
+        s_type = "NEW_LINE";
+        break;
     case EMPTY:
         s_type = "EMPTY";
         break;

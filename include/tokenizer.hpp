@@ -9,6 +9,7 @@
 
 enum TokenType
 {
+    NEW_LINE = 5227,
     BIB_TEXT = 5228,
     EMPTY = 5229,
     BIB_ENTRY = 5230,
