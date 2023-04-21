@@ -76,5 +76,4 @@ public:
 };
 
 
-Token build_token(SubString token_value);
 TokenType find_token_type(SubString token_value);

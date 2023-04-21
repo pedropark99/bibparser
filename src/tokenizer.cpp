@@ -128,18 +128,6 @@ SubString Tokenizer::collect_current_substring(bool include_look_ahead)
 
 
 
-Token build_token(SubString token_value)
-{
-    if (token_value.begin == token_value.end)
-    {
-        TokenType token_type = find_token_type(token_value);
-        return Token(token_type, trim_substring(token_value));
-    }
-    else
-    {
-        return Token(BIB_ATTRIBUTE, trim_substring(token_value));
-    }
-}
 
 TokenType find_token_type(SubString token_value)
 {
