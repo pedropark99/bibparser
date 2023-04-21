@@ -5,12 +5,12 @@
 
 #include "read_bib.hpp"
 #include "parser.hpp"
+#include "string_utils.hpp"
 
 
 int main(int argc, char *argv[])
 {
     std::string path_to_file = get_path_to_file(argc, argv);
-
     Parser parser = Parser(path_to_file);
     for (int i = 0; i < 80; i++)
     {

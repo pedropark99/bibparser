@@ -132,14 +132,14 @@ SubString trim_substring(SubString substring)
         return substring;
     }
 
-    while (is_white_space(*(current_char + 1)))
+    while (is_white_space(*current_char))
     {
         current_char++;
     }
     begin = current_char;
 
     current_char = end;
-    while (is_white_space(*(current_char - 1)))
+    while (is_white_space(*current_char))
     {
         current_char--;
     }
@@ -162,7 +162,7 @@ std::string substring_to_string(SubString substring)
     } 
     else
     {
-        str = std::string(substring.begin, substring.end);
+        str = std::string(substring.begin, substring.end + 1);
     }
     return str;
 }

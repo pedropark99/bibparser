@@ -76,7 +76,7 @@ Token Tokenizer::get_next_token()
             *look_ahead == '"' |
             *look_ahead == '\n')
         {
-            token_value = Tokenizer::collect_current_substring(true);
+            token_value = Tokenizer::collect_current_substring(false);
             break;
         }
 
