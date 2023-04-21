@@ -179,6 +179,17 @@ void print_substring(SubString substring)
 }
 
 
+bool substring_is_space(SubString sub)
+{
+    if (*sub.begin == ' ' | *sub.begin == '\0')
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 std::vector<SubString> split_substring(SubString sub, const char delimiter)
 {

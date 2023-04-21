@@ -9,6 +9,8 @@
 
 enum TokenType
 {
+    BIB_TEXT = 5228,
+    EMPTY = 5229,
     BIB_ENTRY = 5230,
     BIB_BODY = 5231,
     BIB_IDENTIFIER = 5232,

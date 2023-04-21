@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 #include "read_bib.hpp"
 #include "tokenizer.hpp"
@@ -45,7 +46,8 @@ Tokenizer::Tokenizer(std::string path_to_bib_file)
 
 Token Tokenizer::get_next_token()
 {
-    SubString s;
+    TokenType token_type;
+    SubString token_value;
     std::string::iterator look_ahead;
     while (buf.current_char != buf.end)
     {
@@ -53,9 +55,10 @@ Token Tokenizer::get_next_token()
             *buf.current_char == '{' |
             *buf.current_char == '}' |
             *buf.current_char == ',' |
+            *buf.current_char == '=' |
             *buf.current_char == '"')
         {
-            s = Tokenizer::collect_current_substring(false);
+            token_value = Tokenizer::collect_current_substring(false);
             break;
         }
 
@@ -68,16 +71,24 @@ Token Tokenizer::get_next_token()
             *look_ahead == '{' |
             *look_ahead == '}' |
             *look_ahead == ',' |
+            *look_ahead == '=' |
             *look_ahead == '"')
         {
-            s = Tokenizer::collect_current_substring(true);
+            token_value = Tokenizer::collect_current_substring(true);
             break;
         }
 
         buf.current_char++;
     }
-    
-    return build_token(s);
+
+    token_value = trim_substring(token_value);
+    token_type = find_token_type(token_value);
+    if (token_type == EMPTY)
+    {
+        return get_next_token();
+    }
+
+    return Token(token_type, token_value);
 }
 
 
@@ -114,38 +125,51 @@ Token build_token(SubString token_value)
     if (token_value.begin == token_value.end)
     {
         TokenType token_type = find_token_type(token_value);
-        return Token(token_type, token_value);
+        return Token(token_type, trim_substring(token_value));
     }
     else
     {
-        return Token(BIB_ATTRIBUTE, token_value);
+        return Token(BIB_ATTRIBUTE, trim_substring(token_value));
     }
 }
 
 TokenType find_token_type(SubString token_value)
 {
     TokenType type;
-    char value = substring_to_char(token_value);
-    switch (value)
+    if (token_value.begin == token_value.end)
     {
-    case '@':
-        type = BIB_ENTRY;
-        break;
-    case ',':
-        type = COMMA;
-        break;
-    case '{':
-        type = OPEN_BRACKET;
-        break;
-    case '}':
-        type = CLOSE_BRACKET;
-        break;
-    case '"':
-        type = QUOTATION_MARK;
-        break;
-    
-    default:
-        break;
+        char value = substring_to_char(token_value);
+        switch (value)
+        {
+        case '@':
+            type = BIB_ENTRY;
+            break;
+        case ',':
+            type = COMMA;
+            break;
+        case '{':
+            type = OPEN_BRACKET;
+            break;
+        case '}':
+            type = CLOSE_BRACKET;
+            break;
+        case '=':
+            type = EQUAL_SIGN;
+            break;
+        case '"':
+            type = QUOTATION_MARK;
+            break;
+        case ' ':
+            type = EMPTY;
+            break;
+        
+        default:
+            break;
+        }
+    }
+    else
+    {
+        type = BIB_TEXT;
     }
 
     return type;
@@ -161,6 +185,12 @@ std::string token_type_to_string(TokenType type)
     std::string s_type;
     switch (type)
     {
+    case EMPTY:
+        s_type = "EMPTY";
+        break;
+    case BIB_TEXT:
+        s_type = "BIB_TEXT";
+        break;
     case BIB_ENTRY:
         s_type = "BIB_ENTRY";
         break;
