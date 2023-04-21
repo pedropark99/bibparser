@@ -12,11 +12,7 @@ int main(int argc, char *argv[])
 {
     std::string path_to_file = get_path_to_file(argc, argv);
     Parser parser = Parser(path_to_file);
-    for (int i = 0; i < 280; i++)
-    {
-        parser.get_next_token();
-    }
-
+    parser.parse_file();
     std::unordered_map<std::string, TokenType> symbol_table;
     
 }

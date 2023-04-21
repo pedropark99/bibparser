@@ -11,7 +11,8 @@ private:
 
 public:
     Parser(std::string path_to_bib_file);
-    Token get_next_token();
+    void parse_token(Token token);
+    void parse_file();
 };
 
 

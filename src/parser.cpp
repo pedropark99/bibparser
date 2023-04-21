@@ -11,10 +11,16 @@ Parser::Parser(std::string path_to_bib_file)
     tokenizer = Tokenizer(path_to_bib_file);
 }
 
-
-Token Parser::get_next_token()
+void Parser::parse_token(Token token)
 {
-    Token token = tokenizer.get_next_token();
-    token.print_token();
-    return token;
+    
+}
+
+void Parser::parse_file()
+{
+    tokenizer.collect_tokens();
+    for (Token token: tokenizer.tokens)
+    {
+        token.print_token();
+    }
 }

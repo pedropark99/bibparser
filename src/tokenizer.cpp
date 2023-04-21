@@ -126,6 +126,27 @@ SubString Tokenizer::collect_current_substring(bool include_look_ahead)
     return substring;
 }
 
+void Tokenizer::collect_tokens()
+{
+    while (true)
+    {
+        current_token = get_next_token();
+        tokens.emplace_back(current_token);
+        if (current_token.type == END_OF_FILE)
+        {
+            break;
+        }
+    }
+
+    // for (Token token: tokens)
+    // {
+    //     token.print_token();
+    // }
+}
+
+
+
+
 
 
 

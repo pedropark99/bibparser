@@ -68,10 +68,15 @@ private:
     std::string bib_file;
     TokenizerBuffer buf;
 public:
+    std::list<Token> tokens;
+    Token current_token;
+    
+public:
     Tokenizer(std::string path_to_bib_file);
     Tokenizer() = default;
 
     Token get_next_token();
+    void collect_tokens();
     SubString collect_current_substring(bool include_look_ahead);
 };
 
