@@ -167,6 +167,11 @@ std::string substring_to_string(SubString substring)
     return str;
 }
 
+char substring_to_char(SubString substring)
+{
+    return *substring.begin;
+}
+
 
 void print_substring(SubString substring)
 {

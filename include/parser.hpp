@@ -7,10 +7,11 @@
 class Parser
 {
 private:
-    std::list<Token> tokens;
+    Tokenizer tokenizer;
+
 public:
-    Parser();
-    get_next_token();
+    Parser(std::string path_to_bib_file);
+    Token get_next_token();
 };
 
 

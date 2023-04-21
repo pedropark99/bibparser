@@ -9,6 +9,7 @@
 
 enum TokenType
 {
+    BIB_ENTRY = 5230,
     BIB_BODY = 5231,
     BIB_IDENTIFIER = 5232,
     BIB_TYPE = 5233,
@@ -25,6 +26,8 @@ enum TokenType
 std::string token_type_to_string(TokenType type);
 
 
+
+
 struct SubString {
     std::string::iterator begin;
     std::string::iterator end;
@@ -38,12 +41,18 @@ struct TokenizerBuffer {
 };
 
 
+
+
+
+
 class Token {
 public:
     TokenType type;
     SubString value;
 
     Token(TokenType input_type, SubString input_value);
+    Token() = default;
+
     std::string as_string();
     SubString as_substring();
     void print_token();
@@ -51,33 +60,17 @@ public:
 
 
 class Tokenizer {
-public:
+private:
+    std::string bib_file;
     TokenizerBuffer buf;
-    Token current_token;
-
+public:
     Tokenizer(std::string path_to_bib_file);
+    Tokenizer() = default;
+
+    Token get_next_token();
+    SubString collect_current_substring(bool include_look_ahead);
 };
 
 
-void tokenizer(TokenizerBuffer &parser_buffer);
-
-void tokenize_entry(TokenizerBuffer &buf, std::list<Token> &tokens);
-void tokenize_entry_type(TokenizerBuffer &buf, std::list<Token> &tokens);
-
-SubString collect_entry_body(TokenizerBuffer &buf);
-void process_entry_body(SubString entry_body);
-
-SubString collect_current_substring(TokenizerBuffer &buf);
-
-
-Token tokenize_bib_identifier(TokenizerBuffer &buf);
-Token tokenize_entry_attribute(TokenizerBuffer &buf);
-Token tokenize_comma(TokenizerBuffer &buf);
-Token tokenize_open_bracket(TokenizerBuffer &buf);
-Token tokenize_close_bracket(TokenizerBuffer &buf);
-Token tokenize_equal_sign(TokenizerBuffer &buf);
-Token tokenize_quotation_mark(TokenizerBuffer &buf);
-
-
-
-void add_identifiers(std::list<Token> &tokens, std::unordered_map<std::string, TokenType> &symbol_table);
+Token build_token(SubString token_value);
+TokenType find_token_type(SubString token_value);

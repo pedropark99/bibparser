@@ -19,5 +19,6 @@ SubString trim_substring(SubString substring);
 void trim_substring(Token &token);
 
 std::string substring_to_string(SubString substring);
+char substring_to_char(SubString substring);
 void print_substring(SubString substring);
 std::vector<SubString> split_substring(SubString sub, const char delimiter);

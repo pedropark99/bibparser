@@ -6,7 +6,7 @@
 #include "string_utils.hpp"
 
 
-Token::Token (TokenType input_type, SubString input_value)
+Token::Token(TokenType input_type, SubString input_value)
 {
     type = input_type;
     value = input_value;
@@ -29,195 +29,75 @@ void Token::print_token()
 
 
 
-
-
-
-
-void tokenizer(TokenizerBuffer &buf)
+Tokenizer::Tokenizer(std::string path_to_bib_file)
 {
-    std::list<Token> tokens;
-    std::cout << "[INFO:] ...Starting the tokenizer." << std::endl;
-    while (true)
-    {
-        if (*buf.current_char == '@')
-        {
-            tokenize_entry(buf, tokens);
-        }
-        if (buf.current_char == buf.end)
-        {
-            std::cout << "[INFO:] Tokenizer reached end of file." << std::endl;
-            break;
-        }
-        buf.current_char++;
-    }
-
-
-    std::cout
-        << "[INFO:] First stage of token generation is complete." << std::endl
-        << "[INFO:] ...Starting to reprocess the generated tokens." << std::endl;
-    for (Token token: tokens)
-    {
-        token.print_token();
-    }
-}
-
-
-
-SubString collect_entry_body(TokenizerBuffer &buf)
-{
-    buf.lexeme_begin = buf.current_char;
-    while (buf.current_char != buf.end)
-    {
-        if (*(buf.current_char + 1) == '@')
-        {
-            break;
-        }
-        buf.current_char++;
-    }
-
-    SubString entry_body = trim_substring({buf.lexeme_begin, buf.current_char});
-    return entry_body;
-}
-
-void process_entry_body(SubString entry_body)
-{
-    std::list<Token> body_tokens;
-    std::list<SubString> unprocessed_body_components;
-    std::string::iterator look_ahead;
-    TokenizerBuffer buf = {
-        entry_body.begin,
-        entry_body.end,
-        entry_body.begin,
-        entry_body.begin
+    bib_file = read_bib_file(path_to_bib_file = path_to_bib_file);
+    std::string::iterator begin = bib_file.begin();
+    std::string::iterator end = bib_file.end();
+    
+    buf = {
+        begin,
+        end,
+        begin,
+        begin
     };
+}
 
-    if (*buf.current_char == '{')
-    {
-        unprocessed_body_components.emplace_back(collect_current_substring(buf));
-    }
-
+Token Tokenizer::get_next_token()
+{
+    SubString s;
+    std::string::iterator look_ahead;
     while (buf.current_char != buf.end)
     {
+        if (*buf.current_char == '@' |
+            *buf.current_char == '{' |
+            *buf.current_char == '}' |
+            *buf.current_char == ',' |
+            *buf.current_char == '"')
+        {
+            s = Tokenizer::collect_current_substring(false);
+            break;
+        }
+
         if ((buf.current_char + 1) != buf.end)
         {
-            look_ahead = buf.current_char + 1;
+            look_ahead = (buf.current_char + 1);
         }
 
-        if (*look_ahead == '=' |
+        if (*look_ahead == '@' |
             *look_ahead == '{' |
             *look_ahead == '}' |
-            *look_ahead == '"' |
-            *look_ahead == ',')
+            *look_ahead == ',' |
+            *look_ahead == '"')
         {
-            unprocessed_body_components.emplace_back(collect_current_substring(buf));
-            unprocessed_body_components.emplace_back(collect_current_substring(buf));
-        }
-
-        buf.current_char++;
-    }
-
-
-    for (SubString body_component: unprocessed_body_components)
-    {
-        print_substring(body_component);
-    }
-}
-
-
-
-
-
-
-
-
-void tokenize_entry(TokenizerBuffer &buf, std::list<Token> &tokens)
-{
-    tokenize_entry_type(buf, tokens);
-
-    SubString entry_body = collect_entry_body(buf);
-    process_entry_body(entry_body);
-}
-
-void tokenize_entry_type(TokenizerBuffer &buf, std::list<Token> &tokens)
-{
-    buf.lexeme_begin = buf.current_char;
-    while (buf.current_char != buf.end)
-    {
-        if (*buf.current_char == '{')
-        {
+            s = Tokenizer::collect_current_substring(true);
             break;
         }
+
         buf.current_char++;
     }
-
-    SubString entry_type = trim_substring({buf.lexeme_begin, buf.current_char});
-    tokens.emplace_back(Token(BIB_TYPE, entry_type));
+    
+    return build_token(s);
 }
 
 
-
-Token tokenize_bib_identifier(TokenizerBuffer &buf)
+SubString Tokenizer::collect_current_substring(bool include_look_ahead)
 {
-    buf.lexeme_begin = buf.current_char;
-    while (buf.current_char != buf.end)
+    SubString substring;
+    if (include_look_ahead & buf.current_char != buf.end)
     {
-        if (*(buf.current_char + 1) == ',')
-        {
-            break;
-        }
-        buf.current_char++;
+        substring = {
+            buf.lexeme_begin,
+            buf.current_char + 1
+        };
     }
-    SubString substring = {buf.lexeme_begin, buf.current_char};
-    if (buf.current_char != buf.end)
+    else
     {
-        buf.current_char++;
+        substring = {
+            buf.lexeme_begin,
+            buf.current_char
+        };
     }
-    buf.lexeme_begin = buf.current_char;
-    return Token(BIB_IDENTIFIER, substring);
-}
-
-
-Token tokenize_open_bracket(TokenizerBuffer &buf)
-{
-    buf.lexeme_begin = buf.current_char;
-    SubString substring = {buf.lexeme_begin, buf.current_char};
-    if (buf.current_char != buf.end)
-    {
-        buf.current_char++;
-    }
-    buf.lexeme_begin = buf.current_char;
-    return Token(OPEN_BRACKET, substring);
-}
-
-Token tokenize_comma(TokenizerBuffer &buf)
-{
-    buf.lexeme_begin = buf.current_char;
-    SubString substring = {buf.lexeme_begin, buf.current_char};
-    if (buf.current_char != buf.end)
-    {
-        buf.current_char++;
-    }
-    buf.lexeme_begin = buf.current_char;
-    return Token(COMMA, substring);
-}
-
-Token tokenize_text(TokenizerBuffer &buf)
-{
-    SubString substring = {buf.lexeme_begin, buf.current_char};
-    if (buf.current_char != buf.end)
-    {
-        buf.current_char++;
-    }
-    buf.lexeme_begin = buf.current_char;
-    return Token(BIB_ATTRIBUTE_VALUE, substring);
-}
-
-SubString collect_current_substring(TokenizerBuffer &buf)
-{
-    SubString substring = {
-        buf.lexeme_begin,
-        buf.current_char
-    };
 
     if (buf.current_char != buf.end)
     {
@@ -229,10 +109,47 @@ SubString collect_current_substring(TokenizerBuffer &buf)
 
 
 
+Token build_token(SubString token_value)
+{
+    if (token_value.begin == token_value.end)
+    {
+        TokenType token_type = find_token_type(token_value);
+        return Token(token_type, token_value);
+    }
+    else
+    {
+        return Token(BIB_ATTRIBUTE, token_value);
+    }
+}
 
+TokenType find_token_type(SubString token_value)
+{
+    TokenType type;
+    char value = substring_to_char(token_value);
+    switch (value)
+    {
+    case '@':
+        type = BIB_ENTRY;
+        break;
+    case ',':
+        type = COMMA;
+        break;
+    case '{':
+        type = OPEN_BRACKET;
+        break;
+    case '}':
+        type = CLOSE_BRACKET;
+        break;
+    case '"':
+        type = QUOTATION_MARK;
+        break;
+    
+    default:
+        break;
+    }
 
-
-
+    return type;
+}
 
 
 
@@ -244,6 +161,9 @@ std::string token_type_to_string(TokenType type)
     std::string s_type;
     switch (type)
     {
+    case BIB_ENTRY:
+        s_type = "BIB_ENTRY";
+        break;
     case BIB_BODY:
         s_type = "BIB_BODY";
         break;

@@ -6,11 +6,15 @@
 #include "tokenizer.hpp"
 
 
-Parser::Parser(/* args */)
+Parser::Parser(std::string path_to_bib_file)
 {
+    tokenizer = Tokenizer(path_to_bib_file);
 }
 
-Parser::get_next_token()
+
+Token Parser::get_next_token()
 {
-    return Tokenizer::get_next_token();
+    Token token = tokenizer.get_next_token();
+    token.print_token();
+    return token;
 }

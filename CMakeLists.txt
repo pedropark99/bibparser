@@ -8,6 +8,7 @@ add_executable(bibparser
 	src/main.cpp
 	src/read_bib.cpp
 	src/tokenizer.cpp
+    src/parser.cpp
     src/string_utils.cpp
 )
 
