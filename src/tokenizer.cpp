@@ -49,6 +49,7 @@ Token Tokenizer::get_next_token()
     TokenType token_type;
     SubString token_value;
     std::string::iterator look_ahead;
+
     while (buf.current_char != buf.end)
     {
         if (*buf.current_char == '@' |
@@ -81,6 +82,11 @@ Token Tokenizer::get_next_token()
         }
 
         buf.current_char++;
+    }
+
+    if (buf.current_char == buf.end)
+    {
+        return Token(END_OF_FILE, {buf.end, buf.end});
     }
 
     token_value = trim_substring(token_value);
@@ -167,6 +173,9 @@ TokenType find_token_type(SubString token_value)
         case '\n':
             type = NEW_LINE;
             break;
+        case '\0':
+            type = END_OF_FILE;
+            break;
         
         default:
             break;
@@ -190,6 +199,9 @@ std::string token_type_to_string(TokenType type)
     std::string s_type;
     switch (type)
     {
+    case END_OF_FILE:
+        s_type = "END_OF_FILE";
+        break;
     case NEW_LINE:
         s_type = "NEW_LINE";
         break;
