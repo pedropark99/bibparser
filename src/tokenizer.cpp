@@ -1,6 +1,8 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <iterator>
+#include <ranges>
 
 #include "read_bib.hpp"
 #include "tokenizer.hpp"
@@ -60,7 +62,7 @@ Token Tokenizer::get_next_token()
             *buf.current_char == '"' |
             *buf.current_char == '\n')
         {
-            token_value = Tokenizer::collect_current_substring(false);
+            token_value = Tokenizer::collect_current_substring();
             break;
         }
 
@@ -77,7 +79,7 @@ Token Tokenizer::get_next_token()
             *look_ahead == '"' |
             *look_ahead == '\n')
         {
-            token_value = Tokenizer::collect_current_substring(false);
+            token_value = Tokenizer::collect_current_substring();
             break;
         }
 
@@ -100,23 +102,13 @@ Token Tokenizer::get_next_token()
 }
 
 
-SubString Tokenizer::collect_current_substring(bool include_look_ahead)
+SubString Tokenizer::collect_current_substring()
 {
     SubString substring;
-    if (include_look_ahead & buf.current_char != buf.end)
-    {
-        substring = {
-            buf.lexeme_begin,
-            buf.current_char + 1
-        };
-    }
-    else
-    {
-        substring = {
-            buf.lexeme_begin,
-            buf.current_char
-        };
-    }
+    substring = {
+        buf.lexeme_begin,
+        buf.current_char
+    };
 
     if (buf.current_char != buf.end)
     {
@@ -138,15 +130,48 @@ void Tokenizer::collect_tokens()
         }
     }
 
-    // for (Token token: tokens)
-    // {
-    //     token.print_token();
-    // }
+    redefine_bib_text_tokens();
+}
+
+void Tokenizer::redefine_bib_text_tokens()
+{
+    auto is_bib_entry = [](Token token) {return token.type == BIB_ENTRY;};
+    auto bib_entries = std::views::iota(tokens) | std::views::filter(is_bib_entry);
+    for (Token token: bib_entries)
+    {
+        token.print_token();
+    }
 }
 
 
+void Tokenizer::set_token_type_if(TokenType type_equal_to, TokenType new_token_type, int n_steps = 1)
+{
+    std::list<Token>::iterator look_ahead;
+    std::list<Token>::iterator look_behind;
+    std::list<Token>::iterator token_it;
 
+    for (token_it = tokens.begin(); token_it != tokens.end(); token_it++)
+    {
+        if ((*token_it).type != type_equal_to)
+            continue;
 
+        if (n_steps > 0
+            & std::next(token_it, n_steps) != tokens.end()
+            & (*std::next(token_it, n_steps)).type == BIB_TEXT)
+        {
+            look_ahead = std::next(token_it, n_steps);
+            (*look_ahead).type = new_token_type;
+        }
+
+        if (n_steps < 0
+            & std::prev(token_it, abs(n_steps)) != tokens.begin()
+            & (*std::prev(token_it, abs(n_steps))).type == BIB_TEXT)
+        {
+            look_behind = std::prev(token_it, abs(n_steps));
+            (*look_behind).type = new_token_type;  
+        }
+    }
+}
 
 
 

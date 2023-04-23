@@ -67,17 +67,21 @@ class Tokenizer {
 private:
     std::string bib_file;
     TokenizerBuffer buf;
+
 public:
     std::list<Token> tokens;
     Token current_token;
     
-public:
     Tokenizer(std::string path_to_bib_file);
     Tokenizer() = default;
 
     Token get_next_token();
+    SubString collect_current_substring();
     void collect_tokens();
-    SubString collect_current_substring(bool include_look_ahead);
+    void redefine_bib_text_tokens();
+    void set_token_type_if(TokenType type_equal_to,
+                                TokenType new_token_type,
+                                int n_steps = 0);
 };
 
 
