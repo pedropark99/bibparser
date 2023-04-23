@@ -79,9 +79,9 @@ public:
     SubString collect_current_substring();
     void collect_tokens();
     void redefine_bib_text_tokens();
-    void set_token_type_if(TokenType type_equal_to,
-                                TokenType new_token_type,
-                                int n_steps = 0);
+    std::list<Token>::iterator find_next_token_of_type (
+        std::list<Token>::iterator current_position, TokenType type
+    );
 };
 
 

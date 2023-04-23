@@ -28,7 +28,7 @@ void Parser::parse_file()
     tokenizer.collect_tokens();
     for (Token token: tokenizer.tokens)
     {
-        //token.print_token();
+        token.print_token();
     }
 }
 

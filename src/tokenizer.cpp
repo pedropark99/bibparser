@@ -135,43 +135,67 @@ void Tokenizer::collect_tokens()
 
 void Tokenizer::redefine_bib_text_tokens()
 {
-    auto is_bib_entry = [](Token token) {return token.type == BIB_ENTRY;};
-    auto bib_entries = std::views::iota(tokens) | std::views::filter(is_bib_entry);
-    for (Token token: bib_entries)
-    {
-        token.print_token();
-    }
-}
-
-
-void Tokenizer::set_token_type_if(TokenType type_equal_to, TokenType new_token_type, int n_steps = 1)
-{
     std::list<Token>::iterator look_ahead;
     std::list<Token>::iterator look_behind;
     std::list<Token>::iterator token_it;
 
     for (token_it = tokens.begin(); token_it != tokens.end(); token_it++)
     {
-        if ((*token_it).type != type_equal_to)
-            continue;
-
-        if (n_steps > 0
-            & std::next(token_it, n_steps) != tokens.end()
-            & (*std::next(token_it, n_steps)).type == BIB_TEXT)
+        if ((*token_it).type == BIB_ENTRY
+            & std::next(token_it) != tokens.end()
+            & (*std::next(token_it)).type == BIB_TEXT)
         {
-            look_ahead = std::next(token_it, n_steps);
-            (*look_ahead).type = new_token_type;
+            look_ahead = std::next(token_it);
+            (*look_ahead).type = BIB_TYPE;
         }
 
-        if (n_steps < 0
-            & std::prev(token_it, abs(n_steps)) != tokens.begin()
-            & (*std::prev(token_it, abs(n_steps))).type == BIB_TEXT)
+        if ((*token_it).type == BIB_ENTRY)
         {
-            look_behind = std::prev(token_it, abs(n_steps));
-            (*look_behind).type = new_token_type;  
+            look_ahead = find_next_token_of_type(token_it, BIB_TEXT);
+            if (look_ahead != tokens.end())
+            {
+                (*look_ahead).type = BIB_IDENTIFIER;
+            }
+        }
+    }
+
+    for (token_it = tokens.begin(); token_it != tokens.end(); token_it++)
+    {
+        if ((*token_it).type == EQUAL_SIGN
+            & std::prev(token_it) != tokens.begin()
+            & (*std::prev(token_it)).type == BIB_TEXT)
+        {
+            look_behind = std::prev(token_it);
+            (*look_behind).type = BIB_ATTRIBUTE_KEY;
+        }
+
+        if ((*token_it).type == EQUAL_SIGN)
+        {
+            look_ahead = find_next_token_of_type(token_it, BIB_TEXT);
+            if (look_ahead != tokens.end())
+            {
+                (*look_ahead).type = BIB_ATTRIBUTE_VALUE;
+            }
         }
     }
 }
+
+
+std::list<Token>::iterator
+Tokenizer::find_next_token_of_type (std::list<Token>::iterator current_position, TokenType type)
+{
+    std::list<Token>::iterator token_it = current_position;
+    while (token_it != tokens.end())
+    {
+        if ((*token_it).type == type)
+        {
+            break;
+        }
+        token_it++;
+    }
+    return token_it;
+}
+
 
 
 
