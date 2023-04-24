@@ -1,9 +1,21 @@
 #pragma once
 #include <string>
 #include <list>
-#include <unordered_set>
-#include <unordered_map>
-#include <vector>
+
+
+
+struct SubString {
+    std::string::iterator begin;
+    std::string::iterator end;
+};
+
+struct TokenizerBuffer {
+    std::string::iterator begin;
+    std::string::iterator end;
+    std::string::iterator lexeme_begin;
+    std::string::iterator current_char;
+};
+
 
 
 
@@ -28,22 +40,7 @@ enum TokenType
 };
 
 std::string token_type_to_string(TokenType type);
-
-
-
-
-struct SubString {
-    std::string::iterator begin;
-    std::string::iterator end;
-};
-
-struct TokenizerBuffer {
-    std::string::iterator begin;
-    std::string::iterator end;
-    std::string::iterator lexeme_begin;
-    std::string::iterator current_char;
-};
-
+TokenType find_token_type(SubString token_value);
 
 
 
@@ -79,10 +76,8 @@ public:
     SubString collect_current_substring();
     void collect_tokens();
     void redefine_bib_text_tokens();
-    std::list<Token>::iterator find_next_token_of_type (
-        std::list<Token>::iterator current_position, TokenType type
-    );
+    
+    std::list<Token>::iterator
+    find_next_token_of_type (std::list<Token>::iterator current_position,
+                             TokenType type);
 };
-
-
-TokenType find_token_type(SubString token_value);
