@@ -1,10 +1,14 @@
 #include <string>
 #include <list>
 #include <unordered_map>
+#include <stack>
 
 
 #include "parser.hpp"
 #include "tokenizer.hpp"
+
+
+
 
 /*
 Parser steps:
@@ -34,11 +38,41 @@ void Parser::parse_file()
 }
 
 
-void Parser::parse_token(Token token)
+void Parser::parse_tokens(std::list<Token> entry_tokens)
 {
-    if (token.type == BIB_ENTRY)
+    Token current_token;
+    BibEntry bib_entry;
+    std::list<Token>::iterator token_it = entry_tokens.begin();
+    std::stack<Token> key_value_pair;
+
+    while (token_it != entry_tokens.end())
     {
-        stack_of_tokens.clear();
-        stack_of_tokens.emplace_back(token);
+        current_token = *token_it;
+        switch (current_token.type)
+        {
+        case BIB_TYPE:
+            bib_entry.type = parse_bibtype(current_token);
+            break;
+        case BIB_IDENTIFIER:
+            bib_entry.identifier = parse_identifier(current_token);
+            break;
+        case BIB_ATTRIBUTE_KEY:
+            check_key_value_stack(key_value_pair);
+            key_value_pair.emplace(current_token);
+            break;
+        case BIB_ATTRIBUTE_VALUE:
+            check_key_value_stack(key_value_pair);
+            key_value_pair.emplace(current_token);
+            bib_entry.attributes.emplace_back(
+                parse_bib_attribute(key_value_pair)
+            );
+            break;
+
+        default:
+            break;
+        }
+        
+        token_it++;
     }
+
 }
