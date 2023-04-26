@@ -10,8 +10,9 @@
 
 struct CmdLineOptions {
     std::string path_to_file;
-    bool build_tokens;
     bool parse_file;
+    bool print_tokens;
+    bool print_raw_tokens;
 };
 
 void parse_cmd_options(CmdLineOptions &options, int argc, char *argv[]);
@@ -20,7 +21,7 @@ void parse_cmd_options(CmdLineOptions &options, int argc, char *argv[]);
 int main(int argc, char *argv[])
 {
     CmdLineOptions options = {
-        "", false, true
+        "", true, false, false
     };
 
     parse_cmd_options(options, argc, argv);
@@ -30,13 +31,18 @@ int main(int argc, char *argv[])
         Parser parser = Parser(options.path_to_file);
         parser.parse_file();
     }
-    if (options.build_tokens == true)
+    if (options.print_tokens == true)
     {
         Tokenizer tokenizer = Tokenizer(options.path_to_file);
         tokenizer.collect_tokens();
         tokenizer.print_tokens();
     }
-    
+    if (options.print_raw_tokens == true)
+    {
+        Tokenizer tokenizer = Tokenizer(options.path_to_file);
+        tokenizer.collect_tokens(true);
+        tokenizer.print_tokens();
+    }
 }
 
 
@@ -55,7 +61,12 @@ void parse_cmd_options(CmdLineOptions &options, int argc, char *argv[])
         std::string current_argument = std::string(argv[i]);
         if (current_argument == "-t" | current_argument == "--tokens")
         {
-            options.build_tokens = true;
+            options.print_tokens = true;
+            options.parse_file = false;
+        }
+        if (current_argument == "-rt" | current_argument == "--raw-tokens")
+        {
+            options.print_raw_tokens = true;
             options.parse_file = false;
         }
     }

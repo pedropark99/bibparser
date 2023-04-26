@@ -118,7 +118,7 @@ SubString Tokenizer::collect_current_substring()
     return substring;
 }
 
-void Tokenizer::collect_tokens()
+void Tokenizer::collect_tokens(bool raw_tokens)
 {
     while (true)
     {
@@ -130,14 +130,21 @@ void Tokenizer::collect_tokens()
         }
     }
 
-    redefine_bib_text_tokens();
+    if (raw_tokens)
+    {
+        return;
+    }
+    else
+    {
+        redefine_bib_text_tokens();
+    }
 }
 
 void Tokenizer::redefine_bib_text_tokens()
 {
-    std::list<Token>::iterator look_ahead;
-    std::list<Token>::iterator look_behind;
-    std::list<Token>::iterator token_it;
+    std::list<Token>::iterator look_ahead = std::list<Token>::iterator();
+    std::list<Token>::iterator look_behind = std::list<Token>::iterator();
+    std::list<Token>::iterator token_it = std::list<Token>::iterator();
 
     for (token_it = tokens.begin(); token_it != tokens.end(); token_it++)
     {

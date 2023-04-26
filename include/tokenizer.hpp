@@ -74,7 +74,7 @@ public:
 
     Token get_next_token();
     SubString collect_current_substring();
-    void collect_tokens();
+    void collect_tokens(bool raw_tokens = false);
     void print_tokens();
     void redefine_bib_text_tokens();
     
