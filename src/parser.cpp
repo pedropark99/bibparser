@@ -64,29 +64,30 @@ BibIdentifier::BibIdentifier(SubString input_identifier)
 
 BibIdentifier parse_identifier(Token input_token)
 {
-    SubString identifier = input_token.value;
-    std::string::iterator current_char = identifier.begin;
-    while (current_char != identifier.end)
+    std::string identifier = substring_to_string(input_token.value);
+    if (identifier.find(' ') != identifier.npos)
     {
-        if (*current_char == ' ')
-        {
-            throw std::runtime_error("Identifier contains invalid characters");
-        }
+        throw std::runtime_error("Identifier contains invalid characters");
     }
 
-    return BibIdentifier(identifier);
+    return BibIdentifier(input_token.value);
 }
 
 
 void check_key_value_stack(std::stack<Token> &key_value_stack, Token input_token)
 {
+    if (key_value_stack.empty())
+    {
+        return;
+    }
+
     TokenType token_type = input_token.type;
-    Token top_stack = key_value_stack.top();
-    if (token_type == BIB_ATTRIBUTE_KEY & top_stack.type == BIB_ATTRIBUTE_KEY)
+
+    if (token_type == BIB_ATTRIBUTE_KEY & key_value_stack.top().type == BIB_ATTRIBUTE_KEY)
     {
         throw std::runtime_error("There are two BIB_ATTRIBUTE_KEY tokens in a row on the key-value pair stack!");
     }
-    if (token_type == BIB_ATTRIBUTE_VALUE & top_stack.type == BIB_ATTRIBUTE_VALUE)
+    if (token_type == BIB_ATTRIBUTE_VALUE & key_value_stack.top().type == BIB_ATTRIBUTE_VALUE)
     {
         throw std::runtime_error("There are two BIB_ATTRIBUTE_VALUE tokens in a row on the key-value pair stack!");
     }
@@ -185,6 +186,9 @@ void Parser::parse_entry_tokens(std::list<Token> entry_tokens)
     while (token_it != entry_tokens.end())
     {
         current_token = *token_it;
+        
+
+        "teste";
         switch (current_token.type)
         {
         case BIB_TYPE:
@@ -208,6 +212,7 @@ void Parser::parse_entry_tokens(std::list<Token> entry_tokens)
             break;
 
         default:
+            // BIB_ENTRY, NEW_LINE, COMMA, EQUAL_SIGN, etc.
             break;
         }
         
