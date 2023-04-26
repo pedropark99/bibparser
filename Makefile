@@ -48,27 +48,27 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/bin/cmake.exe
+CMAKE_COMMAND = /usr/bin/cmake
 
 # The command to remove a file.
-RM = /usr/bin/cmake.exe -E rm -f
+RM = /usr/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /c/Users/pedro.duarte/Documents/projects/bibparser
+CMAKE_SOURCE_DIR = /home/pedro/Documentos/Projetos/Packages/bibparser
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /c/Users/pedro.duarte/Documents/projects/bibparser
+CMAKE_BINARY_DIR = /home/pedro/Documentos/Projetos/Packages/bibparser
 
 #=============================================================================
 # Targets provided globally by CMake.
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/bin/ccmake.exe -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -78,7 +78,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake.exe --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /c/Users/pedro.duarte/Documents/projects/bibparser/CMakeFiles /c/Users/pedro.duarte/Documents/projects/bibparser//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pedro/Documentos/Projetos/Packages/bibparser/CMakeFiles /home/pedro/Documentos/Projetos/Packages/bibparser//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /c/Users/pedro.duarte/Documents/projects/bibparser/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pedro/Documentos/Projetos/Packages/bibparser/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -142,30 +142,6 @@ tests/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
 .PHONY : tests/fast
 
-src/global_variables.o: src/global_variables.cpp.o
-.PHONY : src/global_variables.o
-
-# target to build an object file
-src/global_variables.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/global_variables.cpp.o
-.PHONY : src/global_variables.cpp.o
-
-src/global_variables.i: src/global_variables.cpp.i
-.PHONY : src/global_variables.i
-
-# target to preprocess a source file
-src/global_variables.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/global_variables.cpp.i
-.PHONY : src/global_variables.cpp.i
-
-src/global_variables.s: src/global_variables.cpp.s
-.PHONY : src/global_variables.s
-
-# target to generate assembly for a file
-src/global_variables.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/global_variables.cpp.s
-.PHONY : src/global_variables.cpp.s
-
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -189,6 +165,30 @@ src/main.s: src/main.cpp.s
 src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
+
+src/parser.o: src/parser.cpp.o
+.PHONY : src/parser.o
+
+# target to build an object file
+src/parser.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/parser.cpp.o
+.PHONY : src/parser.cpp.o
+
+src/parser.i: src/parser.cpp.i
+.PHONY : src/parser.i
+
+# target to preprocess a source file
+src/parser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/parser.cpp.i
+.PHONY : src/parser.cpp.i
+
+src/parser.s: src/parser.cpp.s
+.PHONY : src/parser.s
+
+# target to generate assembly for a file
+src/parser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/parser.cpp.s
+.PHONY : src/parser.cpp.s
 
 src/read_bib.o: src/read_bib.cpp.o
 .PHONY : src/read_bib.o
@@ -296,12 +296,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... bibparser"
 	@echo "... tests"
-	@echo "... src/global_variables.o"
-	@echo "... src/global_variables.i"
-	@echo "... src/global_variables.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/parser.o"
+	@echo "... src/parser.i"
+	@echo "... src/parser.s"
 	@echo "... src/read_bib.o"
 	@echo "... src/read_bib.i"
 	@echo "... src/read_bib.s"
