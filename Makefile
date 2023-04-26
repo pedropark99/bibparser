@@ -142,30 +142,6 @@ tests/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
 .PHONY : tests/fast
 
-src/global_variables.o: src/global_variables.cpp.o
-.PHONY : src/global_variables.o
-
-# target to build an object file
-src/global_variables.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/global_variables.cpp.o
-.PHONY : src/global_variables.cpp.o
-
-src/global_variables.i: src/global_variables.cpp.i
-.PHONY : src/global_variables.i
-
-# target to preprocess a source file
-src/global_variables.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/global_variables.cpp.i
-.PHONY : src/global_variables.cpp.i
-
-src/global_variables.s: src/global_variables.cpp.s
-.PHONY : src/global_variables.s
-
-# target to generate assembly for a file
-src/global_variables.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/global_variables.cpp.s
-.PHONY : src/global_variables.cpp.s
-
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -189,6 +165,30 @@ src/main.s: src/main.cpp.s
 src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
+
+src/parser.o: src/parser.cpp.o
+.PHONY : src/parser.o
+
+# target to build an object file
+src/parser.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/parser.cpp.o
+.PHONY : src/parser.cpp.o
+
+src/parser.i: src/parser.cpp.i
+.PHONY : src/parser.i
+
+# target to preprocess a source file
+src/parser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/parser.cpp.i
+.PHONY : src/parser.cpp.i
+
+src/parser.s: src/parser.cpp.s
+.PHONY : src/parser.s
+
+# target to generate assembly for a file
+src/parser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/parser.cpp.s
+.PHONY : src/parser.cpp.s
 
 src/read_bib.o: src/read_bib.cpp.o
 .PHONY : src/read_bib.o
@@ -296,12 +296,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... bibparser"
 	@echo "... tests"
-	@echo "... src/global_variables.o"
-	@echo "... src/global_variables.i"
-	@echo "... src/global_variables.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/parser.o"
+	@echo "... src/parser.i"
+	@echo "... src/parser.s"
 	@echo "... src/read_bib.o"
 	@echo "... src/read_bib.i"
 	@echo "... src/read_bib.s"

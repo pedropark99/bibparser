@@ -3,7 +3,6 @@
 #include <filesystem>
 
 #include "read_bib.hpp"
-#include "global_variables.hpp"
 
 
 namespace bibparser
