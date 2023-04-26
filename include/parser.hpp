@@ -18,6 +18,8 @@ private:
 public:
     BibIdentifier(SubString input_identifier);
     BibIdentifier() = default;
+
+    void print_bib_identifier();
 };
 
 
@@ -36,6 +38,8 @@ private:
 public:
     BibAttribute(SubString input_key, SubString input_value);
     BibAttribute() = default;
+
+    void print_bib_attribute();
 };
 
 
@@ -51,14 +55,14 @@ class Parser
 private:
     Tokenizer tokenizer;
     ParserState parser_state;
-    std::unordered_map< TokenType, std::unordered_set<TokenType> >
-        expects_next;
+    std::list<BibEntry> bib_entries;
 
 public:
     Parser(std::string path_to_bib_file);
-    void parse_token(Token token);
-    void parse_tokens(std::list<Token> entry_tokens);
+    void parse_tokens();
+    void parse_entry_tokens(std::list<Token> entry_tokens);
     void parse_file();
+    void print_bib_entries();
 };
 
 
