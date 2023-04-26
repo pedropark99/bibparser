@@ -32,7 +32,7 @@ public:
     BibType(SubString input_type);
     BibType() = default;
     std::string as_string();
-    bool is_standard_bibtex_type(SubString type);
+    bool is_standard_bibtex_type();
     void print_bib_type();
 };
 

@@ -149,7 +149,7 @@ BibType parse_bibtype(Token input_token)
     return BibType(input_token.value);
 }
 
-bool BibType::is_standard_bibtex_type(SubString type)
+bool BibType::is_standard_bibtex_type()
 {
     if (std::find(
             standard_bibtex_types.begin(),
@@ -168,7 +168,7 @@ bool BibType::is_standard_bibtex_type(SubString type)
 BibType::BibType(SubString input_type)
 {
     type = input_type;
-    standard_bibtex_type = is_standard_bibtex_type(input_type);
+    standard_bibtex_type = is_standard_bibtex_type();
 }
 
 
