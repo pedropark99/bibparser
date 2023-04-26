@@ -145,7 +145,7 @@ void print_bib_entry(BibEntry &bib_entry)
         << "[BIB ENTRY]" << std::endl
         << "* Identifier: " << bib_entry.identifier.as_string() << std::endl
         << "* Type: " << bib_entry.type.as_string() << std::endl
-        << attributes_list;
+        << attributes_list << std::endl;
 }
 
 
@@ -171,11 +171,7 @@ void Parser::parse_file()
 {
     tokenizer.collect_tokens();
     parse_tokens();
-    print_bib_entry(*(bib_entries.begin()));
-    // for (Token token: tokenizer.tokens)
-    // {
-    //     token.print_token();
-    // }
+    print_bib_entries();
 }
 
 
@@ -269,6 +265,6 @@ void Parser::print_bib_entries()
 {
     for (BibEntry bib_entry: bib_entries)
     {
-        
+        print_bib_entry(bib_entry);
     }
 }
