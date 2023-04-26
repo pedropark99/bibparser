@@ -181,8 +181,17 @@ void Tokenizer::redefine_bib_text_tokens()
 }
 
 
-std::list<Token>::iterator
-Tokenizer::find_next_token_of_type (std::list<Token>::iterator current_position, TokenType type)
+void Tokenizer::print_tokens()
+{
+    for (Token token: tokens)
+    {
+        token.print_token();
+    }
+}
+
+
+std::list<Token>::iterator Tokenizer::find_next_token_of_type (std::list<Token>::iterator current_position,
+                                                               TokenType type)
 {
     std::list<Token>::iterator token_it = current_position;
     while (token_it != tokens.end())

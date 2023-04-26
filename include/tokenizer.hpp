@@ -75,9 +75,9 @@ public:
     Token get_next_token();
     SubString collect_current_substring();
     void collect_tokens();
+    void print_tokens();
     void redefine_bib_text_tokens();
     
-    std::list<Token>::iterator
-    find_next_token_of_type (std::list<Token>::iterator current_position,
-                             TokenType type);
+    std::list<Token>::iterator find_next_token_of_type (std::list<Token>::iterator current_position,
+                                                        TokenType type);
 };
