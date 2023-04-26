@@ -42,6 +42,7 @@ const std::unordered_set<std::string> allowed_bib_types = {
 
 
 
+
 class BibAttribute {
 private:
     SubString key;

@@ -29,8 +29,8 @@ void Parser::parse_file()
 
 void Parser::parse_tokens()
 {
-    Token current_token;
-    std::list<Token> entry_tokens;
+    Token current_token = Token();
+    std::list<Token> entry_tokens = std::list<Token>();
     std::list<Token>::iterator token_it = tokenizer.tokens.begin();
 
     if ((*token_it).type == BIB_ENTRY)
@@ -61,9 +61,9 @@ void Parser::parse_tokens()
 void Parser::parse_entry_tokens(std::list<Token> entry_tokens)
 {
     BibEntry bib_entry;
-    Token current_token;
+    Token current_token = Token();
     std::list<Token>::iterator token_it = entry_tokens.begin();
-    std::stack<Token> key_value_pair;
+    std::stack<Token> key_value_pair = std::stack<Token>();
 
     while (token_it != entry_tokens.end())
     {
@@ -166,12 +166,10 @@ BibType parse_bibtype(Token input_token)
 
 bool is_valid_bib_type(SubString type)
 {
-    std::string s_type = substring_to_string(type);
-
     if (std::find(
             allowed_bib_types.begin(),
             allowed_bib_types.end(),
-            s_type
+            substring_to_string(type)
         ) != allowed_bib_types.end())
     {
         return true;
