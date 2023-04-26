@@ -20,6 +20,7 @@ public:
     BibIdentifier() = default;
 
     void print_bib_identifier();
+    std::string as_string();
 };
 
 
@@ -29,6 +30,7 @@ private:
 public:
     BibType(SubString input_type);
     BibType() = default;
+    std::string as_string();
 };
 
 class BibAttribute {
@@ -38,8 +40,8 @@ private:
 public:
     BibAttribute(SubString input_key, SubString input_value);
     BibAttribute() = default;
-
     void print_bib_attribute();
+    std::string as_string();
 };
 
 
@@ -48,6 +50,8 @@ struct BibEntry {
 	BibType type;
 	std::list<BibAttribute> attributes;
 };
+
+void print_bib_entry();
 
 
 class Parser

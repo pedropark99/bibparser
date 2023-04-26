@@ -43,6 +43,11 @@ BibType::BibType(SubString input_type)
     type = input_type;
 }
 
+std::string BibType::as_string()
+{
+    return substring_to_string(type);
+}
+
 BibType parse_bibtype(Token input_token)
 {
     SubString type = input_token.value;
@@ -60,6 +65,11 @@ BibType parse_bibtype(Token input_token)
 BibIdentifier::BibIdentifier(SubString input_identifier)
 {
     identifier = input_identifier;
+}
+
+std::string BibIdentifier::as_string()
+{
+    return substring_to_string(identifier);
 }
 
 BibIdentifier parse_identifier(Token input_token)
@@ -105,6 +115,13 @@ BibAttribute::BibAttribute(SubString input_key, SubString input_value)
     value = input_value;
 }
 
+std::string BibAttribute::as_string()
+{
+    std::string s_key = substring_to_string(key);
+    std::string s_value = substring_to_string(value);
+    return s_key + "=" + s_value;
+}
+
 BibAttribute parse_bib_attribute(std::stack<Token> &key_value_stack)
 {
     Token attribute_value = key_value_stack.top();
@@ -112,6 +129,23 @@ BibAttribute parse_bib_attribute(std::stack<Token> &key_value_stack)
     Token attribute_key = key_value_stack.top();
     key_value_stack.pop();
     return BibAttribute(attribute_key.value, attribute_value.value); 
+}
+
+
+
+void print_bib_entry(BibEntry &bib_entry)
+{
+    std::string attributes_list = "* Attributes:\n";
+    for (BibAttribute bib_attribute: bib_entry.attributes)
+    {
+        attributes_list.append("  - " + bib_attribute.as_string() + "\n");
+    }
+
+    std::cout
+        << "[BIB ENTRY]" << std::endl
+        << "* Identifier: " << bib_entry.identifier.as_string() << std::endl
+        << "* Type: " << bib_entry.type.as_string() << std::endl
+        << attributes_list;
 }
 
 
@@ -137,10 +171,11 @@ void Parser::parse_file()
 {
     tokenizer.collect_tokens();
     parse_tokens();
-    for (Token token: tokenizer.tokens)
-    {
-        token.print_token();
-    }
+    print_bib_entry(*(bib_entries.begin()));
+    // for (Token token: tokenizer.tokens)
+    // {
+    //     token.print_token();
+    // }
 }
 
 
@@ -234,9 +269,6 @@ void Parser::print_bib_entries()
 {
     for (BibEntry bib_entry: bib_entries)
     {
-        std::cout << "[BIB ENTRY]" << std::endl
-            << "* Identifier: ";
-
-        bib_entry.identifier.print_bib_identifier();
+        
     }
 }
