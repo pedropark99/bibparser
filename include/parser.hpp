@@ -26,18 +26,31 @@ public:
 class BibType {
 private:
     SubString type;
+    bool standard_bibtex_type;
+    
 public:
     BibType(SubString input_type);
     BibType() = default;
-    void print_bib_type();
     std::string as_string();
+    bool is_standard_bibtex_type(SubString type);
+    void print_bib_type();
 };
 
-const std::unordered_set<std::string> allowed_bib_types = {
+const std::unordered_set<std::string> standard_bibtex_types = {
     "misc"
     , "article"
     , "manual"
     , "book"
+    , "booklet"
+    , "conference"
+    , "inbook"
+    , "incollection"
+    , "inproceedings"
+    , "mastersthesis"
+    , "phdthesis"
+    , "proceedings"
+    , "techreport"
+    , "unpublished"
 };
 
 
@@ -54,6 +67,10 @@ public:
     std::string as_string();
 };
 
+struct KeyValuePair {
+    Token key_token;
+    Token value_token;
+};
 
 
 
@@ -69,10 +86,7 @@ struct BibEntry {
 
 BibType parse_bibtype(Token input_token);
 BibIdentifier parse_identifier(Token input_token);
-BibAttribute parse_bib_attribute(std::stack<Token> &key_value_stack);
-bool is_valid_bib_type(SubString type);
-void check_key_value_stack(std::stack<Token> &key_value_stack, Token input_token);
-void clear_key_value_stack(std::stack<Token> &key_value_stack);
+BibAttribute parse_bib_attribute(KeyValuePair key_value_pair);
 void print_bib_entry(BibEntry &bib_entry);
 
 

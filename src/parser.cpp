@@ -61,9 +61,9 @@ void Parser::parse_tokens()
 void Parser::parse_entry_tokens(std::list<Token> entry_tokens)
 {
     BibEntry bib_entry;
+    KeyValuePair key_value_pair = {Token(), Token()};
     Token current_token = Token();
     std::list<Token>::iterator token_it = entry_tokens.begin();
-    std::stack<Token> key_value_pair = std::stack<Token>();
 
     while (token_it != entry_tokens.end())
     {
@@ -78,17 +78,13 @@ void Parser::parse_entry_tokens(std::list<Token> entry_tokens)
             bib_entry.identifier = parse_identifier(current_token);
             break;
         case BIB_ATTRIBUTE_KEY:
-            check_key_value_stack(key_value_pair, current_token);
-            clear_key_value_stack(key_value_pair);
-            key_value_pair.emplace(current_token);
+            key_value_pair.key_token = current_token;
             break;
         case BIB_ATTRIBUTE_VALUE:
-            check_key_value_stack(key_value_pair, current_token);
-            key_value_pair.emplace(current_token);
+            key_value_pair.value_token = current_token;
             bib_entry.attributes.emplace_back(
                 parse_bib_attribute(key_value_pair)
             );
-            clear_key_value_stack(key_value_pair);
             break;
 
         default:
@@ -143,11 +139,6 @@ void print_bib_entry(BibEntry &bib_entry)
 
 
 
-BibType::BibType(SubString input_type)
-{
-    type = input_type;
-}
-
 std::string BibType::as_string()
 {
     return substring_to_string(type);
@@ -155,22 +146,16 @@ std::string BibType::as_string()
 
 BibType parse_bibtype(Token input_token)
 {
-    SubString type = input_token.value;
-    if (!is_valid_bib_type(type))
-    {
-        throw std::runtime_error("Bib Type is invalid");
-    }
-
-    return BibType(type);
+    return BibType(input_token.value);
 }
 
-bool is_valid_bib_type(SubString type)
+bool BibType::is_standard_bibtex_type(SubString type)
 {
     if (std::find(
-            allowed_bib_types.begin(),
-            allowed_bib_types.end(),
+            standard_bibtex_types.begin(),
+            standard_bibtex_types.end(),
             substring_to_string(type)
-        ) != allowed_bib_types.end())
+        ) != standard_bibtex_types.end())
     {
         return true;
     }
@@ -178,6 +163,12 @@ bool is_valid_bib_type(SubString type)
     {
         return false;
     }
+}
+
+BibType::BibType(SubString input_type)
+{
+    type = input_type;
+    standard_bibtex_type = is_standard_bibtex_type(input_type);
 }
 
 
@@ -245,37 +236,10 @@ std::string BibAttribute::as_string()
     return s_key + "=" + s_value;
 }
 
-BibAttribute parse_bib_attribute(std::stack<Token> &key_value_stack)
+BibAttribute parse_bib_attribute(KeyValuePair key_value_pair)
 {
-    Token attribute_value = key_value_stack.top();
-    key_value_stack.pop();
-    Token attribute_key = key_value_stack.top();
-    key_value_stack.pop();
+    Token attribute_value = key_value_pair.value_token;
+    Token attribute_key = key_value_pair.key_token;
     return BibAttribute(attribute_key.value, attribute_value.value); 
 }
 
-
-void check_key_value_stack(std::stack<Token> &key_value_stack, Token input_token)
-{
-    if (key_value_stack.empty())
-    {
-        return;
-    }
-
-    TokenType token_type = input_token.type;
-
-    if (token_type == BIB_ATTRIBUTE_KEY & key_value_stack.top().type == BIB_ATTRIBUTE_KEY)
-    {
-        throw std::runtime_error("There are two BIB_ATTRIBUTE_KEY tokens in a row on the key-value pair stack!");
-    }
-    if (token_type == BIB_ATTRIBUTE_VALUE & key_value_stack.top().type == BIB_ATTRIBUTE_VALUE)
-    {
-        throw std::runtime_error("There are two BIB_ATTRIBUTE_VALUE tokens in a row on the key-value pair stack!");
-    }
-}
-
-void clear_key_value_stack(std::stack<Token> &key_value_stack)
-{
-    while(!key_value_stack.empty())
-        key_value_stack.pop();
-}
