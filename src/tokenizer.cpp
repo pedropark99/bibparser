@@ -2,7 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
-#include <ranges>
+#include <sstream>
 
 #include "read_bib.hpp"
 #include "tokenizer.hpp"
@@ -13,14 +13,24 @@ Token::Token(TokenType input_type, SubString input_value)
 {
     type = input_type;
     value = input_value;
+    line_in_source = 0;
 }
 
 std::string Token::as_string()
 {
-    std::string s_type = token_type_to_string(type);
-    std::string s_value = substring_to_string(value);
-    std::string text = s_type + ": " + s_value;
-    return text;
+    std::string s_line = "[Line in source]: " + line_integer_to_string();
+    std::string s_type = ", [Token Type]: " + token_type_to_string(type);
+    std::string s_value = ", [Token Value]: " + substring_to_string(value);
+    return s_line + s_type + s_value;
+}
+
+std::string Token::line_integer_to_string()
+{
+    std::stringstream stream;
+    std::string s_line;
+    stream << line_in_source;
+    stream >> s_line;
+    return s_line;
 }
 
 void Token::print_token()
@@ -120,6 +130,7 @@ SubString Tokenizer::collect_current_substring()
 
 void Tokenizer::collect_tokens(bool raw_tokens)
 {
+    int64_t temp_line_in_source = 1;
     while (true)
     {
         current_token = get_next_token();
@@ -127,6 +138,16 @@ void Tokenizer::collect_tokens(bool raw_tokens)
         if (current_token.type == END_OF_FILE)
         {
             break;
+        }
+    }
+
+    std::list<Token>::iterator token_it = tokens.begin();
+    for (token_it; token_it != tokens.end(); token_it++)
+    {
+        (*token_it).line_in_source = temp_line_in_source;
+        if ((*token_it).type == NEW_LINE)
+        {
+            temp_line_in_source++;
         }
     }
 

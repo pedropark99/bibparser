@@ -16,6 +16,15 @@
 Parser::Parser(std::string path_to_bib_file)
 {
     tokenizer = Tokenizer(path_to_bib_file);
+    parser_buffer = {
+        PARSING,
+        1,
+        std::list<Token>::iterator(),
+        std::list<Token>::iterator(),
+        std::list<Token>::iterator(),
+        std::list<Token>::iterator(),
+        std::list<Token>::iterator()
+    };
 }
 
 

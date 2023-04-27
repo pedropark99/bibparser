@@ -51,12 +51,14 @@ class Token {
 public:
     TokenType type;
     SubString value;
+    int64_t line_in_source;
 
     Token(TokenType input_type, SubString input_value);
     Token() = default;
 
     std::string as_string();
     SubString as_substring();
+    std::string line_integer_to_string();
     void print_token();
 };
 

@@ -61,7 +61,8 @@ bool starts_with(const std::string &string, const std::string start)
     return string.rfind(start, 0) == 0;
 }
 
-bool ends_with (const std::string &string, const std::string end) {
+bool ends_with (const std::string &string, const std::string end)
+{
     if (string.length() >= end.length()) {
         return ( 0 == string.compare(string.length() - end.length(), end.length(), end) );
     } else {

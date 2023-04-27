@@ -104,11 +104,23 @@ enum ParserState {
 };
 
 
+struct ParserBuffer {
+    ParserState parser_state;
+    int current_line_in_source;
+
+    std::list<Token>::iterator current_token;
+    std::list<Token>::iterator look_ahead;
+    std::list<Token>::iterator look_behind;
+    std::list<Token>::iterator begin;
+    std::list<Token>::iterator end;
+};
+
+
 class Parser
 {
 private:
     Tokenizer tokenizer;
-    ParserState parser_state;
+    ParserBuffer parser_buffer;
     std::list<BibEntry> bib_entries;
 
 public:
