@@ -52,6 +52,7 @@ void Parser::parse_tokens()
         token_it++;
     }
 
+    // Parse the remaining tokens in `entry_tokens`;
     parse_entry_tokens(entry_tokens);
 }
 
