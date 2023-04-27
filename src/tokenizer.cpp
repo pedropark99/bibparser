@@ -37,11 +37,11 @@ void Token::print_token()
 
 Tokenizer::Tokenizer(std::string path_to_bib_file)
 {
-    bib_file = read_bib_file(path_to_bib_file = path_to_bib_file);
-    std::string::iterator begin = bib_file.begin();
-    std::string::iterator end = bib_file.end();
+    bib_file_ = read_bib_file(path_to_bib_file = path_to_bib_file);
+    std::string::iterator begin = bib_file_.begin();
+    std::string::iterator end = bib_file_.end();
     
-    buf = {
+    buf_ = {
         begin,
         end,
         begin,
@@ -55,23 +55,23 @@ Token Tokenizer::get_next_token()
     SubString token_value;
     std::string::iterator look_ahead;
 
-    while (buf.current_char != buf.end)
+    while (buf_.current_char != buf_.end)
     {
-        if (*buf.current_char == '@' |
-            *buf.current_char == '{' |
-            *buf.current_char == '}' |
-            *buf.current_char == ',' |
-            *buf.current_char == '=' |
-            *buf.current_char == '"' |
-            *buf.current_char == '\n')
+        if (*buf_.current_char == '@' |
+            *buf_.current_char == '{' |
+            *buf_.current_char == '}' |
+            *buf_.current_char == ',' |
+            *buf_.current_char == '=' |
+            *buf_.current_char == '"' |
+            *buf_.current_char == '\n')
         {
             token_value = Tokenizer::collect_current_substring();
             break;
         }
 
-        if ((buf.current_char + 1) != buf.end)
+        if ((buf_.current_char + 1) != buf_.end)
         {
-            look_ahead = (buf.current_char + 1);
+            look_ahead = (buf_.current_char + 1);
         }
 
         if (*look_ahead == '@' |
@@ -86,12 +86,12 @@ Token Tokenizer::get_next_token()
             break;
         }
 
-        buf.current_char++;
+        buf_.current_char++;
     }
 
-    if (buf.current_char == buf.end)
+    if (buf_.current_char == buf_.end)
     {
-        return Token(END_OF_FILE, {buf.end, buf.end});
+        return Token(END_OF_FILE, {buf_.end, buf_.end});
     }
 
     token_value = trim_substring(token_value);
@@ -109,15 +109,15 @@ SubString Tokenizer::collect_current_substring()
 {
     SubString substring;
     substring = {
-        buf.lexeme_begin,
-        buf.current_char
+        buf_.lexeme_begin,
+        buf_.current_char
     };
 
-    if (buf.current_char != buf.end)
+    if (buf_.current_char != buf_.end)
     {
-        buf.current_char++;
+        buf_.current_char++;
     }
-    buf.lexeme_begin = buf.current_char;
+    buf_.lexeme_begin = buf_.current_char;
     return substring;
 }
 

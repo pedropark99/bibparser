@@ -64,8 +64,8 @@ public:
 
 class Tokenizer {
 private:
-    std::string bib_file;
-    TokenizerBuffer buf;
+    std::string bib_file_;
+    TokenizerBuffer buf_;
 
 public:
     std::list<Token> tokens;
