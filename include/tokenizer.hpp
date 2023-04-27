@@ -58,7 +58,6 @@ public:
 
     std::string as_string();
     SubString as_substring();
-    std::string line_integer_to_string();
     void print_token();
 };
 

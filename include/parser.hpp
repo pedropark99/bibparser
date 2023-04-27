@@ -106,7 +106,7 @@ enum ParserState {
 
 struct ParserBuffer {
     ParserState parser_state;
-    int current_line_in_source;
+    int64_t current_line_in_source;
 
     std::list<Token>::iterator current_token;
     std::list<Token>::iterator look_ahead;

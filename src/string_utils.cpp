@@ -227,3 +227,11 @@ std::vector<SubString> split_substring(SubString sub, const char delimiter)
 }
 
 
+std::string integer_to_string(int64_t i)
+{
+    std::stringstream stream;
+    std::string si;
+    stream << i;
+    stream >> si;
+    return si;
+}

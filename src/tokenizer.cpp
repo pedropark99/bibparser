@@ -18,20 +18,13 @@ Token::Token(TokenType input_type, SubString input_value)
 
 std::string Token::as_string()
 {
-    std::string s_line = "[Line in source]: " + line_integer_to_string();
+    std::string s_line = "[Line in source]: " + integer_to_string(line_in_source);
     std::string s_type = ", [Token Type]: " + token_type_to_string(type);
     std::string s_value = ", [Token Value]: " + substring_to_string(value);
     return s_line + s_type + s_value;
 }
 
-std::string Token::line_integer_to_string()
-{
-    std::stringstream stream;
-    std::string s_line;
-    stream << line_in_source;
-    stream >> s_line;
-    return s_line;
-}
+
 
 void Token::print_token()
 {
