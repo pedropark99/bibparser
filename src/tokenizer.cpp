@@ -50,18 +50,19 @@ Tokenizer::Tokenizer(std::string path_to_bib_file)
 
 Token Tokenizer::get_next_token()
 {
-    TokenType token_type;
-    SubString token_value;
+    TokenType token_type = TokenType();
+    SubString token_value = {
+        std::string::iterator(),
+        std::string::iterator()
+    };
+    std::unordered_set<char> delimiters = {
+        '@', '{', '}', ',',
+        '=', '"', '\n'
+    };
 
     while (buf_.current_char != buf_.end)
     {
-        if (*buf_.current_char == '@' |
-            *buf_.current_char == '{' |
-            *buf_.current_char == '}' |
-            *buf_.current_char == ',' |
-            *buf_.current_char == '=' |
-            *buf_.current_char == '"' |
-            *buf_.current_char == '\n')
+        if (char_equal_to_any_of(*buf_.current_char, delimiters))
         {
             token_value = Tokenizer::collect_current_substring();
             break;
@@ -72,13 +73,7 @@ Token Tokenizer::get_next_token()
             buf_.look_ahead = (buf_.current_char + 1);
         }
 
-        if (*buf_.look_ahead == '@' |
-            *buf_.look_ahead == '{' |
-            *buf_.look_ahead == '}' |
-            *buf_.look_ahead == ',' |
-            *buf_.look_ahead == '=' |
-            *buf_.look_ahead == '"' |
-            *buf_.look_ahead == '\n')
+        if (char_equal_to_any_of(*buf_.look_ahead, delimiters))
         {
             token_value = Tokenizer::collect_current_substring();
             break;
