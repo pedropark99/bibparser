@@ -14,6 +14,7 @@ struct TokenizerBuffer {
     std::string::iterator end;
     std::string::iterator lexeme_begin;
     std::string::iterator current_char;
+    std::string::iterator look_ahead;
 };
 
 

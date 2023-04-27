@@ -238,6 +238,30 @@ src/string_utils.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/string_utils.cpp.s
 .PHONY : src/string_utils.cpp.s
 
+src/syntax_checker.o: src/syntax_checker.cpp.o
+.PHONY : src/syntax_checker.o
+
+# target to build an object file
+src/syntax_checker.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/syntax_checker.cpp.o
+.PHONY : src/syntax_checker.cpp.o
+
+src/syntax_checker.i: src/syntax_checker.cpp.i
+.PHONY : src/syntax_checker.i
+
+# target to preprocess a source file
+src/syntax_checker.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/syntax_checker.cpp.i
+.PHONY : src/syntax_checker.cpp.i
+
+src/syntax_checker.s: src/syntax_checker.cpp.s
+.PHONY : src/syntax_checker.s
+
+# target to generate assembly for a file
+src/syntax_checker.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/bibparser.dir/build.make CMakeFiles/bibparser.dir/src/syntax_checker.cpp.s
+.PHONY : src/syntax_checker.cpp.s
+
 src/tokenizer.o: src/tokenizer.cpp.o
 .PHONY : src/tokenizer.o
 
@@ -308,6 +332,9 @@ help:
 	@echo "... src/string_utils.o"
 	@echo "... src/string_utils.i"
 	@echo "... src/string_utils.s"
+	@echo "... src/syntax_checker.o"
+	@echo "... src/syntax_checker.i"
+	@echo "... src/syntax_checker.s"
 	@echo "... src/tokenizer.o"
 	@echo "... src/tokenizer.i"
 	@echo "... src/tokenizer.s"

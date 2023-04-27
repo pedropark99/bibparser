@@ -72,6 +72,19 @@ bool ends_with (const std::string &string, const std::string end)
 
 
 
+bool char_equal_to_any_of(const char chr, std::unordered_set<char> set)
+{
+    return set.count(chr);
+}
+
+bool string_equal_to_any_of(const std::string str, std::unordered_set<std::string> set)
+{
+    return set.count(str);
+}
+
+
+
+
 
 
 int count_char(std::string &string, char chr)

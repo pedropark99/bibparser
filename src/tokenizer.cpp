@@ -18,10 +18,10 @@ Token::Token(TokenType input_type, SubString input_value)
 
 std::string Token::as_string()
 {
-    std::string s_line = "[Line in source]: " + integer_to_string(line_in_source_);
-    std::string s_type = ", [Token Type]: " + token_type_to_string(type_);
-    std::string s_value = ", [Token Value]: " + substring_to_string(value_);
-    return s_line + s_type + s_value;
+    std::string s_line = "* Line in source: " + integer_to_string(line_in_source_) + "\n";
+    std::string s_type = "* Token Type: " + token_type_to_string(type_)  + "\n";
+    std::string s_value = "* Token Value: " + substring_to_string(value_)  + "\n\n";
+    return "[TOKEN]\n" + s_line + s_type + s_value;
 }
 
 
@@ -38,14 +38,13 @@ void Token::print_token()
 Tokenizer::Tokenizer(std::string path_to_bib_file)
 {
     bib_file_ = read_bib_file(path_to_bib_file = path_to_bib_file);
-    std::string::iterator begin = bib_file_.begin();
-    std::string::iterator end = bib_file_.end();
     
     buf_ = {
-        begin,
-        end,
-        begin,
-        begin
+        bib_file_.begin(),
+        bib_file_.end(),
+        bib_file_.begin(),
+        bib_file_.begin(),
+        bib_file_.begin()
     };
 }
 
@@ -53,7 +52,6 @@ Token Tokenizer::get_next_token()
 {
     TokenType token_type;
     SubString token_value;
-    std::string::iterator look_ahead;
 
     while (buf_.current_char != buf_.end)
     {
@@ -71,16 +69,16 @@ Token Tokenizer::get_next_token()
 
         if ((buf_.current_char + 1) != buf_.end)
         {
-            look_ahead = (buf_.current_char + 1);
+            buf_.look_ahead = (buf_.current_char + 1);
         }
 
-        if (*look_ahead == '@' |
-            *look_ahead == '{' |
-            *look_ahead == '}' |
-            *look_ahead == ',' |
-            *look_ahead == '=' |
-            *look_ahead == '"' |
-            *look_ahead == '\n')
+        if (*buf_.look_ahead == '@' |
+            *buf_.look_ahead == '{' |
+            *buf_.look_ahead == '}' |
+            *buf_.look_ahead == ',' |
+            *buf_.look_ahead == '=' |
+            *buf_.look_ahead == '"' |
+            *buf_.look_ahead == '\n')
         {
             token_value = Tokenizer::collect_current_substring();
             break;
