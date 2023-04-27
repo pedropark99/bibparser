@@ -49,9 +49,9 @@ TokenType find_token_type(SubString token_value);
 
 class Token {
 public:
-    TokenType type;
-    SubString value;
-    int64_t line_in_source;
+    TokenType type_;
+    SubString value_;
+    int64_t line_in_source_;
 
     Token(TokenType input_type, SubString input_value);
     Token() = default;

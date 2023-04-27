@@ -50,7 +50,7 @@ void Parser::parse_tokens()
         {
             next_token = *std::next(token_it);
         }
-        if (next_token.type == BIB_ENTRY)
+        if (next_token.type_ == BIB_ENTRY)
         {
             entry_tokens.emplace_back(current_token);
             parse_entry_tokens(entry_tokens);
@@ -83,7 +83,7 @@ void Parser::parse_entry_tokens(std::list<Token> &entry_tokens)
     {
         current_token = *token_it;
         
-        switch (current_token.type)
+        switch (current_token.type_)
         {
         case BIB_TYPE:
             bib_entry.type = parse_bibtype(current_token);
@@ -155,7 +155,7 @@ void print_bib_entry(BibEntry &bib_entry)
 
 BibType parse_bibtype(Token input_token)
 {
-    return BibType(input_token.value);
+    return BibType(input_token.value_);
 }
 
 BibType::BibType(SubString input_type)
@@ -219,13 +219,13 @@ void BibIdentifier::print_bib_identifier()
 
 BibIdentifier parse_identifier(Token input_token)
 {
-    std::string identifier = substring_to_string(input_token.value);
+    std::string identifier = substring_to_string(input_token.value_);
     if (identifier.find(' ') != identifier.npos)
     {
         throw std::runtime_error("Identifier contains invalid characters");
     }
 
-    return BibIdentifier(input_token.value);
+    return BibIdentifier(input_token.value_);
 }
 
 
@@ -258,6 +258,6 @@ BibAttribute parse_bib_attribute(KeyValuePair key_value_pair)
 {
     Token attribute_value = key_value_pair.value_token;
     Token attribute_key = key_value_pair.key_token;
-    return BibAttribute(attribute_key.value, attribute_value.value); 
+    return BibAttribute(attribute_key.value_, attribute_value.value_); 
 }
 
