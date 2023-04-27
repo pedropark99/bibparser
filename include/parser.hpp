@@ -12,7 +12,7 @@
 
 class BibIdentifier {
 private:
-    SubString identifier;
+    SubString identifier_;
 public:
     BibIdentifier(SubString input_identifier);
     BibIdentifier() = default;
@@ -25,8 +25,8 @@ public:
 
 class BibType {
 private:
-    SubString type;
-    bool standard_bibtex_type;
+    SubString type_;
+    bool standard_bibtex_type_;
     
 public:
     BibType(SubString input_type);
@@ -58,8 +58,8 @@ const std::unordered_set<std::string> standard_bibtex_types = {
 
 class BibAttribute {
 private:
-    SubString key;
-    SubString value;
+    SubString key_;
+    SubString value_;
 public:
     BibAttribute(SubString input_key, SubString input_value);
     BibAttribute() = default;
@@ -119,9 +119,9 @@ struct ParserBuffer {
 class Parser
 {
 private:
-    Tokenizer tokenizer;
-    ParserBuffer parser_buffer;
-    std::list<BibEntry> bib_entries;
+    Tokenizer tokenizer_;
+    ParserBuffer parser_buffer_;
+    std::list<BibEntry> bib_entries_;
 
 public:
     Parser(std::string path_to_bib_file);

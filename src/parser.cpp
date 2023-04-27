@@ -15,8 +15,8 @@
 
 Parser::Parser(std::string path_to_bib_file)
 {
-    tokenizer = Tokenizer(path_to_bib_file);
-    parser_buffer = {
+    tokenizer_ = Tokenizer(path_to_bib_file);
+    parser_buffer_ = {
         PARSING,
         1,
         std::list<Token>::iterator(),
@@ -30,7 +30,7 @@ Parser::Parser(std::string path_to_bib_file)
 
 void Parser::parse_file()
 {
-    tokenizer.collect_tokens();
+    tokenizer_.collect_tokens();
     parse_tokens();
     print_bib_entries();
 }
@@ -41,12 +41,12 @@ void Parser::parse_tokens()
     Token current_token = Token();
     Token next_token = Token();
     std::list<Token> entry_tokens = std::list<Token>();
-    std::list<Token>::iterator token_it = tokenizer.tokens.begin();
+    std::list<Token>::iterator token_it = tokenizer_.tokens.begin();
 
-    while (token_it != tokenizer.tokens.end())
+    while (token_it != tokenizer_.tokens.end())
     {
         current_token = *token_it;
-        if (std::next(token_it) != tokenizer.tokens.end())
+        if (std::next(token_it) != tokenizer_.tokens.end())
         {
             next_token = *std::next(token_it);
         }
@@ -109,13 +109,13 @@ void Parser::parse_entry_tokens(std::list<Token> &entry_tokens)
         token_it++;
     }
 
-    bib_entries.emplace_back(bib_entry);
+    bib_entries_.emplace_back(bib_entry);
 }
 
 
 void Parser::print_bib_entries()
 {
-    for (BibEntry bib_entry: bib_entries)
+    for (BibEntry bib_entry: bib_entries_)
     {
         print_bib_entry(bib_entry);
     }
@@ -160,8 +160,8 @@ BibType parse_bibtype(Token input_token)
 
 BibType::BibType(SubString input_type)
 {
-    type = input_type;
-    standard_bibtex_type = is_standard_bibtex_type();
+    type_ = input_type;
+    standard_bibtex_type_ = is_standard_bibtex_type();
 }
 
 bool BibType::is_standard_bibtex_type()
@@ -169,7 +169,7 @@ bool BibType::is_standard_bibtex_type()
     bool is_standard_bibtex_type = std::find(
         standard_bibtex_types.begin(),
         standard_bibtex_types.end(),
-        substring_to_string(type)
+        substring_to_string(type_)
     ) != standard_bibtex_types.end();
 
     return is_standard_bibtex_type;
@@ -177,8 +177,14 @@ bool BibType::is_standard_bibtex_type()
 
 std::string BibType::as_string()
 {
-    return substring_to_string(type);
+    return substring_to_string(type_);
 }
+
+void BibType::print_bib_type()
+{
+    std::cout << "Type: " << as_string() << std::endl;
+}
+
 
 
 
@@ -198,17 +204,17 @@ std::string BibType::as_string()
 
 BibIdentifier::BibIdentifier(SubString input_identifier)
 {
-    identifier = input_identifier;
+    identifier_ = input_identifier;
 }
 
 std::string BibIdentifier::as_string()
 {
-    return substring_to_string(identifier);
+    return substring_to_string(identifier_);
 }
 
 void BibIdentifier::print_bib_identifier()
 {
-    std::cout << substring_to_string(identifier);
+    std::cout << substring_to_string(identifier_);
 }
 
 BibIdentifier parse_identifier(Token input_token)
@@ -237,14 +243,14 @@ BibIdentifier parse_identifier(Token input_token)
 
 BibAttribute::BibAttribute(SubString input_key, SubString input_value)
 {
-    key = input_key;
-    value = input_value;
+    key_ = input_key;
+    value_ = input_value;
 }
 
 std::string BibAttribute::as_string()
 {
-    std::string s_key = substring_to_string(key);
-    std::string s_value = substring_to_string(value);
+    std::string s_key = substring_to_string(key_);
+    std::string s_value = substring_to_string(value_);
     return s_key + "=" + s_value;
 }
 
