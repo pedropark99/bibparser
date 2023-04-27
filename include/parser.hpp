@@ -12,7 +12,7 @@
 
 class BibIdentifier {
 private:
-    SubString identifier;
+    SubString identifier_;
 public:
     BibIdentifier(SubString input_identifier);
     BibIdentifier() = default;
@@ -25,8 +25,8 @@ public:
 
 class BibType {
 private:
-    SubString type;
-    bool standard_bibtex_type;
+    SubString type_;
+    bool standard_bibtex_type_;
     
 public:
     BibType(SubString input_type);
@@ -58,8 +58,8 @@ const std::unordered_set<std::string> standard_bibtex_types = {
 
 class BibAttribute {
 private:
-    SubString key;
-    SubString value;
+    SubString key_;
+    SubString value_;
 public:
     BibAttribute(SubString input_key, SubString input_value);
     BibAttribute() = default;
@@ -104,17 +104,29 @@ enum ParserState {
 };
 
 
+struct ParserBuffer {
+    ParserState parser_state;
+    int64_t current_line_in_source;
+
+    std::list<Token>::iterator current_token;
+    std::list<Token>::iterator look_ahead;
+    std::list<Token>::iterator look_behind;
+    std::list<Token>::iterator begin;
+    std::list<Token>::iterator end;
+};
+
+
 class Parser
 {
 private:
-    Tokenizer tokenizer;
-    ParserState parser_state;
-    std::list<BibEntry> bib_entries;
+    Tokenizer tokenizer_;
+    ParserBuffer parser_buffer_;
+    std::list<BibEntry> bib_entries_;
 
 public:
     Parser(std::string path_to_bib_file);
     void parse_tokens();
-    void parse_entry_tokens(std::list<Token> entry_tokens);
+    void parse_entry_tokens(std::list<Token> &entry_tokens);
     void parse_file();
     void print_bib_entries();
 };

@@ -49,8 +49,9 @@ TokenType find_token_type(SubString token_value);
 
 class Token {
 public:
-    TokenType type;
-    SubString value;
+    TokenType type_;
+    SubString value_;
+    int64_t line_in_source_;
 
     Token(TokenType input_type, SubString input_value);
     Token() = default;
@@ -63,8 +64,8 @@ public:
 
 class Tokenizer {
 private:
-    std::string bib_file;
-    TokenizerBuffer buf;
+    std::string bib_file_;
+    TokenizerBuffer buf_;
 
 public:
     std::list<Token> tokens;

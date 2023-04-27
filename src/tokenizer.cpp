@@ -2,7 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
-#include <ranges>
+#include <sstream>
 
 #include "read_bib.hpp"
 #include "tokenizer.hpp"
@@ -11,17 +11,20 @@
 
 Token::Token(TokenType input_type, SubString input_value)
 {
-    type = input_type;
-    value = input_value;
+    type_ = input_type;
+    value_ = input_value;
+    line_in_source_ = 0;
 }
 
 std::string Token::as_string()
 {
-    std::string s_type = token_type_to_string(type);
-    std::string s_value = substring_to_string(value);
-    std::string text = s_type + ": " + s_value;
-    return text;
+    std::string s_line = "[Line in source]: " + integer_to_string(line_in_source_);
+    std::string s_type = ", [Token Type]: " + token_type_to_string(type_);
+    std::string s_value = ", [Token Value]: " + substring_to_string(value_);
+    return s_line + s_type + s_value;
 }
+
+
 
 void Token::print_token()
 {
@@ -34,11 +37,11 @@ void Token::print_token()
 
 Tokenizer::Tokenizer(std::string path_to_bib_file)
 {
-    bib_file = read_bib_file(path_to_bib_file = path_to_bib_file);
-    std::string::iterator begin = bib_file.begin();
-    std::string::iterator end = bib_file.end();
+    bib_file_ = read_bib_file(path_to_bib_file = path_to_bib_file);
+    std::string::iterator begin = bib_file_.begin();
+    std::string::iterator end = bib_file_.end();
     
-    buf = {
+    buf_ = {
         begin,
         end,
         begin,
@@ -52,23 +55,23 @@ Token Tokenizer::get_next_token()
     SubString token_value;
     std::string::iterator look_ahead;
 
-    while (buf.current_char != buf.end)
+    while (buf_.current_char != buf_.end)
     {
-        if (*buf.current_char == '@' |
-            *buf.current_char == '{' |
-            *buf.current_char == '}' |
-            *buf.current_char == ',' |
-            *buf.current_char == '=' |
-            *buf.current_char == '"' |
-            *buf.current_char == '\n')
+        if (*buf_.current_char == '@' |
+            *buf_.current_char == '{' |
+            *buf_.current_char == '}' |
+            *buf_.current_char == ',' |
+            *buf_.current_char == '=' |
+            *buf_.current_char == '"' |
+            *buf_.current_char == '\n')
         {
             token_value = Tokenizer::collect_current_substring();
             break;
         }
 
-        if ((buf.current_char + 1) != buf.end)
+        if ((buf_.current_char + 1) != buf_.end)
         {
-            look_ahead = (buf.current_char + 1);
+            look_ahead = (buf_.current_char + 1);
         }
 
         if (*look_ahead == '@' |
@@ -83,12 +86,12 @@ Token Tokenizer::get_next_token()
             break;
         }
 
-        buf.current_char++;
+        buf_.current_char++;
     }
 
-    if (buf.current_char == buf.end)
+    if (buf_.current_char == buf_.end)
     {
-        return Token(END_OF_FILE, {buf.end, buf.end});
+        return Token(END_OF_FILE, {buf_.end, buf_.end});
     }
 
     token_value = trim_substring(token_value);
@@ -106,27 +109,38 @@ SubString Tokenizer::collect_current_substring()
 {
     SubString substring;
     substring = {
-        buf.lexeme_begin,
-        buf.current_char
+        buf_.lexeme_begin,
+        buf_.current_char
     };
 
-    if (buf.current_char != buf.end)
+    if (buf_.current_char != buf_.end)
     {
-        buf.current_char++;
+        buf_.current_char++;
     }
-    buf.lexeme_begin = buf.current_char;
+    buf_.lexeme_begin = buf_.current_char;
     return substring;
 }
 
 void Tokenizer::collect_tokens(bool raw_tokens)
 {
+    int64_t temp_line_in_source = 1;
     while (true)
     {
         current_token = get_next_token();
         tokens.emplace_back(current_token);
-        if (current_token.type == END_OF_FILE)
+        if (current_token.type_ == END_OF_FILE)
         {
             break;
+        }
+    }
+
+    std::list<Token>::iterator token_it = tokens.begin();
+    for (token_it; token_it != tokens.end(); token_it++)
+    {
+        (*token_it).line_in_source_ = temp_line_in_source;
+        if ((*token_it).type_ == NEW_LINE)
+        {
+            temp_line_in_source++;
         }
     }
 
@@ -148,40 +162,40 @@ void Tokenizer::redefine_bib_text_tokens()
 
     for (token_it = tokens.begin(); token_it != tokens.end(); token_it++)
     {
-        if ((*token_it).type == BIB_ENTRY
+        if ((*token_it).type_ == BIB_ENTRY
             & std::next(token_it) != tokens.end()
-            & (*std::next(token_it)).type == BIB_TEXT)
+            & (*std::next(token_it)).type_ == BIB_TEXT)
         {
             look_ahead = std::next(token_it);
-            (*look_ahead).type = BIB_TYPE;
+            (*look_ahead).type_ = BIB_TYPE;
         }
 
-        if ((*token_it).type == BIB_ENTRY)
+        if ((*token_it).type_ == BIB_ENTRY)
         {
             look_ahead = find_next_token_of_type(token_it, BIB_TEXT);
             if (look_ahead != tokens.end())
             {
-                (*look_ahead).type = BIB_IDENTIFIER;
+                (*look_ahead).type_ = BIB_IDENTIFIER;
             }
         }
     }
 
     for (token_it = tokens.begin(); token_it != tokens.end(); token_it++)
     {
-        if ((*token_it).type == EQUAL_SIGN
+        if ((*token_it).type_ == EQUAL_SIGN
             & std::prev(token_it) != tokens.begin()
-            & (*std::prev(token_it)).type == BIB_TEXT)
+            & (*std::prev(token_it)).type_ == BIB_TEXT)
         {
             look_behind = std::prev(token_it);
-            (*look_behind).type = BIB_ATTRIBUTE_KEY;
+            (*look_behind).type_ = BIB_ATTRIBUTE_KEY;
         }
 
-        if ((*token_it).type == EQUAL_SIGN)
+        if ((*token_it).type_ == EQUAL_SIGN)
         {
             look_ahead = find_next_token_of_type(token_it, BIB_TEXT);
             if (look_ahead != tokens.end())
             {
-                (*look_ahead).type = BIB_ATTRIBUTE_VALUE;
+                (*look_ahead).type_ = BIB_ATTRIBUTE_VALUE;
             }
         }
     }
@@ -203,7 +217,7 @@ std::list<Token>::iterator Tokenizer::find_next_token_of_type (std::list<Token>:
     std::list<Token>::iterator token_it = current_position;
     while (token_it != tokens.end())
     {
-        if ((*token_it).type == type)
+        if ((*token_it).type_ == type)
         {
             break;
         }

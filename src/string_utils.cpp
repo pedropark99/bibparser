@@ -61,7 +61,8 @@ bool starts_with(const std::string &string, const std::string start)
     return string.rfind(start, 0) == 0;
 }
 
-bool ends_with (const std::string &string, const std::string end) {
+bool ends_with (const std::string &string, const std::string end)
+{
     if (string.length() >= end.length()) {
         return ( 0 == string.compare(string.length() - end.length(), end.length(), end) );
     } else {
@@ -226,3 +227,11 @@ std::vector<SubString> split_substring(SubString sub, const char delimiter)
 }
 
 
+std::string integer_to_string(int64_t i)
+{
+    std::stringstream stream;
+    std::string si;
+    stream << i;
+    stream >> si;
+    return si;
+}
