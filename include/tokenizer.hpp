@@ -36,7 +36,8 @@ enum TokenType
     OPEN_BRACKET = 5238,
     CLOSE_BRACKET = 5239,
     EQUAL_SIGN = 5340,
-    QUOTATION_MARK = 5341
+    QUOTATION_MARK = 5341,
+    UNKNOWN = 5342
 };
 
 std::string token_type_to_string(TokenType type);

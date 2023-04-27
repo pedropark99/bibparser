@@ -217,12 +217,9 @@ std::list<Token>::iterator Tokenizer::find_next_token_of_type (std::list<Token>:
 
 TokenType find_token_type(SubString token_value)
 {
-    TokenType type;
-    if (token_value.begin != token_value.end)
-    {
-        type = BIB_TEXT;
-    }
-    else
+    TokenType type = UNKNOWN;
+
+    if (token_value.begin == token_value.end)
     {
         char value = substring_to_char(token_value);
         switch (value)
@@ -258,6 +255,11 @@ TokenType find_token_type(SubString token_value)
         default:
             break;
         }
+    }
+
+    if (type == UNKNOWN)
+    {
+        type = BIB_TEXT;
     }
 
     return type;

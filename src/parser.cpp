@@ -30,31 +30,29 @@ void Parser::parse_file()
 void Parser::parse_tokens()
 {
     Token current_token = Token();
+    Token next_token = Token();
     std::list<Token> entry_tokens = std::list<Token>();
     std::list<Token>::iterator token_it = tokenizer.tokens.begin();
 
-    if ((*token_it).type == BIB_ENTRY)
+    while (token_it != tokenizer.tokens.end())
     {
+        if (std::next(token_it) != tokenizer.tokens.end())
+        {
+            next_token = *std::next(token_it);
+        }
+        if (next_token.type == BIB_ENTRY)
+        {
+            parse_entry_tokens(entry_tokens);
+            entry_tokens.clear();
+            token_it++;
+            continue;
+        }
+
         entry_tokens.emplace_back(*token_it);
         token_it++;
     }
 
-    while (token_it != tokenizer.tokens.end())
-    {
-        current_token = *token_it;
-        if (current_token.type == BIB_ENTRY)
-        {
-            parse_entry_tokens(entry_tokens);
-            entry_tokens.clear();
-            entry_tokens.emplace_back(current_token);
-        }
-        else
-        {
-            entry_tokens.emplace_back(current_token);
-        }
-
-        token_it++;
-    }
+    parse_entry_tokens(entry_tokens);
 }
 
 
