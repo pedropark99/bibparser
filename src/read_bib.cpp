@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include "read_bib.hpp"
+#include "string_utils.hpp"
 
 
 namespace bibparser
@@ -17,9 +18,18 @@ std::string get_path_to_file(int argc, char *argv[])
     {
         throw std::runtime_error("You have to give the path to a bib file to `bibparser`!");
     }
-    std::string path_string = std::string(argv[1]);
-    std::filesystem::path path_to_file = std::filesystem::absolute(path_string);
-    return path_to_file.string();
+
+    for (int i = 1; i < argc; i++)
+    {
+        std::string current_argument = std::string(argv[i]);
+        if (ends_with(current_argument, ".bib"))
+        {
+            std::filesystem::path path_to_file = std::filesystem::absolute(current_argument);
+            return path_to_file.string();
+        }
+    }
+
+    throw std::runtime_error("`bibparser` did not find a path to a bib file!");
 }
 
 
