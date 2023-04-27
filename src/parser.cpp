@@ -153,14 +153,15 @@ void print_bib_entry(BibEntry &bib_entry)
 
 
 
-std::string BibType::as_string()
-{
-    return substring_to_string(type);
-}
-
 BibType parse_bibtype(Token input_token)
 {
     return BibType(input_token.value);
+}
+
+BibType::BibType(SubString input_type)
+{
+    type = input_type;
+    standard_bibtex_type = is_standard_bibtex_type();
 }
 
 bool BibType::is_standard_bibtex_type()
@@ -174,11 +175,13 @@ bool BibType::is_standard_bibtex_type()
     return is_standard_bibtex_type;
 }
 
-BibType::BibType(SubString input_type)
+std::string BibType::as_string()
 {
-    type = input_type;
-    standard_bibtex_type = is_standard_bibtex_type();
+    return substring_to_string(type);
 }
+
+
+
 
 
 
