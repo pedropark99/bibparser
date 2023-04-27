@@ -45,19 +45,21 @@ void Parser::parse_tokens()
 
     while (token_it != tokenizer.tokens.end())
     {
+        current_token = *token_it;
         if (std::next(token_it) != tokenizer.tokens.end())
         {
             next_token = *std::next(token_it);
         }
         if (next_token.type == BIB_ENTRY)
         {
+            entry_tokens.emplace_back(current_token);
             parse_entry_tokens(entry_tokens);
             entry_tokens.clear();
             token_it++;
             continue;
         }
 
-        entry_tokens.emplace_back(*token_it);
+        entry_tokens.emplace_back(current_token);
         token_it++;
     }
 
@@ -66,9 +68,13 @@ void Parser::parse_tokens()
 }
 
 
-void Parser::parse_entry_tokens(std::list<Token> entry_tokens)
+void Parser::parse_entry_tokens(std::list<Token> &entry_tokens)
 {
-    BibEntry bib_entry;
+    BibEntry bib_entry = {
+        BibIdentifier(),
+        BibType(),
+        std::list<BibAttribute>()
+    };
     KeyValuePair key_value_pair = {Token(), Token()};
     Token current_token = Token();
     std::list<Token>::iterator token_it = entry_tokens.begin();
