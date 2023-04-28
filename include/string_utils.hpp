@@ -18,6 +18,7 @@ bool ends_with (const std::string &string, const std::string end);
 
 int count_char(std::string &string, char chr);
 int count_char(SubString string, char chr);
+int32_t substring_size(SubString substring);
 void find_first_position(std::string &string, char chr);
 bool substring_is_space(SubString sub);
 

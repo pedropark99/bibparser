@@ -50,58 +50,55 @@ Tokenizer::Tokenizer(std::string path_to_bib_file)
 
 Token Tokenizer::get_next_token()
 {
-    TokenType token_type = TokenType();
-    SubString token_value = {
-        std::string::iterator(),
-        std::string::iterator()
-    };
+    Token token = Token();
     std::unordered_set<char> delimiters = {
         '@', '{', '}', ',',
-        '=', '"', '\n'
+        '=', '"', '\n',
+        '\0'
     };
 
-    while (buf_.current_char != buf_.end)
+    if (char_equal_to_any_of(*buf_.current_char, delimiters))
     {
-        if (char_equal_to_any_of(*buf_.current_char, delimiters))
-        {
-            token_value = Tokenizer::collect_current_substring();
-            break;
-        }
+        token = collect_token(buf_.lexeme_begin, buf_.current_char);
+        buf_.current_char++;
+        buf_.lexeme_begin = buf_.current_char;
+        return token;
+    }
 
-        if ((buf_.current_char + 1) != buf_.end)
+    while (true)
+    {
+        if (std::next(buf_.current_char) != buf_.end)
         {
-            buf_.look_ahead = (buf_.current_char + 1);
+            buf_.look_ahead = buf_.current_char + 1;
         }
 
         if (char_equal_to_any_of(*buf_.look_ahead, delimiters))
         {
-            token_value = Tokenizer::collect_current_substring();
+            token = collect_token(buf_.lexeme_begin, buf_.current_char);
+            buf_.current_char++;
+            buf_.lexeme_begin = buf_.current_char;
             break;
         }
 
         buf_.current_char++;
     }
 
-    if (buf_.current_char == buf_.end)
-    {
-        return Token(END_OF_FILE, {buf_.end, buf_.end});
-    }
+    return token;
+}
 
-    token_value = trim_substring(token_value);
-    token_type = find_token_type(token_value);
-    if (token_type == EMPTY)
-    {
-        return get_next_token();
-    }
 
+Token Tokenizer::collect_token(std::string::iterator begin, std::string::iterator end)
+{
+    SubString substring = {begin, end};
+    SubString token_value = trim_substring(substring);
+    TokenType token_type = find_token_type(token_value);
     return Token(token_type, token_value);
 }
 
 
 SubString Tokenizer::collect_current_substring()
 {
-    SubString substring;
-    substring = {
+    SubString substring = {
         buf_.lexeme_begin,
         buf_.current_char
     };

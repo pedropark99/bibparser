@@ -77,6 +77,7 @@ public:
 
     Token get_next_token();
     SubString collect_current_substring();
+    Token collect_token(std::string::iterator begin, std::string::iterator end);
     void collect_tokens(bool raw_tokens = false);
     void print_tokens();
     void redefine_bib_text_tokens();

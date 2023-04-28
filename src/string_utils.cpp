@@ -121,6 +121,20 @@ int count_char(SubString sub, char chr)
     return n_of_occurrences;
 }
 
+
+int32_t substring_size(SubString substring)
+{
+    std::string::iterator it = substring.begin;
+    int32_t size = 1;
+    while(it != substring.end)
+    {
+        size++;
+        it++;
+    }
+    return size;
+}
+
+
 void find_first_position(std::string &string, char chr)
 {
     std::string::iterator it = string.begin();
@@ -169,16 +183,15 @@ SubString trim_substring(SubString substring)
 
 std::string substring_to_string(SubString substring)
 {
-    std::string str;
+    std::string buffer = std::string();
     if (substring.begin == substring.end)
     {
-        str = std::string(1, *substring.end);
-    } 
-    else
-    {
-        str = std::string(substring.begin, substring.end + 1);
+        buffer = std::string(1, *substring.end);
+        return buffer;
     }
-    return str;
+
+    buffer = std::string(substring.begin, substring.end + 1);
+    return buffer;
 }
 
 char substring_to_char(SubString substring)

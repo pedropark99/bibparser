@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     {
         Tokenizer tokenizer = Tokenizer(options.path_to_file);
         tokenizer.collect_tokens();
-        syntax::syntax_checker(tokenizer.tokens);
+        //syntax::syntax_checker(tokenizer.tokens);
     }
 }
 
