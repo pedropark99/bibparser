@@ -10,10 +10,9 @@
 
 
 Token::Token(TokenType input_type, SubString input_value)
+    : type_(input_type), value_ (input_value), line_in_source_(0)
 {
-    type_ = input_type;
-    value_ = input_value;
-    line_in_source_ = 0;
+
 }
 
 std::string Token::as_string()
