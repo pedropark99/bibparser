@@ -8,6 +8,8 @@
 #include "syntax_check.hpp"
 
 
+
+
 struct CmdLineOptions {
     std::string path_to_file;
     bool parse_file;
@@ -19,8 +21,10 @@ struct CmdLineOptions {
 CmdLineOptions parse_cmd_options(int argc, char *argv[]);
 
 
+
 int main(int argc, char *argv[])
 {
+
     CmdLineOptions options = parse_cmd_options(argc, argv);
 
     if (options.parse_file == true)
@@ -44,8 +48,10 @@ int main(int argc, char *argv[])
     {
         Tokenizer tokenizer = Tokenizer(options.path_to_file);
         tokenizer.collect_tokens();
-        //syntax::syntax_checker(tokenizer.tokens);
+        bibparser::syntax::syntax_checker(tokenizer.tokens);
     }
+
+    return 0;
 }
 
 
@@ -88,3 +94,4 @@ CmdLineOptions parse_cmd_options(int argc, char *argv[])
 
     return options;
 }
+
