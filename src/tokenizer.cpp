@@ -88,27 +88,12 @@ Token Tokenizer::get_next_token()
 
 Token Tokenizer::collect_token(std::string::iterator begin, std::string::iterator end)
 {
-    SubString substring = {begin, end};
-    SubString token_value = trim_substring(substring);
+    SubString token_value = trim_substring({begin, end});
     TokenType token_type = find_token_type(token_value);
     return Token(token_type, token_value);
 }
 
 
-SubString Tokenizer::collect_current_substring()
-{
-    SubString substring = {
-        buf_.lexeme_begin,
-        buf_.current_char
-    };
-
-    if (buf_.current_char != buf_.end)
-    {
-        buf_.current_char++;
-    }
-    buf_.lexeme_begin = buf_.current_char;
-    return substring;
-}
 
 void Tokenizer::collect_tokens(bool raw_tokens)
 {
@@ -162,7 +147,7 @@ void Tokenizer::redefine_bib_text_tokens()
 
         if (token_it->type_ == BIB_ENTRY)
         {
-            look_ahead = find_next_token_of_type(token_it, BIB_TEXT);
+            look_ahead = std::find_if(token_it, tokens.end(), is_bib_text);
             if (look_ahead != tokens.end())
             {
                 look_ahead->type_ = BIB_IDENTIFIER;
@@ -182,7 +167,7 @@ void Tokenizer::redefine_bib_text_tokens()
 
         if (token_it->type_ == EQUAL_SIGN)
         {
-            look_ahead = find_next_token_of_type(token_it, BIB_TEXT);
+            look_ahead = std::find_if(token_it, tokens.end(), is_bib_text);
             if (look_ahead != tokens.end())
             {
                 look_ahead->type_ = BIB_ATTRIBUTE_VALUE;
@@ -201,21 +186,12 @@ void Tokenizer::print_tokens()
 }
 
 
-std::list<Token>::iterator
-Tokenizer::find_next_token_of_type (std::list<Token>::iterator current_position,
-                                    TokenType type)
-{
-    std::list<Token>::iterator token_it = current_position;
-    while (token_it != tokens.end())
-    {
-        if (token_it->type_ == type)
-        {
-            break;
-        }
-        token_it++;
-    }
-    return token_it;
-}
+
+
+
+
+
+
 
 
 
