@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     if (options.parse_file == true)
     {
         Parser parser = Parser(options.path_to_file);
-        parser.parse_file();
+        parser.parse_bib_file();
     }
     if (options.print_tokens == true)
     {

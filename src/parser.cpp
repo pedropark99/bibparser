@@ -28,7 +28,7 @@ Parser::Parser(std::string path_to_bib_file)
 }
 
 
-void Parser::parse_file()
+void Parser::parse_bib_file()
 {
     tokenizer_.collect_tokens();
     parse_tokens();
@@ -50,6 +50,7 @@ void Parser::parse_tokens()
         {
             next_token = *std::next(token_it);
         }
+        
         if (next_token.type_ == BIB_ENTRY)
         {
             entry_tokens.emplace_back(current_token);

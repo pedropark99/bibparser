@@ -127,7 +127,7 @@ public:
     Parser(std::string path_to_bib_file);
     void parse_tokens();
     void parse_entry_tokens(std::list<Token> &entry_tokens);
-    void parse_file();
+    void parse_bib_file();
     void print_bib_entries();
 };
 

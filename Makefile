@@ -130,17 +130,17 @@ bibparser/fast:
 .PHONY : bibparser/fast
 
 #=============================================================================
-# Target rules for targets named tests
+# Target rules for targets named test_bibparser
 
 # Build rule for target.
-tests: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests
-.PHONY : tests
+test_bibparser: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_bibparser
+.PHONY : test_bibparser
 
 # fast build rule for target.
-tests/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
-.PHONY : tests/fast
+test_bibparser/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bibparser.dir/build.make CMakeFiles/test_bibparser.dir/build
+.PHONY : test_bibparser/fast
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -291,7 +291,7 @@ tests/tests.o: tests/tests.cpp.o
 
 # target to build an object file
 tests/tests.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/tests/tests.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bibparser.dir/build.make CMakeFiles/test_bibparser.dir/tests/tests.cpp.o
 .PHONY : tests/tests.cpp.o
 
 tests/tests.i: tests/tests.cpp.i
@@ -299,7 +299,7 @@ tests/tests.i: tests/tests.cpp.i
 
 # target to preprocess a source file
 tests/tests.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/tests/tests.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bibparser.dir/build.make CMakeFiles/test_bibparser.dir/tests/tests.cpp.i
 .PHONY : tests/tests.cpp.i
 
 tests/tests.s: tests/tests.cpp.s
@@ -307,7 +307,7 @@ tests/tests.s: tests/tests.cpp.s
 
 # target to generate assembly for a file
 tests/tests.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/tests/tests.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bibparser.dir/build.make CMakeFiles/test_bibparser.dir/tests/tests.cpp.s
 .PHONY : tests/tests.cpp.s
 
 # Help Target
@@ -319,7 +319,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... bibparser"
-	@echo "... tests"
+	@echo "... test_bibparser"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

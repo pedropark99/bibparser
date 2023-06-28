@@ -26,9 +26,9 @@ message("CXX Standard: ${CXX_STANDARD}")
 find_package(Catch2 3 REQUIRED)
 
 # These tests can use the Catch2-provided main
-add_executable(tests
+add_executable(test_bibparser
     tests/tests.cpp
 )
 
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
-
+target_include_directories(test_bibparser PRIVATE include)
+target_link_libraries(test_bibparser PRIVATE Catch2::Catch2WithMain)
