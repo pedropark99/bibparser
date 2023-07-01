@@ -30,7 +30,7 @@ Parser::Parser(std::string path_to_bib_file)
 
 void Parser::parse_bib_file()
 {
-    tokenizer_.collect_tokens();
+    tokenizer_.collect_raw_tokens();
     parse_tokens();
     print_bib_entries();
 }
@@ -41,12 +41,12 @@ void Parser::parse_tokens()
     Token current_token = Token();
     Token next_token = Token();
     std::list<Token> entry_tokens = std::list<Token>();
-    std::list<Token>::iterator token_it = tokenizer_.tokens.begin();
+    std::list<Token>::iterator token_it = tokenizer_.tokens_.begin();
 
-    while (token_it != tokenizer_.tokens.end())
+    while (token_it != tokenizer_.tokens_.end())
     {
         current_token = *token_it;
-        if (std::next(token_it) != tokenizer_.tokens.end())
+        if (std::next(token_it) != tokenizer_.tokens_.end())
         {
             next_token = *std::next(token_it);
         }

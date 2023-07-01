@@ -9,6 +9,20 @@
 #include "string_utils.hpp"
 
 
+static const
+std::unordered_set<char> token_delimiters = {
+    '@'
+    , '{'
+    , '}'
+    , ','
+    , '='
+    , '"'
+    , '\n'
+    , '\0'
+};
+
+
+
 Token::Token(TokenType input_type, SubString input_value)
     : type_(input_type), value_ (input_value), line_in_source_(0)
 {
@@ -24,7 +38,6 @@ std::string Token::as_string()
 }
 
 
-
 void Token::print_token()
 {
     std::cout << Token::as_string() << std::endl;
@@ -34,11 +47,15 @@ void Token::print_token()
 
 
 
+
+
+
+
 Tokenizer::Tokenizer(std::string path_to_bib_file)
 {
     bib_file_ = read_bib_file(path_to_bib_file = path_to_bib_file);
     
-    buf_ = {
+    tokenizer_buffer_ = {
         bib_file_.begin(),
         bib_file_.end(),
         bib_file_.begin(),
@@ -47,41 +64,36 @@ Tokenizer::Tokenizer(std::string path_to_bib_file)
     };
 }
 
+
+void Tokenizer::next_char()
+{
+    tokenizer_buffer_.current_char++;
+    if (std::next(tokenizer_buffer_.current_char) != tokenizer_buffer_.end_of_file)
+    {
+        tokenizer_buffer_.look_ahead = std::next(tokenizer_buffer_.current_char);
+    }
+}
+
+
 Token Tokenizer::get_next_token()
 {
     Token token = Token();
-    std::unordered_set<char> delimiters = {
-        '@', '{', '}', ',',
-        '=', '"', '\n',
-        '\0'
-    };
-
-    if (char_equal_to_any_of(*buf_.current_char, delimiters))
-    {
-        token = collect_token(buf_.lexeme_begin, buf_.current_char);
-        buf_.current_char++;
-        buf_.lexeme_begin = buf_.current_char;
-        return token;
-    }
-
     while (true)
     {
-        if (std::next(buf_.current_char) != buf_.end)
+        if (char_equal_to_any_of(*tokenizer_buffer_.current_char, token_delimiters)
+            || char_equal_to_any_of(*tokenizer_buffer_.look_ahead, token_delimiters)
+            || tokenizer_buffer_.look_ahead == tokenizer_buffer_.end_of_file)
         {
-            buf_.look_ahead = buf_.current_char + 1;
-        }
-
-        if (char_equal_to_any_of(*buf_.look_ahead, delimiters))
-        {
-            token = collect_token(buf_.lexeme_begin, buf_.current_char);
-            buf_.current_char++;
-            buf_.lexeme_begin = buf_.current_char;
+            token = collect_token(tokenizer_buffer_.lexeme_begin, tokenizer_buffer_.current_char);
             break;
         }
 
-        buf_.current_char++;
+        next_char();
     }
 
+    next_char();
+    tokenizer_buffer_.lexeme_begin = tokenizer_buffer_.current_char;
+    
     return token;
 }
 
@@ -95,28 +107,18 @@ Token Tokenizer::collect_token(std::string::iterator begin, std::string::iterato
 
 
 
-void Tokenizer::collect_tokens(bool raw_tokens)
+void Tokenizer::collect_raw_tokens(bool raw_tokens)
 {
-    int64_t temp_line_in_source = 1;
+    int64_t line_in_source = 1;
     while (true)
     {
-        current_token = get_next_token();
-        tokens.emplace_back(current_token);
-        if (current_token.type_ == END_OF_FILE)
-        {
-            break;
-        }
+        current_token_ = get_next_token();
+        current_token_.line_in_source_ = line_in_source;
+        if (current_token_.type_ == NEW_LINE) line_in_source++;
+        tokens_.emplace_back(current_token_);
+        if (current_token_.type_ == END_OF_FILE) break;
     }
 
-    std::list<Token>::iterator token_it = tokens.begin();
-    for (token_it; token_it != tokens.end(); token_it++)
-    {
-        token_it->line_in_source_ = temp_line_in_source;
-        if (token_it->type_ == NEW_LINE)
-        {
-            temp_line_in_source++;
-        }
-    }
 
     if (raw_tokens)
     {
@@ -135,10 +137,10 @@ void Tokenizer::redefine_bib_text_tokens()
     std::list<Token>::iterator token_it = std::list<Token>::iterator();
     auto is_bib_text = [](Token &token) { return token.type_ == BIB_TEXT; };
 
-    for (token_it = tokens.begin(); token_it != tokens.end(); token_it++)
+    for (token_it = tokens_.begin(); token_it != tokens_.end(); token_it++)
     {
         if (token_it->type_ == BIB_ENTRY
-            & std::next(token_it) != tokens.end()
+            & std::next(token_it) != tokens_.end()
             & std::next(token_it)->type_ == BIB_TEXT)
         {
             look_ahead = std::next(token_it);
@@ -147,18 +149,18 @@ void Tokenizer::redefine_bib_text_tokens()
 
         if (token_it->type_ == BIB_ENTRY)
         {
-            look_ahead = std::find_if(token_it, tokens.end(), is_bib_text);
-            if (look_ahead != tokens.end())
+            look_ahead = std::find_if(token_it, tokens_.end(), is_bib_text);
+            if (look_ahead != tokens_.end())
             {
                 look_ahead->type_ = BIB_IDENTIFIER;
             }
         }
     }
 
-    for (token_it = tokens.begin(); token_it != tokens.end(); token_it++)
+    for (token_it = tokens_.begin(); token_it != tokens_.end(); token_it++)
     {
         if (token_it->type_ == EQUAL_SIGN
-            & std::prev(token_it) != tokens.begin()
+            & std::prev(token_it) != tokens_.begin()
             & std::prev(token_it)->type_ == BIB_TEXT)
         {
             look_behind = std::prev(token_it);
@@ -167,8 +169,8 @@ void Tokenizer::redefine_bib_text_tokens()
 
         if (token_it->type_ == EQUAL_SIGN)
         {
-            look_ahead = std::find_if(token_it, tokens.end(), is_bib_text);
-            if (look_ahead != tokens.end())
+            look_ahead = std::find_if(token_it, tokens_.end(), is_bib_text);
+            if (look_ahead != tokens_.end())
             {
                 look_ahead->type_ = BIB_ATTRIBUTE_VALUE;
             }
@@ -179,7 +181,7 @@ void Tokenizer::redefine_bib_text_tokens()
 
 void Tokenizer::print_tokens()
 {
-    for (Token token: tokens)
+    for (Token token: tokens_)
     {
         token.print_token();
     }

@@ -35,20 +35,21 @@ int main(int argc, char *argv[])
     if (options.print_tokens == true)
     {
         Tokenizer tokenizer = Tokenizer(options.path_to_file);
-        tokenizer.collect_tokens();
+        Token current_token = Token();
+        tokenizer.collect_raw_tokens();
         tokenizer.print_tokens();
     }
     if (options.print_raw_tokens == true)
     {
         Tokenizer tokenizer = Tokenizer(options.path_to_file);
-        tokenizer.collect_tokens(true);
+        tokenizer.collect_raw_tokens(true);
         tokenizer.print_tokens();
     }
     if (options.syntax_check == true)
     {
         Tokenizer tokenizer = Tokenizer(options.path_to_file);
-        tokenizer.collect_tokens();
-        bibparser::syntax::syntax_checker(tokenizer.tokens);
+        tokenizer.collect_raw_tokens();
+        bibparser::syntax::syntax_checker(tokenizer.tokens_);
     }
 
     return 0;

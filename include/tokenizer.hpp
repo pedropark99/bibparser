@@ -11,7 +11,7 @@ struct SubString {
 
 struct TokenizerBuffer {
     std::string::iterator begin;
-    std::string::iterator end;
+    std::string::iterator end_of_file;
     std::string::iterator lexeme_begin;
     std::string::iterator current_char;
     std::string::iterator look_ahead;
@@ -53,6 +53,7 @@ public:
     TokenType type_;
     SubString value_;
     int64_t line_in_source_;
+    int64_t column_in_source_;
 
     Token(TokenType input_type, SubString input_value);
     Token() = default;
@@ -66,18 +67,20 @@ public:
 class Tokenizer {
 private:
     std::string bib_file_;
-    TokenizerBuffer buf_;
-
+    TokenizerBuffer tokenizer_buffer_;
 public:
-    std::list<Token> tokens;
-    Token current_token;
+    std::list<Token> tokens_;
+    Token current_token_;
     
     Tokenizer(std::string path_to_bib_file);
     Tokenizer() = default;
 
     Token get_next_token();
     Token collect_token(std::string::iterator begin, std::string::iterator end);
-    void collect_tokens(bool raw_tokens = false);
+    void collect_raw_tokens(bool raw_tokens = false);
     void print_tokens();
+
+private:
+    void next_char();
     void redefine_bib_text_tokens();
 };
