@@ -78,6 +78,8 @@ public:
     std::list<Token> tokens_;
     Token current_token_;
     
+
+public:
     Tokenizer(std::string path_to_bib_file);
     Tokenizer() = default;
 
