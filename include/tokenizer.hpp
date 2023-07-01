@@ -10,12 +10,15 @@ struct SubString {
 };
 
 struct TokenizerBuffer {
-    std::string::iterator begin;
+    std::string::iterator begin_of_file;
     std::string::iterator end_of_file;
     std::string::iterator lexeme_begin;
     std::string::iterator current_char;
     std::string::iterator look_ahead;
 };
+
+
+
 
 
 
@@ -43,6 +46,9 @@ enum TokenType
 
 std::string token_type_to_string(TokenType type);
 TokenType find_token_type(SubString token_value);
+
+
+
 
 
 
