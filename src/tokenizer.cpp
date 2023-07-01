@@ -56,11 +56,11 @@ Tokenizer::Tokenizer(std::string path_to_bib_file)
     bib_file_ = read_bib_file(path_to_bib_file = path_to_bib_file);
     
     tokenizer_buffer_ = {
-        bib_file_.begin(),
-        bib_file_.end(),
-        bib_file_.begin(),
-        bib_file_.begin(),
-        bib_file_.begin()
+        bib_file_.begin(),  // begin_of_file
+        bib_file_.end(),    // end_of_file
+        bib_file_.begin(),  // lexeme_begin
+        bib_file_.begin(),  // current_char
+        bib_file_.begin()   // look_ahead
     };
 }
 
