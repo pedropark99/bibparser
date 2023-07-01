@@ -76,11 +76,10 @@ public:
     Tokenizer() = default;
 
     Token get_next_token();
-    Token collect_token(std::string::iterator begin, std::string::iterator end);
-    void collect_raw_tokens(bool raw_tokens = false);
+    void collect_raw_tokens();
     void print_tokens();
 
 private:
     void next_char();
-    void redefine_bib_text_tokens();
+    Token collect_token(std::string::iterator begin, std::string::iterator end);
 };

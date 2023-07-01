@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     if (options.print_raw_tokens == true)
     {
         Tokenizer tokenizer = Tokenizer(options.path_to_file);
-        tokenizer.collect_raw_tokens(true);
+        tokenizer.collect_raw_tokens();
         tokenizer.print_tokens();
     }
     if (options.syntax_check == true)

@@ -107,7 +107,7 @@ Token Tokenizer::collect_token(std::string::iterator begin, std::string::iterato
 
 
 
-void Tokenizer::collect_raw_tokens(bool raw_tokens)
+void Tokenizer::collect_raw_tokens()
 {
     int64_t line_in_source = 1;
     while (true)
@@ -118,65 +118,9 @@ void Tokenizer::collect_raw_tokens(bool raw_tokens)
         tokens_.emplace_back(current_token_);
         if (current_token_.type_ == END_OF_FILE) break;
     }
-
-
-    if (raw_tokens)
-    {
-        return;
-    }
-    else
-    {
-        redefine_bib_text_tokens();
-    }
 }
 
-void Tokenizer::redefine_bib_text_tokens()
-{
-    std::list<Token>::iterator look_ahead = std::list<Token>::iterator();
-    std::list<Token>::iterator look_behind = std::list<Token>::iterator();
-    std::list<Token>::iterator token_it = std::list<Token>::iterator();
-    auto is_bib_text = [](Token &token) { return token.type_ == BIB_TEXT; };
 
-    for (token_it = tokens_.begin(); token_it != tokens_.end(); token_it++)
-    {
-        if (token_it->type_ == BIB_ENTRY
-            & std::next(token_it) != tokens_.end()
-            & std::next(token_it)->type_ == BIB_TEXT)
-        {
-            look_ahead = std::next(token_it);
-            look_ahead->type_ = BIB_TYPE;
-        }
-
-        if (token_it->type_ == BIB_ENTRY)
-        {
-            look_ahead = std::find_if(token_it, tokens_.end(), is_bib_text);
-            if (look_ahead != tokens_.end())
-            {
-                look_ahead->type_ = BIB_IDENTIFIER;
-            }
-        }
-    }
-
-    for (token_it = tokens_.begin(); token_it != tokens_.end(); token_it++)
-    {
-        if (token_it->type_ == EQUAL_SIGN
-            & std::prev(token_it) != tokens_.begin()
-            & std::prev(token_it)->type_ == BIB_TEXT)
-        {
-            look_behind = std::prev(token_it);
-            look_behind->type_ = BIB_ATTRIBUTE_KEY;
-        }
-
-        if (token_it->type_ == EQUAL_SIGN)
-        {
-            look_ahead = std::find_if(token_it, tokens_.end(), is_bib_text);
-            if (look_ahead != tokens_.end())
-            {
-                look_ahead->type_ = BIB_ATTRIBUTE_VALUE;
-            }
-        }
-    }
-}
 
 
 void Tokenizer::print_tokens()
