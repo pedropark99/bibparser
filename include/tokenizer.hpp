@@ -3,6 +3,8 @@
 #include <list>
 
 
+namespace bibparser {
+
 
 struct SubString {
     std::string::iterator begin;
@@ -91,3 +93,6 @@ private:
     void next_char();
     Token collect_token(std::string::iterator begin, std::string::iterator end);
 };
+
+
+} // end of namespace bibparser

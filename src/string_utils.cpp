@@ -9,6 +9,10 @@
 
 
 
+namespace bibparser {
+
+
+
 bool is_white_space(char chr)
 {
     bool white_space = chr == ' ' || chr == '\t' || chr == '\r' || chr == '\n';
@@ -261,3 +265,7 @@ std::string integer_to_string(int64_t i)
     stream >> si;
     return si;
 }
+
+
+
+} // end of namespace bibparser

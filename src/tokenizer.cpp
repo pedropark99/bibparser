@@ -9,6 +9,8 @@
 #include "string_utils.hpp"
 
 
+namespace bibparser {
+
 static const
 std::unordered_set<char> token_delimiters = {
     '@'
@@ -257,3 +259,5 @@ std::string token_type_to_string(TokenType type)
 }
 
 
+
+} // end of namespace bibparser

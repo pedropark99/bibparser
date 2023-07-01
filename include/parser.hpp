@@ -8,6 +8,7 @@
 #include "tokenizer.hpp"
 
 
+namespace bibparser {
 
 
 class BibIdentifier {
@@ -131,3 +132,5 @@ public:
     void print_bib_entries();
 };
 
+
+} // end of namespace bibparser

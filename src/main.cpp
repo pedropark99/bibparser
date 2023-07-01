@@ -29,25 +29,25 @@ int main(int argc, char *argv[])
 
     if (options.parse_file == true)
     {
-        Parser parser = Parser(options.path_to_file);
+        bibparser::Parser parser = bibparser::Parser(options.path_to_file);
         parser.parse_bib_file();
     }
     if (options.print_tokens == true)
     {
-        Tokenizer tokenizer = Tokenizer(options.path_to_file);
-        Token current_token = Token();
+        bibparser::Tokenizer tokenizer = bibparser::Tokenizer(options.path_to_file);
+        bibparser::Token current_token = bibparser::Token();
         tokenizer.collect_raw_tokens();
         tokenizer.print_tokens();
     }
     if (options.print_raw_tokens == true)
     {
-        Tokenizer tokenizer = Tokenizer(options.path_to_file);
+        bibparser::Tokenizer tokenizer = bibparser::Tokenizer(options.path_to_file);
         tokenizer.collect_raw_tokens();
         tokenizer.print_tokens();
     }
     if (options.syntax_check == true)
     {
-        Tokenizer tokenizer = Tokenizer(options.path_to_file);
+        bibparser::Tokenizer tokenizer = bibparser::Tokenizer(options.path_to_file);
         tokenizer.collect_raw_tokens();
         bibparser::syntax::syntax_checker(tokenizer.tokens_);
     }
@@ -64,7 +64,7 @@ CmdLineOptions parse_cmd_options(int argc, char *argv[])
         true, false, false, false
     };
 
-    options.path_to_file = get_path_to_file(argc, argv);
+    options.path_to_file = bibparser::get_path_to_file(argc, argv);
 
     if (argc <= 2)
     {

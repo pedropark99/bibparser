@@ -12,6 +12,8 @@
 #include "string_utils.hpp"
 
 
+namespace bibparser {
+
 
 Parser::Parser(std::string path_to_bib_file)
 {
@@ -262,3 +264,5 @@ BibAttribute parse_bib_attribute(KeyValuePair key_value_pair)
     return BibAttribute(attribute_key.value_, attribute_value.value_); 
 }
 
+
+} // end of namespace bibparser

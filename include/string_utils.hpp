@@ -5,6 +5,9 @@
 
 #include "tokenizer.hpp"
 
+
+namespace bibparser {
+
 bool is_white_space(char chr);
 bool is_digit(char chr);
 bool is_letter(char chr);
@@ -31,3 +34,5 @@ std::string substring_to_string(SubString substring);
 char substring_to_char(SubString substring);
 std::string integer_to_string(int64_t i);
 void print_substring(SubString substring);
+
+} // end of namespace bibparser
