@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     if (options.parse_file == true)
     {
         bibparser::Parser parser = bibparser::Parser(options.path_to_file);
-        parser.parse_bib_file();
+        parser.parse();
     }
     if (options.print_tokens == true)
     {
@@ -48,8 +48,7 @@ int main(int argc, char *argv[])
     if (options.syntax_check == true)
     {
         bibparser::Tokenizer tokenizer = bibparser::Tokenizer(options.path_to_file);
-        tokenizer.collect_raw_tokens();
-        bibparser::syntax::syntax_checker(tokenizer.tokens_);
+        //bibparser::syntax_checker();
     }
 
     return 0;

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <list>
+#include <vector>
 
 
 namespace bibparser {
@@ -54,8 +55,6 @@ TokenType find_token_type(SubString token_value);
 
 
 
-
-
 class Token {
 public:
     TokenType type_;
@@ -77,7 +76,7 @@ private:
     std::string bib_file_;
     TokenizerBuffer tokenizer_buffer_;
 public:
-    std::list<Token> tokens_;
+    std::vector<Token> tokens_;
     Token current_token_;
     
 
@@ -93,6 +92,11 @@ private:
     void next_char();
     Token collect_token(std::string::iterator begin, std::string::iterator end);
 };
+
+
+bool any_token_of_type (std::vector<Token> &tokens, const TokenType type);
+bool all_tokens_of_type (std::vector<Token> &tokens, const TokenType type);
+
 
 
 } // end of namespace bibparser

@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <stack>
 #include <unordered_map>
+#include <vector>
 
 #include "tokenizer.hpp"
 
@@ -107,13 +108,11 @@ enum ParserState {
 
 struct ParserBuffer {
     ParserState parser_state;
-    int64_t current_line_in_source;
 
-    std::list<Token>::iterator current_token;
-    std::list<Token>::iterator look_ahead;
-    std::list<Token>::iterator look_behind;
-    std::list<Token>::iterator begin;
-    std::list<Token>::iterator end;
+    std::vector<Token>::iterator begin_of_tokens;
+    std::vector<Token>::iterator end_of_tokens;
+    std::vector<Token>::iterator current_token;
+    std::vector<Token>::iterator look_ahead;
 };
 
 
@@ -122,14 +121,16 @@ class Parser
 private:
     Tokenizer tokenizer_;
     ParserBuffer parser_buffer_;
-    std::list<BibEntry> bib_entries_;
+    std::list<BibEntry> ast;
 
 public:
     Parser(std::string path_to_bib_file);
     void parse_tokens();
-    void parse_entry_tokens(std::list<Token> &entry_tokens);
-    void parse_bib_file();
+    void parse_entry_tokens(std::vector<Token> entry_tokens);
+    void parse();
     void print_bib_entries();
+    void syntax_check();
+    void next_token();
 };
 
 

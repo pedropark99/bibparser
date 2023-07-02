@@ -26,7 +26,7 @@ std::unordered_set<char> token_delimiters = {
 
 
 Token::Token(TokenType input_type, SubString input_value)
-    : type_(input_type), value_ (input_value), line_in_source_(0)
+    : type_(input_type), value_(input_value), line_in_source_(0)
 {
 
 }
@@ -55,7 +55,7 @@ void Token::print_token()
 
 Tokenizer::Tokenizer(std::string path_to_bib_file)
 {
-    bib_file_ = read_bib_file(path_to_bib_file = path_to_bib_file);
+    bib_file_ = read_bib_file(path_to_bib_file);
     
     tokenizer_buffer_ = {
         bib_file_.begin(),  // begin_of_file
@@ -138,9 +138,25 @@ void Tokenizer::print_tokens()
 
 
 
+bool all_tokens_of_type (std::vector<Token> &tokens, const TokenType type)
+{
+    for (Token token: tokens)
+    {
+        if (token.type_ != type) return false;
+    }
+    
+    return true;
+}
 
-
-
+bool any_token_of_type (std::vector<Token> &tokens, const TokenType type)
+{
+    for (Token token: tokens)
+    {
+        if (token.type_ == type) return true;
+    }
+    
+    return false;
+}
 
 
 
