@@ -92,7 +92,7 @@ void Parser::parse_entry_tokens(std::vector<Token> entry_tokens)
     BibEntry bib_entry = {
         BibIdentifier(empty_substring()),  // identifier
         BibType(empty_substring()),        // type
-        std::list<BibAttribute>()               // attributes
+        std::list<BibAttribute>()          // attributes
     };
     
     for (Token current_token: entry_tokens)
