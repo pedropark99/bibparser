@@ -47,11 +47,66 @@ void Parser::parse()
         if (tk.type_ != EMPTY && tk.type_ != NEW_LINE) tokens_.emplace_back(tk);
     }
 
+    parser_buffer_ = {
+        PARSING,
+        tokens_.begin(),
+        tokens_.end(),
+        tokens_.begin(),
+        tokens_.begin()
+    };
+
+    if (parser_buffer_.current_token->type_ != BIB_ENTRY)
+    {
+        throw std::exception();
+    }
+
+    next_token();
+
+    if (parser_buffer_.current_token->type_ != BIB_TEXT)
+    {
+        throw std::exception();
+    }
+    else
+    {
+        parser_buffer_.current_token->type_ = BIB_TYPE;
+    }
+
+    next_token();
+
+    if (parser_buffer_.current_token->type_ != OPEN_BRACKET
+       && parser_buffer_.current_token->type_ != QUOTATION_MARK)
+    {
+        throw std::exception();
+    }
+
+    next_token();
+
+    if (parser_buffer_.current_token->type_ != BIB_TEXT)
+    {
+        throw std::exception();
+    }
+    else
+    {
+        parser_buffer_.current_token-> type_ = BIB_IDENTIFIER;
+    }
+
+    next_token();
+
+    if (parser_buffer_.current_token->type_ != COMMA)
+    {
+        throw std::exception();
+    }
+
+    while (parser_buffer_.current_token != parser_buffer_.end_of_tokens)
+    {
+        
+    }
+
+
     for (Token token: tokens_)
     {
         token.print_token();
     }
-
 }
 
 
