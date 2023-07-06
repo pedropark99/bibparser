@@ -30,6 +30,31 @@ Parser::Parser(std::string path_to_bib_file)
 }
 
 
+
+
+
+void Parser::parse()
+{
+    // tokenizer_.collect_raw_tokens();
+    // parse_tokens();
+    // print_bib_entries();
+
+    Token tk = Token();
+    std::vector<Token> tokens_;
+    for (int i = 0; i < 65; i++)
+    {
+        tk = tokenizer_.get_next_token();
+        if (tk.type_ != EMPTY && tk.type_ != NEW_LINE) tokens_.emplace_back(tk);
+    }
+
+    for (Token token: tokens_)
+    {
+        token.print_token();
+    }
+
+}
+
+
 void Parser::next_token()
 {
     parser_buffer_.current_token++;
@@ -37,15 +62,6 @@ void Parser::next_token()
     {
         parser_buffer_.look_ahead = std::next(parser_buffer_.current_token);
     }
-}
-
-
-
-void Parser::parse()
-{
-    tokenizer_.collect_raw_tokens();
-    parse_tokens();
-    print_bib_entries();
 }
 
 
@@ -94,31 +110,11 @@ void Parser::parse_entry_tokens(std::vector<Token> entry_tokens)
         BibType(empty_substring()),        // type
         std::list<BibAttribute>()          // attributes
     };
-    
-    for (Token current_token: entry_tokens)
-    {
-        switch (current_token.type_)
-        {
-        case BIB_TYPE:
-            bib_entry.type = parse_bibtype(current_token);
-            break;
-        case BIB_IDENTIFIER:
-            bib_entry.identifier = parse_identifier(current_token);
-            break;
-        case BIB_ATTRIBUTE_KEY:
-            key_value_pair.key_token = current_token;
-            break;
-        case BIB_ATTRIBUTE_VALUE:
-            key_value_pair.value_token = current_token;
-            bib_entry.attributes.emplace_back(
-                parse_bib_attribute(key_value_pair)
-            );
-            break;
 
-        default:
-            // BIB_ENTRY, NEW_LINE, COMMA, EQUAL_SIGN, etc.
-            break;
-        }
+    
+    for (Token token: entry_tokens)
+    {
+        token.print_token();
     }
 
     ast.emplace_back(bib_entry);
