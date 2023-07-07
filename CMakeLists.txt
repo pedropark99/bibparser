@@ -10,6 +10,7 @@ add_executable(bibparser
 	src/tokenizer.cpp
     src/parser.cpp
     src/string_utils.cpp
+    src/syntax_checker.cpp
 )
 
 target_include_directories(bibparser PRIVATE include)

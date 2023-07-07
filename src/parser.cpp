@@ -12,6 +12,7 @@
 #include "parser.hpp"
 #include "tokenizer.hpp"
 #include "string_utils.hpp"
+#include "syntax_check.hpp"
 
 
 namespace bibparser {
@@ -35,9 +36,9 @@ Parser::Parser(std::string path_to_bib_file)
 
 void Parser::parse()
 {
-    std::vector<Token> entry_tokens = std::vector<Token>();
-    entry_tokens = tokenizer_.collect_next_entry_tokens();
-    entry_tokens = tokenizer_.collect_next_entry_tokens();
+    std::vector<Token> entry_tokens = tokenizer_.collect_next_entry_tokens();
+    SyntaxChecker syntax_checker = SyntaxChecker(entry_tokens);
+    syntax_checker.check_syntax();
     for (Token token: entry_tokens) token.print_token();
     // parse_tokens();
     // print_bib_entries();
@@ -260,24 +261,6 @@ BibAttribute parse_bib_attribute(KeyValuePair key_value_pair)
 
 
 
-
-
-
-
-void report_token_type_error(Token token_found, TokenType type_expected)
-{
-    token_found.print_token();
-
-    std::string TYPE_ERROR_MESSAGE = "The parser expected to find next a token of type ";
-    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + token_type_to_string(type_expected);
-    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + ". But it found a token of type ";
-    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + token_type_to_string(token_found.type_);
-    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + " instead.";
-
-    std::cerr << TYPE_ERROR_MESSAGE << std::endl;
-
-    throw std::exception();
-}
 
 
 

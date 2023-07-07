@@ -5,8 +5,28 @@
 
 namespace bibparser {
 
+struct SyntaxCheckerBuffer {
+    std::vector<Token>::iterator begin_of_tokens;
+    std::vector<Token>::iterator end_of_tokens;
+    std::vector<Token>::iterator current_token;
+    std::vector<Token>::iterator look_ahead;
+};
+
+
     
-void syntax_checker();
+class SyntaxChecker {
+private:
+    SyntaxCheckerBuffer syntax_buffer_;
+    std::vector<Token> tokens_to_check_;
+
+public:
+    SyntaxChecker(std::vector<Token> &input_tokens);
+    void check_syntax();
+    void next_token();
+};
+
+
+void report_token_type_error(Token token_found, TokenType type_expected);
 
 
 } // end of namespace bibparser

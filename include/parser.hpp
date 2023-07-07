@@ -135,6 +135,5 @@ public:
 
 
 
-void report_token_type_error(Token token_found, TokenType type_expected);
 
 } // end of namespace bibparser
