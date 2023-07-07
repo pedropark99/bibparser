@@ -1,7 +1,10 @@
 #pragma once
 #include <string>
 #include <list>
+#include <vector>
 
+
+namespace bibparser {
 
 
 struct SubString {
@@ -10,12 +13,18 @@ struct SubString {
 };
 
 struct TokenizerBuffer {
-    std::string::iterator begin;
-    std::string::iterator end;
+    std::string::iterator begin_of_file;
+    std::string::iterator end_of_file;
     std::string::iterator lexeme_begin;
     std::string::iterator current_char;
     std::string::iterator look_ahead;
+
+    size_t line_in_source;
+
 };
+
+
+
 
 
 
@@ -48,11 +57,13 @@ TokenType find_token_type(SubString token_value);
 
 
 
+
 class Token {
 public:
     TokenType type_;
     SubString value_;
-    int64_t line_in_source_;
+    size_t line_in_source_;
+    size_t column_in_source_;
 
     Token(TokenType input_type, SubString input_value);
     Token() = default;
@@ -66,18 +77,30 @@ public:
 class Tokenizer {
 private:
     std::string bib_file_;
-    TokenizerBuffer buf_;
+    TokenizerBuffer tokenizer_buffer_;
+public:
+    std::vector<Token> tokens_;
+    Token current_token_;
+    
 
 public:
-    std::list<Token> tokens;
-    Token current_token;
-    
     Tokenizer(std::string path_to_bib_file);
     Tokenizer() = default;
 
     Token get_next_token();
-    Token collect_token(std::string::iterator begin, std::string::iterator end);
-    void collect_tokens(bool raw_tokens = false);
+    void collect_raw_tokens();
+    std::vector<Token> collect_next_entry_tokens();
     void print_tokens();
-    void redefine_bib_text_tokens();
+
+private:
+    void next_char();
+    Token collect_token(std::string::iterator begin, std::string::iterator end);
 };
+
+
+bool any_token_of_type (std::vector<Token> &tokens, const TokenType type);
+bool all_tokens_of_type (std::vector<Token> &tokens, const TokenType type);
+
+
+
+} // end of namespace bibparser

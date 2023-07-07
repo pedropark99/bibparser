@@ -6,11 +6,7 @@
 #include "string_utils.hpp"
 
 
-namespace bibparser
-{
-    std::filesystem::path path_to_example = std::filesystem::absolute("data/example1.bib");
-}
-
+namespace bibparser {
 
 std::string get_path_to_file(int argc, char *argv[])
 {
@@ -54,3 +50,5 @@ std::string read_bib_file(std::string path)
 	file_connection.close();
 	return buffer;
 }
+
+} // end of namespace bibparser

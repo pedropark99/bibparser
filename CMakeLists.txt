@@ -17,7 +17,6 @@ target_include_directories(bibparser PRIVATE include)
 
 set_property(TARGET bibparser PROPERTY CXX_STANDARD 20)
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS_INIT "-g")
 
 message("CXX Standard: ${CXX_STANDARD}")
 

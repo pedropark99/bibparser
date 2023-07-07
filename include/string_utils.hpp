@@ -5,10 +5,16 @@
 
 #include "tokenizer.hpp"
 
+
+namespace bibparser {
+
 bool is_white_space(char chr);
 bool is_digit(char chr);
 bool is_letter(char chr);
+bool is_alpha_numeric(char chr);
 bool find_in_set(char chr, const std::unordered_set<char>& set);
+
+SubString empty_substring();
 
 bool char_equal_to_any_of(const char chr, std::unordered_set<char> set);
 bool string_equal_to_any_of(const std::string str, std::unordered_set<std::string> set);
@@ -31,3 +37,5 @@ std::string substring_to_string(SubString substring);
 char substring_to_char(SubString substring);
 std::string integer_to_string(int64_t i);
 void print_substring(SubString substring);
+
+} // end of namespace bibparser

@@ -1,64 +1,178 @@
 #include <list>
+#include <unordered_set>
 #include <unordered_map>
 #include <iostream>
+#include <vector>
+#include <iterator>
 
 #include "syntax_check.hpp"
 #include "tokenizer.hpp"
 
 namespace bibparser {
-namespace syntax {
 
 
-struct SyntaxCheckerBuffer {
-    std::list<Token>::iterator token_it;
-    std::list<Token>::iterator begin;
-    std::list<Token>::iterator end;
-};
-
-
-
-std::unordered_map<TokenType, TokenType> expects_next = {
-    {BIB_ENTRY, BIB_TYPE}
-};
-
-
-
-void match_next_type(SyntaxCheckerBuffer buf, TokenType next_type)
+SyntaxChecker::SyntaxChecker(std::vector<Token> &input_tokens)
 {
-    std::list<Token>::iterator look_ahead = std::list<Token>::iterator();
-    if (std::next(buf.token_it) != buf.end)
+    tokens_to_check_ = std::vector<Token>();
+    for (Token token: input_tokens)
     {
-        look_ahead = std::next(buf.token_it);
+        if (token.type_ != EMPTY && token.type_ != NEW_LINE)
+        {
+            tokens_to_check_.emplace_back(token);
+        }
     }
 
-    if (look_ahead->type_ == next_type)
+    syntax_buffer_ = {
+        tokens_to_check_.begin(),
+        tokens_to_check_.end(),
+        tokens_to_check_.begin(),
+        tokens_to_check_.begin()
+    };
+}
+
+
+
+void SyntaxChecker::next_token()
+{
+    syntax_buffer_.current_token++;
+    if (std::next(syntax_buffer_.current_token) != syntax_buffer_.end_of_tokens)
     {
-        return;
+        syntax_buffer_.look_ahead = std::next(syntax_buffer_.current_token);
+    }
+}
+
+
+
+
+void SyntaxChecker::check_syntax()
+{
+
+    if (syntax_buffer_.current_token->type_ != BIB_ENTRY)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, BIB_ENTRY);
+    }
+
+    next_token();
+
+    if (syntax_buffer_.current_token->type_ != BIB_TEXT)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, BIB_TEXT);
     }
     else
     {
-        //raise some errror!
+        syntax_buffer_.current_token->type_ = BIB_TYPE;
     }
-}
 
+    next_token();
 
-    
-void syntax_checker(std::list<Token> &tokens)
-{
-    SyntaxCheckerBuffer buf = {
-        tokens.begin(),
-        tokens.begin(),
-        tokens.end()
-    };
-
-    TokenType next_type = TokenType();
-    for (buf.token_it; buf.token_it != buf.end; buf.token_it++)
+    if (syntax_buffer_.current_token->type_ != OPEN_BRACKET
+       && syntax_buffer_.current_token->type_ != QUOTATION_MARK)
     {
-        next_type = expects_next[buf.token_it->type_];
-        match_next_type(buf, next_type);
-        std::cout << next_type << std::endl;
+        report_token_type_error(*syntax_buffer_.current_token, OPEN_BRACKET);
     }
+
+    next_token();
+
+    if (syntax_buffer_.current_token->type_ != BIB_TEXT)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, BIB_TEXT);
+    }
+    else
+    {
+        syntax_buffer_.current_token-> type_ = BIB_IDENTIFIER;
+    }
+
+    next_token();
+
+    if (syntax_buffer_.current_token->type_ != COMMA)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, COMMA);
+    }
+
+    next_token();
+
+    while (syntax_buffer_.current_token != syntax_buffer_.end_of_tokens)
+    {
+        if (syntax_buffer_.current_token->type_ != BIB_TEXT)
+        {
+            report_token_type_error(*syntax_buffer_.current_token, BIB_TEXT);
+        }
+        else
+        {
+            syntax_buffer_.current_token->type_ = BIB_ATTRIBUTE_KEY;
+        }
+
+        next_token();
+
+        if (syntax_buffer_.current_token->type_ != EQUAL_SIGN)
+        {
+            report_token_type_error(*syntax_buffer_.current_token, EQUAL_SIGN);
+        }
+
+        next_token();
+
+        if (syntax_buffer_.current_token->type_ != OPEN_BRACKET
+           && syntax_buffer_.current_token->type_ != QUOTATION_MARK)
+        {
+            report_token_type_error(*syntax_buffer_.current_token, OPEN_BRACKET);
+        }
+
+        next_token();
+
+        if (syntax_buffer_.current_token->type_ != BIB_TEXT)
+        {
+            report_token_type_error(*syntax_buffer_.current_token, BIB_TEXT);
+        }
+        else
+        {
+            syntax_buffer_.current_token->type_ = BIB_ATTRIBUTE_VALUE;
+        }
+
+        next_token();
+
+        if (syntax_buffer_.current_token->type_ != CLOSE_BRACKET
+           && syntax_buffer_.current_token->type_ != QUOTATION_MARK)
+        {
+            report_token_type_error(*syntax_buffer_.current_token, CLOSE_BRACKET);
+        }
+
+        next_token();
+
+        if (syntax_buffer_.current_token->type_ != COMMA
+           && syntax_buffer_.current_token->type_ != CLOSE_BRACKET)
+        {
+            report_token_type_error(*syntax_buffer_.current_token, COMMA);
+        }
+
+        next_token();
+    }
+
+
 }
 
-} // end of namespace syntax
+
+
+
+
+void report_token_type_error(Token token_found, TokenType type_expected)
+{
+    token_found.print_token();
+
+    std::string TYPE_ERROR_MESSAGE = "The parser expected to find next a token of type ";
+    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + token_type_to_string(type_expected);
+    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + ". But it found a token of type ";
+    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + token_type_to_string(token_found.type_);
+    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + " instead.";
+
+    std::cerr << TYPE_ERROR_MESSAGE << std::endl;
+
+    throw std::exception();
+}
+
+
+
+
+
+
+
 } // end of namespace bibparser
