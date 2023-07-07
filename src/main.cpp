@@ -37,13 +37,11 @@ int main(int argc, char *argv[])
         bibparser::Tokenizer tokenizer = bibparser::Tokenizer(options.path_to_file);
         bibparser::Token current_token = bibparser::Token();
         tokenizer.collect_raw_tokens();
-        tokenizer.print_tokens();
     }
     if (options.print_raw_tokens == true)
     {
         bibparser::Tokenizer tokenizer = bibparser::Tokenizer(options.path_to_file);
         tokenizer.collect_raw_tokens();
-        tokenizer.print_tokens();
     }
     if (options.syntax_check == true)
     {

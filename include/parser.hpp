@@ -78,10 +78,18 @@ struct KeyValuePair {
 
 
 
+// struct BibEntry {
+// 	BibIdentifier identifier;
+// 	BibType type;
+// 	std::list<BibAttribute> attributes;
+// };
+
 struct BibEntry {
 	BibIdentifier identifier;
 	BibType type;
-	std::list<BibAttribute> attributes;
+	std::vector<BibAttribute> attributes;
+    
+    std::vector<Token> tokens;
 };
 
 

@@ -36,9 +36,18 @@ Parser::Parser(std::string path_to_bib_file)
 
 void Parser::parse()
 {
-    std::vector<Token> entry_tokens = tokenizer_.collect_next_entry_tokens();
-    SyntaxChecker syntax_checker = SyntaxChecker(entry_tokens);
-    syntax_checker.check_syntax();
+    std::vector<Token> entry_tokens = std::vector<Token>();
+    std::vector<BibEntry> bib_entries = std::vector<BibEntry>();
+
+    while (true)
+    {
+        entry_tokens = tokenizer_.collect_next_entry_tokens();
+        if (entry_tokens.size() == 0) break;
+        SyntaxChecker syntax_checker = SyntaxChecker(entry_tokens);
+        syntax_checker.check_syntax();
+    }
+
+    
     for (Token token: entry_tokens) token.print_token();
     // parse_tokens();
     // print_bib_entries();
@@ -55,55 +64,55 @@ void Parser::next_token()
 }
 
 
-void Parser::parse_tokens()
-{
-    std::vector<Token> entry_tokens = std::vector<Token>();
-    parser_buffer_ = {
-        PARSING,
-        tokenizer_.tokens_.begin(),   // begin_of_tokens
-        tokenizer_.tokens_.end(),     // end_of_tokens
-        tokenizer_.tokens_.begin(),   // current_token
-        tokenizer_.tokens_.begin()    // look_ahead
-    };
+// void Parser::parse_tokens()
+// {
+//     std::vector<Token> entry_tokens = std::vector<Token>();
+//     parser_buffer_ = {
+//         PARSING,
+//         tokenizer_.tokens_.begin(),   // begin_of_tokens
+//         tokenizer_.tokens_.end(),     // end_of_tokens
+//         tokenizer_.tokens_.begin(),   // current_token
+//         tokenizer_.tokens_.begin()    // look_ahead
+//     };
 
-    if (std::next(parser_buffer_.current_token) != parser_buffer_.end_of_tokens)
-    {
-        parser_buffer_.look_ahead = std::next(parser_buffer_.current_token);
-    }
+//     if (std::next(parser_buffer_.current_token) != parser_buffer_.end_of_tokens)
+//     {
+//         parser_buffer_.look_ahead = std::next(parser_buffer_.current_token);
+//     }
     
 
-    while (parser_buffer_.current_token != parser_buffer_.end_of_tokens)
-    {
-        if (parser_buffer_.look_ahead->type_ == BIB_ENTRY)
-        {
-            entry_tokens.emplace_back(*parser_buffer_.current_token);
-            parse_entry_tokens(entry_tokens);
-            entry_tokens.clear();
-            next_token();
-            continue;
-        }
+//     while (parser_buffer_.current_token != parser_buffer_.end_of_tokens)
+//     {
+//         if (parser_buffer_.look_ahead->type_ == BIB_ENTRY)
+//         {
+//             entry_tokens.emplace_back(*parser_buffer_.current_token);
+//             parse_entry_tokens(entry_tokens);
+//             entry_tokens.clear();
+//             next_token();
+//             continue;
+//         }
 
-        entry_tokens.emplace_back(*parser_buffer_.current_token);
-        next_token();
-    }
+//         entry_tokens.emplace_back(*parser_buffer_.current_token);
+//         next_token();
+//     }
 
-    // Parse the remaining tokens in `entry_tokens` from the last iteration;
-    // parse_entry_tokens(entry_tokens);
-}
-
-
-void Parser::parse_entry_tokens(std::vector<Token> entry_tokens)
-{
-    KeyValuePair key_value_pair = {Token(), Token()};
-    BibEntry bib_entry = {
-        BibIdentifier(empty_substring()),  // identifier
-        BibType(empty_substring()),        // type
-        std::list<BibAttribute>()          // attributes
-    };
+//     // Parse the remaining tokens in `entry_tokens` from the last iteration;
+//     // parse_entry_tokens(entry_tokens);
+// }
 
 
-    ast.emplace_back(bib_entry);
-}
+// void Parser::parse_entry_tokens(std::vector<Token> entry_tokens)
+// {
+//     KeyValuePair key_value_pair = {Token(), Token()};
+//     BibEntry bib_entry = {
+//         BibIdentifier(empty_substring()),  // identifier
+//         BibType(empty_substring()),        // type
+//         std::list<BibAttribute>()          // attributes
+//     };
+
+
+//     ast.emplace_back(bib_entry);
+// }
 
 
 void Parser::print_bib_entries()
