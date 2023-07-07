@@ -41,9 +41,12 @@ void Parser::parse()
 
     Token tk = Token();
     std::vector<Token> tokens_;
+    int line_in_source = 1;
     for (int i = 0; i < 65; i++)
     {
         tk = tokenizer_.get_next_token();
+        tk.line_in_source_ = line_in_source;
+        if (tk.type_ == NEW_LINE) line_in_source++;
         if (tk.type_ != EMPTY && tk.type_ != NEW_LINE) tokens_.emplace_back(tk);
     }
 
@@ -57,14 +60,14 @@ void Parser::parse()
 
     if (parser_buffer_.current_token->type_ != BIB_ENTRY)
     {
-        throw std::exception();
+        report_token_type_error(*parser_buffer_.current_token, BIB_ENTRY);
     }
 
     next_token();
 
     if (parser_buffer_.current_token->type_ != BIB_TEXT)
     {
-        throw std::exception();
+        report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
     }
     else
     {
@@ -76,14 +79,14 @@ void Parser::parse()
     if (parser_buffer_.current_token->type_ != OPEN_BRACKET
        && parser_buffer_.current_token->type_ != QUOTATION_MARK)
     {
-        throw std::exception();
+        report_token_type_error(*parser_buffer_.current_token, OPEN_BRACKET);
     }
 
     next_token();
 
     if (parser_buffer_.current_token->type_ != BIB_TEXT)
     {
-        throw std::exception();
+        report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
     }
     else
     {
@@ -94,12 +97,65 @@ void Parser::parse()
 
     if (parser_buffer_.current_token->type_ != COMMA)
     {
-        throw std::exception();
+        report_token_type_error(*parser_buffer_.current_token, COMMA);
     }
+
+    next_token();
 
     while (parser_buffer_.current_token != parser_buffer_.end_of_tokens)
     {
-        
+        if (parser_buffer_.current_token->type_ != BIB_TEXT)
+        {
+            report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
+        }
+        else
+        {
+            parser_buffer_.current_token->type_ = BIB_ATTRIBUTE_KEY;
+        }
+
+        next_token();
+
+        if (parser_buffer_.current_token->type_ != EQUAL_SIGN)
+        {
+            report_token_type_error(*parser_buffer_.current_token, EQUAL_SIGN);
+        }
+
+        next_token();
+
+        if (parser_buffer_.current_token->type_ != OPEN_BRACKET
+           && parser_buffer_.current_token->type_ != QUOTATION_MARK)
+        {
+            report_token_type_error(*parser_buffer_.current_token, OPEN_BRACKET);
+        }
+
+        next_token();
+
+        if (parser_buffer_.current_token->type_ != BIB_TEXT)
+        {
+            report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
+        }
+        else
+        {
+            parser_buffer_.current_token->type_ = BIB_ATTRIBUTE_VALUE;
+        }
+
+        next_token();
+
+        if (parser_buffer_.current_token->type_ != CLOSE_BRACKET
+           && parser_buffer_.current_token->type_ != QUOTATION_MARK)
+        {
+            report_token_type_error(*parser_buffer_.current_token, CLOSE_BRACKET);
+        }
+
+        next_token();
+
+        if (parser_buffer_.current_token->type_ != COMMA
+           && parser_buffer_.current_token->type_ != CLOSE_BRACKET)
+        {
+            report_token_type_error(*parser_buffer_.current_token, COMMA);
+        }
+
+        next_token();
     }
 
 
@@ -323,6 +379,34 @@ BibAttribute parse_bib_attribute(KeyValuePair key_value_pair)
     Token attribute_key = key_value_pair.key_token;
     return BibAttribute(attribute_key.value_, attribute_value.value_); 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+void report_token_type_error(Token token_found, TokenType type_expected)
+{
+    token_found.print_token();
+
+    std::string TYPE_ERROR_MESSAGE = "The parser expected to find next a token of type ";
+    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + token_type_to_string(type_expected);
+    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + ". But it found a token of type ";
+    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + token_type_to_string(token_found.type_);
+    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + " instead.";
+
+    std::cerr << TYPE_ERROR_MESSAGE << std::endl;
+
+    throw std::exception();
+}
+
+
 
 
 } // end of namespace bibparser
