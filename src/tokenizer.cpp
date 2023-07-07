@@ -62,9 +62,14 @@ Tokenizer::Tokenizer(std::string path_to_bib_file)
         bib_file_.end(),    // end_of_file
         bib_file_.begin(),  // lexeme_begin
         bib_file_.begin(),  // current_char
-        std::next(bib_file_.begin()),  // look_ahead
+        bib_file_.begin(),  // look_ahead
         1  // line_in_source
     };
+
+    if (std::next(tokenizer_buffer_.begin_of_file) != tokenizer_buffer_.end_of_file)
+    {
+        tokenizer_buffer_.look_ahead = std::next(tokenizer_buffer_.begin_of_file);
+    }   
 }
 
 
