@@ -56,20 +56,21 @@ void Token::print_token()
 Tokenizer::Tokenizer(std::string path_to_bib_file)
 {
     bib_file_ = read_bib_file(path_to_bib_file);
+
+    if (bib_file_.begin() == bib_file_.end())
+    {
+        // empty file!!!
+    }
     
     tokenizer_buffer_ = {
         bib_file_.begin(),  // begin_of_file
         bib_file_.end(),    // end_of_file
         bib_file_.begin(),  // lexeme_begin
         bib_file_.begin(),  // current_char
-        bib_file_.begin(),  // look_ahead
+        std::next(tokenizer_buffer_.begin_of_file),  // look_ahead
         1  // line_in_source
     };
 
-    if (std::next(tokenizer_buffer_.begin_of_file) != tokenizer_buffer_.end_of_file)
-    {
-        tokenizer_buffer_.look_ahead = std::next(tokenizer_buffer_.begin_of_file);
-    }   
 }
 
 
@@ -115,17 +116,20 @@ Token Tokenizer::collect_token(std::string::iterator begin, std::string::iterato
 
 
 
-void Tokenizer::collect_raw_tokens()
+std::vector<Token> Tokenizer::collect_raw_tokens()
 {
+    std::vector<Token> raw_tokens = std::vector<Token>();
     int64_t line_in_source = 1;
     while (true)
     {
         current_token_ = get_next_token();
         current_token_.line_in_source_ = line_in_source;
         if (current_token_.type_ == NEW_LINE) line_in_source++;
-        tokens_.emplace_back(current_token_);
+        raw_tokens.emplace_back(current_token_);
         if (current_token_.type_ == END_OF_FILE) break;
     }
+
+    return raw_tokens;
 }
 
 
@@ -149,13 +153,6 @@ std::vector<Token> Tokenizer::collect_next_entry_tokens()
 
 
 
-void Tokenizer::print_tokens()
-{
-    for (Token token: tokens_)
-    {
-        token.print_token();
-    }
-}
 
 
 

@@ -78,8 +78,6 @@ class Tokenizer {
 private:
     std::string bib_file_;
     TokenizerBuffer tokenizer_buffer_;
-public:
-    std::vector<Token> tokens_;
     Token current_token_;
     
 
@@ -88,9 +86,8 @@ public:
     Tokenizer() = default;
 
     Token get_next_token();
-    void collect_raw_tokens();
+    std::vector<Token> collect_raw_tokens();
     std::vector<Token> collect_next_entry_tokens();
-    void print_tokens();
 
 private:
     void next_char();
