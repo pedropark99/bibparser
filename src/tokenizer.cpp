@@ -62,7 +62,8 @@ Tokenizer::Tokenizer(std::string path_to_bib_file)
         bib_file_.end(),    // end_of_file
         bib_file_.begin(),  // lexeme_begin
         bib_file_.begin(),  // current_char
-        bib_file_.begin()   // look_ahead
+        std::next(bib_file_.begin()),  // look_ahead
+        1  // line_in_source
     };
 }
 
@@ -122,6 +123,24 @@ void Tokenizer::collect_raw_tokens()
     }
 }
 
+
+std::vector<Token> Tokenizer::collect_next_entry_tokens()
+{
+    std::vector<Token> entry_tokens = std::vector<Token>();
+
+    if (*tokenizer_buffer_.look_ahead == '@') next_char();
+    
+    while (*tokenizer_buffer_.look_ahead != '@')
+    {
+        current_token_ = get_next_token();
+        current_token_.line_in_source_ = tokenizer_buffer_.line_in_source;
+        if (current_token_.type_ == NEW_LINE) tokenizer_buffer_.line_in_source++;
+        entry_tokens.emplace_back(current_token_);
+        if (current_token_.type_ == END_OF_FILE) break;
+    }
+
+    return entry_tokens;
+}
 
 
 

@@ -27,58 +27,114 @@ struct SyntaxCheckerBuffer {
 
 void syntax_check()
 {
-    std::vector<Token> tokens;
-    for (int i = 0; i < 65; i++)
-    {
-        Token ct = tokenizer_.get_next_token();
-        if (ct.type_ != EMPTY)
-        {
-            tokens.emplace_back(tokenizer_.get_next_token());
-        }
-    }
-
-    parser_buffer_ = {
+        parser_buffer_ = {
         PARSING,
-        1,
-        tokens.begin(),
-        tokens.end(),
-        tokens.begin(),
-        tokens.begin(),
-        tokens.begin()
+        tokens_.begin(),
+        tokens_.end(),
+        tokens_.begin(),
+        tokens_.begin()
     };
 
-
-    if (parser_buffer_.current_token->type_ == BIB_ENTRY)
+    if (parser_buffer_.current_token->type_ != BIB_ENTRY)
     {
-        std::cout << "BIB_ENTRY!" << std::endl;
-        goto expect_bib_type_next;
+        report_token_type_error(*parser_buffer_.current_token, BIB_ENTRY);
+    }
+
+    next_token();
+
+    if (parser_buffer_.current_token->type_ != BIB_TEXT)
+    {
+        report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
     }
     else
     {
-        // report parse error
+        parser_buffer_.current_token->type_ = BIB_TYPE;
     }
 
+    next_token();
 
-expect_bib_type_next:
-    goto_next_token();
-    if (parser_buffer_.current_token->type_ == BIB_TYPE)
+    if (parser_buffer_.current_token->type_ != OPEN_BRACKET
+       && parser_buffer_.current_token->type_ != QUOTATION_MARK)
     {
-        std::cout << "BIB_TYPE!" << std::endl;
-        goto expect_open_curly_braces_next;
+        report_token_type_error(*parser_buffer_.current_token, OPEN_BRACKET);
+    }
+
+    next_token();
+
+    if (parser_buffer_.current_token->type_ != BIB_TEXT)
+    {
+        report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
     }
     else
     {
-        // report parse error
+        parser_buffer_.current_token-> type_ = BIB_IDENTIFIER;
     }
 
+    next_token();
 
-expect_open_curly_braces_next:
-    goto_next_token();
-    if (parser_buffer_.current_token->type_ == OPEN_BRACKET)
+    if (parser_buffer_.current_token->type_ != COMMA)
     {
-        std::cout << "OPEN_BRACKET!" << std::endl;
-        goto expect_open_curly_braces_next;
+        report_token_type_error(*parser_buffer_.current_token, COMMA);
     }
+
+    next_token();
+
+    while (parser_buffer_.current_token != parser_buffer_.end_of_tokens)
+    {
+        if (parser_buffer_.current_token->type_ != BIB_TEXT)
+        {
+            report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
+        }
+        else
+        {
+            parser_buffer_.current_token->type_ = BIB_ATTRIBUTE_KEY;
+        }
+
+        next_token();
+
+        if (parser_buffer_.current_token->type_ != EQUAL_SIGN)
+        {
+            report_token_type_error(*parser_buffer_.current_token, EQUAL_SIGN);
+        }
+
+        next_token();
+
+        if (parser_buffer_.current_token->type_ != OPEN_BRACKET
+           && parser_buffer_.current_token->type_ != QUOTATION_MARK)
+        {
+            report_token_type_error(*parser_buffer_.current_token, OPEN_BRACKET);
+        }
+
+        next_token();
+
+        if (parser_buffer_.current_token->type_ != BIB_TEXT)
+        {
+            report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
+        }
+        else
+        {
+            parser_buffer_.current_token->type_ = BIB_ATTRIBUTE_VALUE;
+        }
+
+        next_token();
+
+        if (parser_buffer_.current_token->type_ != CLOSE_BRACKET
+           && parser_buffer_.current_token->type_ != QUOTATION_MARK)
+        {
+            report_token_type_error(*parser_buffer_.current_token, CLOSE_BRACKET);
+        }
+
+        next_token();
+
+        if (parser_buffer_.current_token->type_ != COMMA
+           && parser_buffer_.current_token->type_ != CLOSE_BRACKET)
+        {
+            report_token_type_error(*parser_buffer_.current_token, COMMA);
+        }
+
+        next_token();
+    }
+
 
 }
 

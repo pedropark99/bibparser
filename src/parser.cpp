@@ -35,134 +35,12 @@ Parser::Parser(std::string path_to_bib_file)
 
 void Parser::parse()
 {
-    // tokenizer_.collect_raw_tokens();
+    std::vector<Token> entry_tokens = std::vector<Token>();
+    entry_tokens = tokenizer_.collect_next_entry_tokens();
+    entry_tokens = tokenizer_.collect_next_entry_tokens();
+    for (Token token: entry_tokens) token.print_token();
     // parse_tokens();
     // print_bib_entries();
-
-    Token tk = Token();
-    std::vector<Token> tokens_;
-    int line_in_source = 1;
-    for (int i = 0; i < 65; i++)
-    {
-        tk = tokenizer_.get_next_token();
-        tk.line_in_source_ = line_in_source;
-        if (tk.type_ == NEW_LINE) line_in_source++;
-        if (tk.type_ != EMPTY && tk.type_ != NEW_LINE) tokens_.emplace_back(tk);
-    }
-
-    parser_buffer_ = {
-        PARSING,
-        tokens_.begin(),
-        tokens_.end(),
-        tokens_.begin(),
-        tokens_.begin()
-    };
-
-    if (parser_buffer_.current_token->type_ != BIB_ENTRY)
-    {
-        report_token_type_error(*parser_buffer_.current_token, BIB_ENTRY);
-    }
-
-    next_token();
-
-    if (parser_buffer_.current_token->type_ != BIB_TEXT)
-    {
-        report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
-    }
-    else
-    {
-        parser_buffer_.current_token->type_ = BIB_TYPE;
-    }
-
-    next_token();
-
-    if (parser_buffer_.current_token->type_ != OPEN_BRACKET
-       && parser_buffer_.current_token->type_ != QUOTATION_MARK)
-    {
-        report_token_type_error(*parser_buffer_.current_token, OPEN_BRACKET);
-    }
-
-    next_token();
-
-    if (parser_buffer_.current_token->type_ != BIB_TEXT)
-    {
-        report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
-    }
-    else
-    {
-        parser_buffer_.current_token-> type_ = BIB_IDENTIFIER;
-    }
-
-    next_token();
-
-    if (parser_buffer_.current_token->type_ != COMMA)
-    {
-        report_token_type_error(*parser_buffer_.current_token, COMMA);
-    }
-
-    next_token();
-
-    while (parser_buffer_.current_token != parser_buffer_.end_of_tokens)
-    {
-        if (parser_buffer_.current_token->type_ != BIB_TEXT)
-        {
-            report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
-        }
-        else
-        {
-            parser_buffer_.current_token->type_ = BIB_ATTRIBUTE_KEY;
-        }
-
-        next_token();
-
-        if (parser_buffer_.current_token->type_ != EQUAL_SIGN)
-        {
-            report_token_type_error(*parser_buffer_.current_token, EQUAL_SIGN);
-        }
-
-        next_token();
-
-        if (parser_buffer_.current_token->type_ != OPEN_BRACKET
-           && parser_buffer_.current_token->type_ != QUOTATION_MARK)
-        {
-            report_token_type_error(*parser_buffer_.current_token, OPEN_BRACKET);
-        }
-
-        next_token();
-
-        if (parser_buffer_.current_token->type_ != BIB_TEXT)
-        {
-            report_token_type_error(*parser_buffer_.current_token, BIB_TEXT);
-        }
-        else
-        {
-            parser_buffer_.current_token->type_ = BIB_ATTRIBUTE_VALUE;
-        }
-
-        next_token();
-
-        if (parser_buffer_.current_token->type_ != CLOSE_BRACKET
-           && parser_buffer_.current_token->type_ != QUOTATION_MARK)
-        {
-            report_token_type_error(*parser_buffer_.current_token, CLOSE_BRACKET);
-        }
-
-        next_token();
-
-        if (parser_buffer_.current_token->type_ != COMMA
-           && parser_buffer_.current_token->type_ != CLOSE_BRACKET)
-        {
-            report_token_type_error(*parser_buffer_.current_token, COMMA);
-        }
-
-        next_token();
-    }
-
-
-    for (Token token: tokens_)
-    {
-        token.print_token();
-    }
 }
 
 
@@ -222,11 +100,6 @@ void Parser::parse_entry_tokens(std::vector<Token> entry_tokens)
         std::list<BibAttribute>()          // attributes
     };
 
-    
-    for (Token token: entry_tokens)
-    {
-        token.print_token();
-    }
 
     ast.emplace_back(bib_entry);
 }

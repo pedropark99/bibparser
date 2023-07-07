@@ -18,6 +18,9 @@ struct TokenizerBuffer {
     std::string::iterator lexeme_begin;
     std::string::iterator current_char;
     std::string::iterator look_ahead;
+
+    size_t line_in_source;
+
 };
 
 
@@ -59,8 +62,8 @@ class Token {
 public:
     TokenType type_;
     SubString value_;
-    int64_t line_in_source_;
-    int64_t column_in_source_;
+    size_t line_in_source_;
+    size_t column_in_source_;
 
     Token(TokenType input_type, SubString input_value);
     Token() = default;
@@ -86,6 +89,7 @@ public:
 
     Token get_next_token();
     void collect_raw_tokens();
+    std::vector<Token> collect_next_entry_tokens();
     void print_tokens();
 
 private:
