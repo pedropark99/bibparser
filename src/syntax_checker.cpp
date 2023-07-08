@@ -51,6 +51,7 @@ void SyntaxChecker::next_token()
 
 void SyntaxChecker::check_syntax()
 {
+    if (syntax_buffer_.current_token == syntax_buffer_.end_of_tokens) return;
 
     if (syntax_buffer_.current_token->type_ != BIB_ENTRY)
     {
