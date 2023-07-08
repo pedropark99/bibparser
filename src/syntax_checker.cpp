@@ -1,12 +1,13 @@
-#include <list>
-#include <unordered_set>
-#include <unordered_map>
 #include <iostream>
 #include <vector>
 #include <iterator>
+#include <algorithm>
+#include <cctype>
+#include <string>
 
 #include "syntax_check.hpp"
 #include "tokenizer.hpp"
+#include "string_utils.hpp"
 
 namespace bibparser {
 
@@ -16,10 +17,9 @@ SyntaxChecker::SyntaxChecker(std::vector<Token> &input_tokens)
     tokens_to_check_ = std::vector<Token>();
     for (Token token: input_tokens)
     {
-        if (token.type_ != EMPTY && token.type_ != NEW_LINE)
-        {
-            tokens_to_check_.emplace_back(token);
-        }
+        // Ignore spaces and new lines for simplicity in checking the syntax
+        if (token.type_ == EMPTY || token.type_ == NEW_LINE) continue;
+        tokens_to_check_.emplace_back(token);
     }
 
     syntax_buffer_ = {
@@ -49,9 +49,12 @@ void SyntaxChecker::next_token()
 
 
 
-void SyntaxChecker::check_syntax()
+std::vector<Token> SyntaxChecker::check_syntax()
 {
-    if (syntax_buffer_.current_token == syntax_buffer_.end_of_tokens) return;
+    if (syntax_buffer_.current_token == syntax_buffer_.end_of_tokens)
+    {
+        return tokens_to_check_;
+    }
 
     if (syntax_buffer_.current_token->type_ != BIB_ENTRY)
     {
@@ -68,6 +71,7 @@ void SyntaxChecker::check_syntax()
     {
         syntax_buffer_.current_token->type_ = BIB_TYPE;
     }
+
 
     next_token();
 
@@ -156,7 +160,7 @@ void SyntaxChecker::check_syntax()
         if (syntax_buffer_.current_token->type_ == END_OF_FILE) break;
     }
 
-
+    return tokens_to_check_;
 }
 
 

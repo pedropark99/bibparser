@@ -21,7 +21,9 @@ private:
 
 public:
     SyntaxChecker(std::vector<Token> &input_tokens);
-    void check_syntax();
+    std::vector<Token> check_syntax();
+
+private:
     void next_token();
 };
 

@@ -43,9 +43,10 @@ void Parser::parse()
     {
         entry_tokens = tokenizer_.collect_next_entry_tokens();
         if (entry_tokens.size() == 0) break;
+        SyntaxChecker syntax_checker = SyntaxChecker(entry_tokens);
+        entry_tokens = syntax_checker.check_syntax();
+
         for (Token token: entry_tokens) token.print_token();
-        //SyntaxChecker syntax_checker = SyntaxChecker(entry_tokens);
-        //syntax_checker.check_syntax();
     }
 
     

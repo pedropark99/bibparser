@@ -162,65 +162,11 @@ std::vector<Token> Tokenizer::collect_next_entry_tokens()
         if (current_token_.type_ == END_OF_FILE) break;
     }
 
-    this->replace_bib_text_types(entry_tokens);
     return entry_tokens;
 }
 
 
 
-void Tokenizer::replace_bib_text_types(std::vector<Token> &raw_tokens)
-{
-    std::vector<Token>::iterator current_token = raw_tokens.begin();
-    std::vector<Token>::iterator next_token = raw_tokens.begin();
-
-    if (std::next(current_token) != raw_tokens.end())
-    {
-        next_token = std::next(current_token);
-    }
-
-    if (current_token->type_ == BIB_ENTRY || next_token->type_ == BIB_TEXT)
-    {
-        next_token->type_ = BIB_TYPE;
-        current_token++;
-        next_token = std::next(current_token);
-    }
-
-    while (current_token != raw_tokens.end() && next_token != raw_tokens.end())
-    {
-        if (current_token->type_ != BIB_TEXT)
-        {
-            current_token++;
-            next_token = std::next(current_token);
-            continue;
-        }
-
-        switch (next_token->type_)
-        {
-        case COMMA:
-            current_token->type_ = BIB_IDENTIFIER;
-            current_token++;
-            next_token = std::next(current_token);
-            break;
-        case EQUAL_SIGN:
-            current_token->type_ = BIB_ATTRIBUTE_KEY;
-            current_token++;
-            next_token = std::next(current_token);
-            break;
-        default:
-            current_token++;
-            next_token = std::next(current_token);
-            break;
-        }
-    }
-
-    // Remaining BIB_TEXT elements are probably BIB_ATTRIBUTE_VALUEs
-    current_token = raw_tokens.begin();
-    for (current_token; current_token != raw_tokens.end(); current_token++)
-    {
-        if (current_token->type_ == BIB_TEXT) current_token->type_ = BIB_ATTRIBUTE_VALUE;
-    }
-
-}
 
 
 

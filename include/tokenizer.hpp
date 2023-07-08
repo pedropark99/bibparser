@@ -92,7 +92,6 @@ public:
 private:
     void next_char();
     Token collect_token(std::string::iterator begin, std::string::iterator end);
-    void replace_bib_text_types(std::vector<Token> &raw_tokens);
 };
 
 
