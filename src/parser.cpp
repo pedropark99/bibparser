@@ -39,16 +39,18 @@ void Parser::parse()
     std::vector<Token> entry_tokens = std::vector<Token>();
     std::vector<BibEntry> bib_entries = std::vector<BibEntry>();
 
-    while (true)
+    for (int i = 0; i <= 7; i++)
     {
         entry_tokens = tokenizer_.collect_next_entry_tokens();
+        std::cout << "New entry ====================================================" << std::endl;
+        for (Token token: entry_tokens) token.print_token();
         if (entry_tokens.size() == 0) break;
-        SyntaxChecker syntax_checker = SyntaxChecker(entry_tokens);
-        syntax_checker.check_syntax();
+        // SyntaxChecker syntax_checker = SyntaxChecker(entry_tokens);
+        // syntax_checker.check_syntax();
     }
 
     
-    for (Token token: entry_tokens) token.print_token();
+    // for (Token token: entry_tokens) token.print_token();
     // parse_tokens();
     // print_bib_entries();
 }

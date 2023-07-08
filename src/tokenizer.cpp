@@ -68,7 +68,9 @@ Tokenizer::Tokenizer(std::string path_to_bib_file)
         bib_file_.begin(),  // lexeme_begin
         bib_file_.begin(),  // current_char
         bib_file_.begin(),  // look_ahead
+
         1  // line_in_source
+        
     };
 
     if (std::next(bib_file_.begin()) != bib_file_.end())
@@ -143,7 +145,7 @@ std::vector<Token> Tokenizer::collect_next_entry_tokens()
     std::vector<Token> entry_tokens = std::vector<Token>();
 
     if (*tokenizer_buffer_.look_ahead == '@') next_char();
-    
+    if (*tokenizer_buffer_.current_char == '\0') return entry_tokens;
     while (*tokenizer_buffer_.look_ahead != '@')
     {
         current_token_ = get_next_token();

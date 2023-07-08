@@ -41,7 +41,8 @@ int main(int argc, char *argv[])
     if (options.print_raw_tokens == true)
     {
         bibparser::Tokenizer tokenizer = bibparser::Tokenizer(options.path_to_file);
-        tokenizer.collect_raw_tokens();
+        std::vector<bibparser::Token> tokens = tokenizer.collect_raw_tokens();
+        for (bibparser::Token token: tokens) token.print_token();
     }
     if (options.syntax_check == true)
     {

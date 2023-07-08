@@ -23,11 +23,16 @@ SyntaxChecker::SyntaxChecker(std::vector<Token> &input_tokens)
     }
 
     syntax_buffer_ = {
-        tokens_to_check_.begin(),
-        tokens_to_check_.end(),
-        tokens_to_check_.begin(),
-        tokens_to_check_.begin()
+        tokens_to_check_.begin(),  // begin_of_tokens
+        tokens_to_check_.end(),    // end_of_tokens
+        tokens_to_check_.begin(),  // current_token
+        tokens_to_check_.begin()   // look_ahead
     };
+
+    if (std::next(tokens_to_check_.begin()) != tokens_to_check_.end())
+    {
+        syntax_buffer_.look_ahead = std::next(tokens_to_check_.begin());
+    }
 }
 
 
@@ -93,6 +98,7 @@ void SyntaxChecker::check_syntax()
 
     while (syntax_buffer_.current_token != syntax_buffer_.end_of_tokens)
     {
+
         if (syntax_buffer_.current_token->type_ != BIB_TEXT)
         {
             report_token_type_error(*syntax_buffer_.current_token, BIB_TEXT);
@@ -145,6 +151,8 @@ void SyntaxChecker::check_syntax()
         }
 
         next_token();
+        
+        if (syntax_buffer_.current_token->type_ == END_OF_FILE) break;
     }
 
 
