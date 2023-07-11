@@ -25,6 +25,9 @@ public:
 
 private:
     void next_token();
+    void check_standard_body();
+    void check_string_entry();
+    void check_preamble_entry();
 };
 
 

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cctype>
 #include <string>
+#include <cstring>
 
 #include "syntax_check.hpp"
 #include "tokenizer.hpp"
@@ -73,10 +74,88 @@ std::vector<Token> SyntaxChecker::check_syntax()
     }
 
 
+    std::string bib_type = substring_to_string(syntax_buffer_.current_token->value_);
+    std::string::iterator it = bib_type.begin();
+    for (it; it != bib_type.end(); it++) *it = tolower(*it);
+
+    if (bib_type == "string")
+    {
+        check_string_entry();
+    }
+    else
+    {
+        check_standard_body();
+    }
+
+
+    return tokens_to_check_;
+}
+
+
+
+
+void SyntaxChecker::check_string_entry()
+{
     next_token();
 
-    if (syntax_buffer_.current_token->type_ != OPEN_BRACKET
-       && syntax_buffer_.current_token->type_ != QUOTATION_MARK)
+    if (syntax_buffer_.current_token->type_ != OPEN_BRACKET)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, OPEN_BRACKET);
+    }
+
+    next_token();
+
+    if (syntax_buffer_.current_token->type_ != BIB_TEXT)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, BIB_ATTRIBUTE_KEY);
+    }
+    else
+    {
+        syntax_buffer_.current_token->type_ = BIB_ATTRIBUTE_KEY;
+    }
+
+    next_token();
+
+    if (syntax_buffer_.current_token->type_ != EQUAL_SIGN)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, EQUAL_SIGN);
+    }
+
+
+    next_token();
+
+    if (syntax_buffer_.current_token->type_ != BIB_TEXT)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, BIB_ATTRIBUTE_VALUE);
+    }
+    else
+    {
+        syntax_buffer_.current_token->type_ = BIB_ATTRIBUTE_VALUE;
+    }
+
+    next_token();
+
+    if (syntax_buffer_.current_token->type_ != CLOSE_BRACKET)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, CLOSE_BRACKET);
+    }
+
+    next_token();
+
+    if (syntax_buffer_.current_token->type_ != CLOSE_BRACKET)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, CLOSE_BRACKET);
+    }
+}
+
+
+
+
+void SyntaxChecker::check_standard_body()
+{
+    next_token();
+
+    if (syntax_buffer_.current_token->type_ != OPEN_BRACKET)
     {
         report_token_type_error(*syntax_buffer_.current_token, OPEN_BRACKET);
     }
@@ -160,7 +239,6 @@ std::vector<Token> SyntaxChecker::check_syntax()
         if (syntax_buffer_.current_token->type_ == END_OF_FILE) break;
     }
 
-    return tokens_to_check_;
 }
 
 
