@@ -185,13 +185,30 @@ void find_first_position(std::string &string, char chr)
 
 int parse_number(SubString substring)
 {
-    int parsed_number = std::stoi(substring_to_string(substring));
+    std::string buffer = substring_to_string(substring);
+    int parsed_number = atoi(buffer.c_str());
+    if (parsed_number == 0)
+    {
+        std::cerr << "Tryed to parse the text \""
+            << buffer
+            << "\" to an integer, but the parsing process failed."
+            << std::endl;
+        throw std::exception();
+    }
     return parsed_number;
 }
 
 int parse_number(std::string str)
 {
-    int parsed_number = std::stoi(str);
+    int parsed_number = atoi(str.c_str());
+    if (parsed_number == 0)
+    {
+        std::cerr << "Tryed to parse the text \""
+            << str
+            << "\" to an integer, but the parsing process failed."
+            << std::endl;
+        throw std::exception();
+    }
     return parsed_number;
 }
 

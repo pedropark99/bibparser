@@ -152,7 +152,6 @@ void SyntaxChecker::check_standard_body()
         // Expect next a single token, or, multiple tokens that compose an attribute value
         check_attribute_value();
 
-        match_next_token(std::vector<TokenType>{CLOSE_BRACKET, QUOTATION_MARK});
         match_next_token(std::vector<TokenType>{COMMA, CLOSE_BRACKET});
         
         if (syntax_buffer_.current_token->type_ == END_OF_FILE) break;
@@ -175,17 +174,18 @@ void SyntaxChecker::check_attribute_value()
         catch(const std::exception& e)
         {
             report_expected_number(*syntax_buffer_.current_token);
-            std::cerr << e.what() << '\n';
         }
+
+        next_token();
     }
 
     if (syntax_buffer_.current_token->type_ == OPEN_BRACKET
         || syntax_buffer_.current_token->type_ == QUOTATION_MARK)
     {
         match_next_token(std::vector<TokenType>{OPEN_BRACKET, QUOTATION_MARK});
+        match_set_next_token(BIB_TEXT, BIB_ATTRIBUTE_VALUE);
+        match_next_token(std::vector<TokenType>{CLOSE_BRACKET, QUOTATION_MARK});
     }
-    
-    match_set_next_token(BIB_TEXT, BIB_ATTRIBUTE_VALUE);
 }
 
 
@@ -211,7 +211,7 @@ void report_expected_number(Token token_found)
     token_found.print_token();
 
     std::string TYPE_ERROR_MESSAGE = "You did not used an open bracket, or, a quotation mark after the equal sign.";
-    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + "As a result, the parser expected to find a parsable number (e.g. 2005) after the equal sign";
+    TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + " As a result, the parser expected to find a parsable number (e.g. 2005) after the equal sign";
     TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + ". But it found the above token (of type ";
     TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + token_type_to_string(token_found.type_);
     TYPE_ERROR_MESSAGE = TYPE_ERROR_MESSAGE + ") instead.";

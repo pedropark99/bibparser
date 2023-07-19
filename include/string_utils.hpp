@@ -2,6 +2,7 @@
 #include <unordered_set>
 #include <iostream>
 #include <vector>
+#include <stdlib.h>
 
 #include "tokenizer.hpp"
 
