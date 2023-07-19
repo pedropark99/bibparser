@@ -1,6 +1,7 @@
 #include <string>
 #include <fstream>
 #include <filesystem>
+#include <regex>
 
 #include "read_bib.hpp"
 #include "string_utils.hpp"
@@ -48,6 +49,18 @@ std::string read_bib_file(std::string path)
 	file_connection.read(&buffer[0], buffer.size());
 
 	file_connection.close();
+
+
+    // Standardise line endings
+    std::string search = "\r\n";
+    std::string replacement = "\n";
+    std::string::size_type n = 0;
+    while ( ( n = buffer.find( search, n ) ) != std::string::npos )
+    {
+        buffer.replace( n, search.size(), replacement );
+        n += replacement.size();
+    }
+
 	return buffer;
 }
 

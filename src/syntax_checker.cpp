@@ -16,23 +16,16 @@ namespace bibparser {
 SyntaxChecker::SyntaxChecker(std::vector<Token> &input_tokens)
 {
     tokens_to_check_ = std::vector<Token>();
-    for (Token token: input_tokens)
-    {
-        // Ignore spaces and new lines for simplicity in checking the syntax
-        if (token.type_ == EMPTY || token.type_ == NEW_LINE) continue;
-        tokens_to_check_.emplace_back(token);
-    }
-
     syntax_buffer_ = {
-        tokens_to_check_.begin(),  // begin_of_tokens
-        tokens_to_check_.end(),    // end_of_tokens
-        tokens_to_check_.begin(),  // current_token
-        tokens_to_check_.begin()   // look_ahead
+        input_tokens.begin(),  // begin_of_tokens
+        input_tokens.end(),    // end_of_tokens
+        input_tokens.begin(),  // current_token
+        input_tokens.begin()   // look_ahead
     };
 
-    if (std::next(tokens_to_check_.begin()) != tokens_to_check_.end())
+    if (std::next(input_tokens.begin()) != input_tokens.end())
     {
-        syntax_buffer_.look_ahead = std::next(tokens_to_check_.begin());
+        syntax_buffer_.look_ahead = std::next(input_tokens.begin());
     }
 }
 
@@ -47,7 +40,47 @@ void SyntaxChecker::next_token()
     }
 }
 
+void SyntaxChecker::match_next_token(TokenType type_to_match)
+{
+    if (syntax_buffer_.current_token->type_ != type_to_match)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, type_to_match);
+    }
 
+    next_token();
+}
+
+void SyntaxChecker::match_next_token(std::vector<TokenType> types_to_match)
+{
+    TokenType current_token_type = syntax_buffer_.current_token->type_;
+    bool any_of = std::find(
+        types_to_match.begin(),
+        types_to_match.end(),
+        current_token_type
+    ) != types_to_match.end();
+
+    if ( !any_of )
+    {
+        report_token_type_error(*syntax_buffer_.current_token, types_to_match[0]);
+    }
+
+    next_token();
+}
+
+
+void SyntaxChecker::match_set_next_token(TokenType raw_type_to_match, TokenType new_type_to_set)
+{
+    if (syntax_buffer_.current_token->type_ != raw_type_to_match)
+    {
+        report_token_type_error(*syntax_buffer_.current_token, raw_type_to_match);
+    }
+    else
+    {
+        syntax_buffer_.current_token->type_ = new_type_to_set;
+    }
+
+    next_token();
+}
 
 
 std::vector<Token> SyntaxChecker::check_syntax()
@@ -57,22 +90,7 @@ std::vector<Token> SyntaxChecker::check_syntax()
         return tokens_to_check_;
     }
 
-    if (syntax_buffer_.current_token->type_ != BIB_ENTRY)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, BIB_ENTRY);
-    }
-
-    next_token();
-
-    if (syntax_buffer_.current_token->type_ != BIB_TEXT)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, BIB_TEXT);
-    }
-    else
-    {
-        syntax_buffer_.current_token->type_ = BIB_TYPE;
-    }
-
+    match_next_token(BIB_ENTRY);
 
     std::string bib_type = substring_to_string(syntax_buffer_.current_token->value_);
     std::string::iterator it = bib_type.begin();
@@ -96,7 +114,7 @@ std::vector<Token> SyntaxChecker::check_syntax()
 
 void SyntaxChecker::check_string_entry()
 {
-    next_token();
+    match_set_next_token(BIB_TEXT, BIB_TYPE);
 
     if (syntax_buffer_.current_token->type_ != OPEN_BRACKET)
     {
@@ -153,94 +171,24 @@ void SyntaxChecker::check_string_entry()
 
 void SyntaxChecker::check_standard_body()
 {
-    next_token();
-
-    if (syntax_buffer_.current_token->type_ != OPEN_BRACKET)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, OPEN_BRACKET);
-    }
-
-    next_token();
-
-    if (syntax_buffer_.current_token->type_ != BIB_TEXT)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, BIB_TEXT);
-    }
-    else
-    {
-        syntax_buffer_.current_token-> type_ = BIB_IDENTIFIER;
-    }
-
-    next_token();
-
-    if (syntax_buffer_.current_token->type_ != COMMA)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, COMMA);
-    }
-
-    next_token();
+    match_set_next_token(BIB_TEXT, BIB_TYPE);
+    match_next_token(OPEN_BRACKET);
+    match_set_next_token(BIB_TEXT, BIB_IDENTIFIER);
+    match_next_token(COMMA);
 
     while (syntax_buffer_.current_token != syntax_buffer_.end_of_tokens)
     {
-
-        if (syntax_buffer_.current_token->type_ != BIB_TEXT)
-        {
-            report_token_type_error(*syntax_buffer_.current_token, BIB_TEXT);
-        }
-        else
-        {
-            syntax_buffer_.current_token->type_ = BIB_ATTRIBUTE_KEY;
-        }
-
-        next_token();
-
-        if (syntax_buffer_.current_token->type_ != EQUAL_SIGN)
-        {
-            report_token_type_error(*syntax_buffer_.current_token, EQUAL_SIGN);
-        }
-
-        next_token();
-
-        if (syntax_buffer_.current_token->type_ != OPEN_BRACKET
-           && syntax_buffer_.current_token->type_ != QUOTATION_MARK)
-        {
-            report_token_type_error(*syntax_buffer_.current_token, OPEN_BRACKET);
-        }
-
-        next_token();
-
-        if (syntax_buffer_.current_token->type_ != BIB_TEXT)
-        {
-            report_token_type_error(*syntax_buffer_.current_token, BIB_TEXT);
-        }
-        else
-        {
-            syntax_buffer_.current_token->type_ = BIB_ATTRIBUTE_VALUE;
-        }
-
-        next_token();
-
-        if (syntax_buffer_.current_token->type_ != CLOSE_BRACKET
-           && syntax_buffer_.current_token->type_ != QUOTATION_MARK)
-        {
-            report_token_type_error(*syntax_buffer_.current_token, CLOSE_BRACKET);
-        }
-
-        next_token();
-
-        if (syntax_buffer_.current_token->type_ != COMMA
-           && syntax_buffer_.current_token->type_ != CLOSE_BRACKET)
-        {
-            report_token_type_error(*syntax_buffer_.current_token, COMMA);
-        }
-
-        next_token();
+        match_set_next_token(BIB_TEXT, BIB_ATTRIBUTE_KEY);
+        match_next_token(EQUAL_SIGN);
+        match_next_token(std::vector<TokenType>{OPEN_BRACKET, QUOTATION_MARK});
+        match_set_next_token(BIB_TEXT, BIB_ATTRIBUTE_VALUE);
+        match_next_token(std::vector<TokenType>{CLOSE_BRACKET, QUOTATION_MARK});
+        match_next_token(std::vector<TokenType>{COMMA, CLOSE_BRACKET});
         
         if (syntax_buffer_.current_token->type_ == END_OF_FILE) break;
     }
 
 }
-
 
 
 
