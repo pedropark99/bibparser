@@ -171,7 +171,6 @@ void SyntaxChecker::check_attribute_value()
         {
             report_expected_number(*syntax_buffer_.current_token);
         }
-
         next_token();
     }
 
