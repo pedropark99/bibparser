@@ -167,11 +167,7 @@ void SyntaxChecker::check_attribute_value()
     {
         // The token is probably a number like in the example below:
         // year = 2005
-        try
-        {
-            parse_number(syntax_buffer_.current_token->value_);
-        }
-        catch(const std::exception& e)
+        if ( !is_number(substring_to_string(syntax_buffer_.current_token->value_)) )
         {
             report_expected_number(*syntax_buffer_.current_token);
         }

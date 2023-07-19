@@ -2,7 +2,6 @@
 #include <unordered_set>
 #include <iostream>
 #include <vector>
-#include <stdlib.h>
 
 #include "tokenizer.hpp"
 
@@ -13,6 +12,7 @@ bool is_white_space(char chr);
 bool is_digit(char chr);
 bool is_letter(char chr);
 bool is_alpha_numeric(char chr);
+bool is_number(std::string str);
 bool find_in_set(char chr, const std::unordered_set<char>& set);
 
 SubString empty_substring();
