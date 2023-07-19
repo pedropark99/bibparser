@@ -67,6 +67,17 @@ void SyntaxChecker::match_next_token(std::vector<TokenType> types_to_match)
     next_token();
 }
 
+void SyntaxChecker::match_until(TokenType type_to_end_matching)
+{
+    while (syntax_buffer_.current_token->type_ != type_to_end_matching
+           || syntax_buffer_.current_token->type_ != END_OF_FILE)
+    {
+        next_token();
+    }
+}
+
+
+
 
 void SyntaxChecker::match_set_next_token(TokenType raw_type_to_match, TokenType new_type_to_set)
 {
@@ -115,55 +126,12 @@ std::vector<Token> SyntaxChecker::check_syntax()
 void SyntaxChecker::check_string_entry()
 {
     match_set_next_token(BIB_TEXT, BIB_TYPE);
-
-    if (syntax_buffer_.current_token->type_ != OPEN_BRACKET)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, OPEN_BRACKET);
-    }
-
-    next_token();
-
-    if (syntax_buffer_.current_token->type_ != BIB_TEXT)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, BIB_ATTRIBUTE_KEY);
-    }
-    else
-    {
-        syntax_buffer_.current_token->type_ = BIB_ATTRIBUTE_KEY;
-    }
-
-    next_token();
-
-    if (syntax_buffer_.current_token->type_ != EQUAL_SIGN)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, EQUAL_SIGN);
-    }
-
-
-    next_token();
-
-    if (syntax_buffer_.current_token->type_ != BIB_TEXT)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, BIB_ATTRIBUTE_VALUE);
-    }
-    else
-    {
-        syntax_buffer_.current_token->type_ = BIB_ATTRIBUTE_VALUE;
-    }
-
-    next_token();
-
-    if (syntax_buffer_.current_token->type_ != CLOSE_BRACKET)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, CLOSE_BRACKET);
-    }
-
-    next_token();
-
-    if (syntax_buffer_.current_token->type_ != CLOSE_BRACKET)
-    {
-        report_token_type_error(*syntax_buffer_.current_token, CLOSE_BRACKET);
-    }
+    match_next_token(OPEN_BRACKET);
+    match_set_next_token(BIB_TEXT, BIB_ATTRIBUTE_KEY);
+    match_next_token(EQUAL_SIGN);
+    match_set_next_token(BIB_TEXT, BIB_ATTRIBUTE_VALUE);
+    match_next_token(CLOSE_BRACKET);
+    match_next_token(CLOSE_BRACKET);
 }
 
 
