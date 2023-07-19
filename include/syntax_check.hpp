@@ -30,12 +30,14 @@ private:
     void match_set_next_token(TokenType raw_type_to_match, TokenType new_type_to_set);
     void match_until(TokenType type_to_end_matching);
     void check_standard_body();
+    void check_attribute_value();
     void check_string_entry();
     void check_preamble_entry();
 };
 
 
 void report_token_type_error(Token token_found, TokenType type_expected);
+void report_expected_number(Token token_found);
 
 
 } // end of namespace bibparser
