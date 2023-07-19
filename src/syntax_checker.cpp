@@ -206,7 +206,7 @@ void report_token_type_error(Token token_found, TokenType type_expected)
 }
 
 
-void report_token_type_error(Token token_found, TokenType type_expected)
+void report_expected_number(Token token_found)
 {
     token_found.print_token();
 
