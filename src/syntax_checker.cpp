@@ -171,7 +171,8 @@ void SyntaxChecker::check_attribute_value()
         {
             report_expected_number(*syntax_buffer_.current_token);
         }
-        next_token();
+        match_set_next_token(BIB_TEXT, BIB_ATTRIBUTE_VALUE);
+        return;
     }
 
     if (syntax_buffer_.current_token->type_ == OPEN_BRACKET
