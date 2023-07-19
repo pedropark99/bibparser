@@ -28,6 +28,9 @@ int32_t substring_size(SubString substring);
 void find_first_position(std::string &string, char chr);
 bool substring_is_space(SubString sub);
 
+int parse_number(SubString substring);
+int parse_number(std::string str);
+
 SubString trim_substring(SubString substring);
 void trim_substring(Token &token);
 std::vector<SubString> split_substring(SubString sub, const char delimiter);

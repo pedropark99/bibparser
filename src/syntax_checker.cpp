@@ -168,23 +168,15 @@ void SyntaxChecker::check_attribute_value()
     {
         // The token is probably a number like in the example below:
         // year = 2005
-        SubString token_value = syntax_buffer_.current_token->value_;
-        char first_char = *token_value.begin;
-        if (!is_digit(first_char))
-        {
-            report_expected_number(*syntax_buffer_.current_token);
-        }
-
         try
         {
-            int parse_number = std::stoi(substring_to_string(token_value));
+            parse_number(syntax_buffer_.current_token->value_);
         }
         catch(const std::exception& e)
         {
-            report_invalid_number();
+            report_expected_number(*syntax_buffer_.current_token);
             std::cerr << e.what() << '\n';
         }
-        
     }
 
     if (syntax_buffer_.current_token->type_ == OPEN_BRACKET

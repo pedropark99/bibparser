@@ -181,11 +181,29 @@ void find_first_position(std::string &string, char chr)
     }
 }
 
+
+
+int parse_number(SubString substring)
+{
+    int parsed_number = std::stoi(substring_to_string(substring));
+    return parsed_number;
+}
+
+int parse_number(std::string str)
+{
+    int parsed_number = std::stoi(str);
+    return parsed_number;
+}
+
+
+
+
 SubString empty_substring()
 {
     std::string s = std::string();
     return {s.begin(), s.end()};
 }
+
 
 
 SubString trim_substring(SubString substring)
