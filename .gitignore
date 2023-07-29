@@ -3,6 +3,7 @@
 CMakeFiles
 out
 CMakeCache.txt
+Makefile
 *.cmake
 *.stackdump
 *.exe

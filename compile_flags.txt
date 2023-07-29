@@ -1,0 +1,6 @@
+# This file is only used by Nvim LSP, or, more precisely, the clangd Language Server. It is not used by the any compilation process.
+# The solely purpose of this file, is for clangd be able to locate the header files of the library.
+
+-xc++
+-I
+include/
