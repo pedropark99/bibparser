@@ -20,9 +20,9 @@ private:
     std::vector<Token> tokens_to_check_;
 
 public:
-    SyntaxChecker(const std::string bib_string);
     SyntaxChecker(std::vector<Token> &input_tokens);
     std::vector<Token> check_syntax();
+    void print_tokens(std::string bib_string);
 
 private:
     void next_token();

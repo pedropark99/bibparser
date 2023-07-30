@@ -49,9 +49,9 @@ void Token::print_token()
 
 
 
-Tokenizer::Tokenizer(const std::string string_to_tokenize)
+Tokenizer::Tokenizer(std::string bib_string)
 {
-    this->bib_file_ = string_to_tokenize;
+    this->bib_file_ = bib_string;
     if (bib_file_.begin() == bib_file_.end())
     {
         // empty file!!!

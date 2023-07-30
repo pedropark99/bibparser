@@ -69,11 +69,7 @@ void Parser::next_token()
 
 void Parser::print_tokens()
 {
-    std::vector<Token> tokens = tokenizer_.collect_raw_tokens();
-    for (Token token: tokens)
-    {
-        token.print_token();
-    }
+    tokenizer_.print_tokens();
 }
 
 

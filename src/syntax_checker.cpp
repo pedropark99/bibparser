@@ -13,23 +13,6 @@
 
 namespace bibparser {
 
-SyntaxChecker::SyntaxChecker(const std::string bib_string)
-{
-    Tokenizer tokenizer = Tokenizer(bib_string);
-    tokens_to_check_ = tokenizer.collect_raw_tokens();
-    syntax_buffer_ = {
-        tokens_to_check_.begin(),  // begin_of_tokens
-        tokens_to_check_.end(),    // end_of_tokens
-        tokens_to_check_.begin(),  // current_token
-        tokens_to_check_.begin()   // look_ahead
-    };
-    
-    if (std::next(tokens_to_check_.begin()) != tokens_to_check_.end())
-    {
-        syntax_buffer_.look_ahead = std::next(tokens_to_check_.begin());
-    }
-}
-
 SyntaxChecker::SyntaxChecker(std::vector<Token> &input_tokens)
 {
     tokens_to_check_ = std::vector<Token>();
@@ -46,6 +29,12 @@ SyntaxChecker::SyntaxChecker(std::vector<Token> &input_tokens)
     }
 }
 
+
+void SyntaxChecker::print_tokens(std::string bib_string)
+{
+    Tokenizer tokenizer = Tokenizer(bib_string);
+    tokenizer.print_tokens();
+}
 
 
 void SyntaxChecker::next_token()
