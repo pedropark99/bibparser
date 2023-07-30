@@ -48,8 +48,8 @@ void Token::print_token()
 
 Tokenizer::Tokenizer()
 {
-    bib_file_ = "";
-    tokenizer_buffer_ = {
+    this->bib_file_ = "";
+    this->tokenizer_buffer_ = {
         bib_file_.begin(),  // begin_of_file
         bib_file_.end(),    // end_of_file
         bib_file_.begin(),  // lexeme_begin
@@ -62,13 +62,13 @@ Tokenizer::Tokenizer()
 
 Tokenizer::Tokenizer(std::string string_to_tokenize)
 {
-    bib_file_ = string_to_tokenize;
+    this->bib_file_ = string_to_tokenize;
     if (bib_file_.begin() == bib_file_.end())
     {
         // empty file!!!
     }
     
-    tokenizer_buffer_ = {
+    this->tokenizer_buffer_ = {
         bib_file_.begin(),  // begin_of_file
         bib_file_.end(),    // end_of_file
         bib_file_.begin(),  // lexeme_begin

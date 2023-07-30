@@ -6,16 +6,21 @@
 #include "parser.hpp"
 #include "string_utils.hpp"
 #include "syntax_check.hpp"
+#include "tokenizer.hpp"
 
 
 
 int main(int argc, char *argv[])
 {
-    std::string argument_to_parse = bibparser::get_path_to_file(argc, argv);
-    std::string bib_file = argument_to_parse;
+    //std::string argument_to_parse = bibparser::get_path_to_file(argc, argv);
+    //std::string bib_file = argument_to_parse;
     //bibparser::Tokenizer tokenizer = bibparser::Tokenizer(bib_file);
-    bibparser::Parser parser = bibparser::Parser(bib_file);
+    std::string str = "@main{teste,}";
+    bibparser::Parser parser = bibparser::Parser(str);
     parser.print_tokens();
+
+    bibparser::Tokenizer tokenizer = bibparser::Tokenizer(str);
+    tokenizer.print_tokens();
 
     return 0;
 }
