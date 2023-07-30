@@ -76,15 +76,14 @@ public:
 
 
 class Tokenizer {
-public:
+private:
     std::string bib_file_;
     TokenizerBuffer tokenizer_buffer_;
     Token current_token_;
     
 
 public:
-    Tokenizer();
-    Tokenizer(std::string path_to_bib_file);
+    Tokenizer(const std::string path_to_bib_file);
 
     Token get_next_token();
     void print_tokens();
