@@ -1,4 +1,5 @@
 #pragma once
+#include <filesystem>
 #include <string>
 #include <list>
 #include <vector>
@@ -75,17 +76,18 @@ public:
 
 
 class Tokenizer {
-private:
+public:
     std::string bib_file_;
     TokenizerBuffer tokenizer_buffer_;
     Token current_token_;
     
 
 public:
+    Tokenizer();
     Tokenizer(std::string path_to_bib_file);
-    Tokenizer() = default;
 
     Token get_next_token();
+    void print_tokens();
     std::vector<Token> collect_raw_tokens();
     std::vector<Token> collect_next_entry_tokens();
 

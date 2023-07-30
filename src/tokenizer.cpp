@@ -46,17 +46,23 @@ void Token::print_token()
 }
 
 
-
-
-
-
-
-
-
-Tokenizer::Tokenizer(std::string path_to_bib_file)
+Tokenizer::Tokenizer()
 {
-    bib_file_ = read_bib_file(path_to_bib_file);
+    bib_file_ = "";
+    tokenizer_buffer_ = {
+        bib_file_.begin(),  // begin_of_file
+        bib_file_.end(),    // end_of_file
+        bib_file_.begin(),  // lexeme_begin
+        bib_file_.begin(),  // current_char
+        bib_file_.begin(),  // look_ahead
+        1  // line_in_source
+    };
+}
 
+
+Tokenizer::Tokenizer(std::string string_to_tokenize)
+{
+    bib_file_ = string_to_tokenize;
     if (bib_file_.begin() == bib_file_.end())
     {
         // empty file!!!
@@ -77,8 +83,9 @@ Tokenizer::Tokenizer(std::string path_to_bib_file)
     {
         tokenizer_buffer_.look_ahead = std::next(bib_file_.begin());
     }
-
 }
+
+
 
 
 void Tokenizer::next_char()
@@ -167,6 +174,14 @@ std::vector<Token> Tokenizer::collect_next_entry_tokens()
 }
 
 
+void Tokenizer::print_tokens()
+{
+    std::vector<Token> tokens = collect_raw_tokens();
+    for (Token token: tokens)
+    {
+        token.print_token();
+    }
+}
 
 
 

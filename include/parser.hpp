@@ -132,10 +132,12 @@ private:
     std::list<BibEntry> ast;
 
 public:
-    Parser(std::string path_to_bib_file);
+    Parser();
+    Parser(std::string bib_string);
     void parse_tokens();
     void parse_entry_tokens(std::vector<Token> entry_tokens);
     void parse();
+    void print_tokens();
     void print_bib_entries();
     void syntax_check();
     void next_token();

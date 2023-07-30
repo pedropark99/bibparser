@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <iostream>
 #include <vector>
 #include <iterator>
@@ -179,7 +180,7 @@ void SyntaxChecker::check_attribute_tokens()
         return;
     }
 
-   
+    int32_t deep_level = 0;
     match_next_token(std::vector<TokenType>{OPEN_BRACKET, QUOTATION_MARK});
     match_and_mark_next_token(BIB_TEXT, BIB_ATTRIBUTE_VALUE);
     match_next_token(std::vector<TokenType>{CLOSE_BRACKET, QUOTATION_MARK});
