@@ -77,7 +77,7 @@ void SyntaxChecker::match_until(TokenType type_to_end_matching)
     }
 }
 
-bool SyntaxChecker::is_next_token_of_type(TokenType type)
+bool SyntaxChecker::is_token_of_type(TokenType type)
 {
     return (syntax_buffer_.current_token->type_ == type) ? true : false;
 }
