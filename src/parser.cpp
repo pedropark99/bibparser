@@ -19,30 +19,18 @@ namespace bibparser {
 
 
 Parser::Parser()
+    : tokenizer_(Tokenizer(""))
 {
-    this->tokenizer_ = Tokenizer("");
-    this->parser_buffer_ = {
-        PARSING,
-        std::vector<Token>::iterator(),   // begin_of_tokens
-        std::vector<Token>::iterator(),   // end_of_tokens
-        std::vector<Token>::iterator(),   // current_token
-        std::vector<Token>::iterator()    // look_ahead
-    };   
+  
 }
 
 
 
 
 Parser::Parser(std::string bib_string)
+    : tokenizer_(Tokenizer(bib_string))
 {
-    this->tokenizer_ = Tokenizer(bib_string);
-    this->parser_buffer_ = {
-        PARSING,
-        std::vector<Token>::iterator(),   // begin_of_tokens
-        std::vector<Token>::iterator(),   // end_of_tokens
-        std::vector<Token>::iterator(),   // current_token
-        std::vector<Token>::iterator()    // look_ahead
-    };
+
 }
 
 

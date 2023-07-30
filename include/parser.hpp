@@ -127,7 +127,7 @@ struct ParserBuffer {
 class Parser
 {
 private:
-    Tokenizer tokenizer_;
+    Tokenizer tokenizer_ = Tokenizer("");
     ParserBuffer parser_buffer_;
     std::list<BibEntry> ast;
 
