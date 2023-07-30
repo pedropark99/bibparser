@@ -16,11 +16,8 @@ int main(int argc, char *argv[])
     //std::string bib_file = argument_to_parse;
     //bibparser::Tokenizer tokenizer = bibparser::Tokenizer(bib_file);
     std::string str = "@main{teste,}";
-    bibparser::Parser parser = bibparser::Parser(str);
-    parser.print_tokens();
-
-    bibparser::Tokenizer tokenizer = bibparser::Tokenizer(str);
-    tokenizer.print_tokens();
+    bibparser::SyntaxChecker checker = bibparser::SyntaxChecker(str);
+    checker.check_syntax();
 
     return 0;
 }

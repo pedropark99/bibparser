@@ -13,7 +13,22 @@
 
 namespace bibparser {
 
-
+SyntaxChecker::SyntaxChecker(const std::string bib_string)
+{
+    Tokenizer tokenizer = Tokenizer(bib_string);
+    tokens_to_check_ = tokenizer.collect_raw_tokens();
+    syntax_buffer_ = {
+        tokens_to_check_.begin(),  // begin_of_tokens
+        tokens_to_check_.end(),    // end_of_tokens
+        tokens_to_check_.begin(),  // current_token
+        tokens_to_check_.begin()   // look_ahead
+    };
+    
+    if (std::next(tokens_to_check_.begin()) != tokens_to_check_.end())
+    {
+        syntax_buffer_.look_ahead = std::next(tokens_to_check_.begin());
+    }
+}
 
 SyntaxChecker::SyntaxChecker(std::vector<Token> &input_tokens)
 {
@@ -72,7 +87,7 @@ void SyntaxChecker::match_next_token(std::vector<TokenType> types_to_match)
 void SyntaxChecker::match_until(TokenType type_to_end_matching)
 {
     while (syntax_buffer_.current_token->type_ != type_to_end_matching
-           || syntax_buffer_.current_token->type_ != END_OF_FILE)
+        || syntax_buffer_.current_token->type_ != END_OF_FILE)
     {
         next_token();
     }
@@ -91,7 +106,7 @@ void SyntaxChecker::match_and_mark_next_token(TokenType raw_type_to_match, Token
         report_token_type_error(*syntax_buffer_.current_token, raw_type_to_match);
     }
     else
-    {
+{
         syntax_buffer_.current_token->type_ = new_type_to_set;
     }
 
@@ -117,7 +132,7 @@ std::vector<Token> SyntaxChecker::check_syntax()
         check_string_entry();
     }
     else
-    {
+{
         check_standard_body();
     }
 
@@ -153,12 +168,12 @@ void SyntaxChecker::check_standard_body()
     {
         match_and_mark_next_token(BIB_TEXT, BIB_ATTRIBUTE_KEY);
         match_next_token(EQUAL_SIGN);
-        
+
         // Expect next a single token, or, multiple tokens that compose an attribute value
         check_attribute_tokens();
 
         match_next_token(std::vector<TokenType>{COMMA, CLOSE_BRACKET});
-        
+
         if (syntax_buffer_.current_token->type_ == END_OF_FILE) break;
     }
 
@@ -184,7 +199,7 @@ void SyntaxChecker::check_attribute_tokens()
     match_next_token(std::vector<TokenType>{OPEN_BRACKET, QUOTATION_MARK});
     match_and_mark_next_token(BIB_TEXT, BIB_ATTRIBUTE_VALUE);
     match_next_token(std::vector<TokenType>{CLOSE_BRACKET, QUOTATION_MARK});
-    
+
 }
 
 

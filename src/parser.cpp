@@ -1,3 +1,4 @@
+#include <cwchar>
 #include <string>
 #include <list>
 #include <unordered_map>
@@ -24,14 +25,13 @@ Parser::Parser()
   
 }
 
-
-
-
 Parser::Parser(std::string bib_string)
     : tokenizer_(Tokenizer(bib_string))
 {
 
 }
+
+
 
 
 
@@ -75,7 +75,6 @@ void Parser::print_tokens()
         token.print_token();
     }
 }
-
 
 
 void Parser::print_bib_entries()
