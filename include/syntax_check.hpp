@@ -25,10 +25,11 @@ public:
 
 private:
     void next_token();
-    bool match_next_token(TokenType type_to_match);
-    bool match_next_token(std::vector<TokenType> types_to_match);
-    bool match_and_mark_next_token(TokenType raw_type_to_match, TokenType new_type_to_set);
+    void match_next_token(TokenType type_to_match);
+    void match_next_token(std::vector<TokenType> types_to_match);
+    void match_and_mark_next_token(TokenType raw_type_to_match, TokenType new_type_to_set);
     void match_until(TokenType type_to_end_matching);
+    bool is_token_of_type(TokenType type);
     void check_standard_body();
     void check_attribute_tokens();
     void check_string_entry();

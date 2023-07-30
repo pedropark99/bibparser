@@ -77,7 +77,10 @@ void SyntaxChecker::match_until(TokenType type_to_end_matching)
     }
 }
 
-
+bool SyntaxChecker::is_next_token_of_type(TokenType type)
+{
+    return (syntax_buffer_.current_token->type_ == type) ? true : false;
+}
 
 
 void SyntaxChecker::match_and_mark_next_token(TokenType raw_type_to_match, TokenType new_type_to_set)
